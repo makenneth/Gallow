@@ -1,13 +1,25 @@
 import React, { Component } from "react"
-import { connect } from "redux"
-
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
+import Messages from "./messages"
+import Input from "./input"
 class Chat extends Component {
-  constructor(props){
-
+  render(){
+    return <div>
+      <Messages messages={this.props.messages}/>
+      <Input />
+    </div>
   }
-
-
 }
 
 
-export default Chat;
+const mapStateToProps = ({messages}) => {
+  return {
+    messages
+  }
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+}
+export default connect(mapStateToPRops)(Chat);
