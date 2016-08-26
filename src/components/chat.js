@@ -3,11 +3,36 @@ import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import Messages from "./messages"
 import Input from "./input"
+import { addNewMessage } from "../actions/actions"
+
+const ws = new Websocket(url);
+const url = "ws://localhost:8080/entry"
 class Chat extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      loading: true
+    }
+  }
+  componentWillMount() {
+    ws.onopen = () => {
+      this.setState({ loading: false })
+    }
+    ws.onmessage = this.handleNewMessage;
+  }
+  handleNewMessage = (res) => {
+    addNewMessage(res.data);
+  }
+  loading() {
+    if (this.state.loading){
+      return <div className="loader">Loading...</div>;
+    }
+  }
   render(){
     return <div>
-      <Messages messages={this.props.messages}/>
-      <Input />
+      <Messages ws={ws} messages={this.props.messages} />
+      <Input ws={ws} />
+      { this.loading() }
     </div>
   }
 }
@@ -21,5 +46,6 @@ const mapStateToProps = ({messages}) => {
 
 
 const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({addNewMessage}, dispatch)
 }
-export default connect(mapStateToPRops)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

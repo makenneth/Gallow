@@ -1,6 +1,6 @@
 import React from "react"
 
-const mapMessages = (messages) => {
+const mapMessages = (messages = []) => {
   return messages.map(msg => (
       <li><span>{msg.author}:&nbsp</span>{msg.body}</li> 
     ))

@@ -1,6 +1,8 @@
+import { NEW_MESSAGE } from "../constants/constants"
+
 const messagesReducer = (state = [], action) => {
   switch (action.type) {
-    case "NEW_MESSAGE":
+    case NEW_MESSAGE:
       var newState = state.map((msg) => (
         Object.assign({}, msg);
       ));
