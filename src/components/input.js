@@ -6,7 +6,7 @@ class Input extends Component {
   constructor(props){
     super(props)
     this.state = {
-      body: null
+      body: ""
     }
   }
   handleSubmit = () => {
@@ -18,7 +18,7 @@ class Input extends Component {
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <label for="body">Body</label>
+        <label htmlFor="body">Body</label>
         <input type="text" id="body" 
                onChange={this.handleChange} 
                value={this.state.body} />

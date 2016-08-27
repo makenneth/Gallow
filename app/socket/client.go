@@ -8,14 +8,14 @@ import (
 
 type Client struct {
   ws *websocket.Conn
-  server *Server
+  server *SocketServer
   done chan bool
   msgCh chan *Message
 }
 
 const buffSize = 1000
 
-func newClient(ws *websocket.Conn, server *Server) *Client {
+func NewClient(ws *websocket.Conn, server *SocketServer) *Client {
   if ws == nil {
     panic("Websocket can't be nil!!")
   } else if server == nil {
@@ -57,7 +57,7 @@ func (this *Client) ListenRead() {
       if err != nil {
         this.done <- true
       } else {
-        this.server.SendAll() <- msg
+        this.server.SendAll() <- &msg
       }
     }
     

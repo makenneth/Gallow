@@ -3,12 +3,11 @@ package socket
 import (
 	"net/http"
 	"log"
-	"io"
 	"golang.org/x/net/websocket"
 )
 
 type SocketServer struct {
-	path String
+	path string
 	clients []*Client
 	messages []*Message
 	sendAll chan *Message
@@ -16,7 +15,7 @@ type SocketServer struct {
 	removeClient chan *Client
 }
 
-func newServer(path String) *SocketServer {
+func NewServer(path string) *SocketServer {
 	clients := make([]*Client, 0)
 	messages := make([]*Message, 0)
 	addClient := make(chan *Client)
@@ -49,37 +48,39 @@ func (this *SocketServer) Listen() {
 	log.Println("Socket Server started...")
 	
 	onConnect := func(ws *websocket.Conn){
-		client := NewClient(ws, self)
-		self.addClient <- client
+		client := NewClient(ws, this)
+		this.addClient <- client
 		client.Listen()
 		defer ws.Close()
 	}
 
-	http.Handle(self.path, websocket.Handler(onConnect))
+	http.Handle(this.path, websocket.Handler(onConnect))
 	log.Println("Created handler")
 
 	for {
 		select {
 		case cl := <- this.addClient:
 			log.Println("Adding new client")
-			self.clients = append(self.clients, cl)
-			for _, msg := range self.messages {
+			this.clients = append(this.clients, cl)
+			for _, msg := range this.messages {
 				cl.Write() <- msg
 			}
-			log.Printf("Now.. there are %s clients.", len(self.clients))
+			log.Printf("Now.. there are %s clients.", len(this.clients))
 		case cl := <- this.removeClient:
 			log.Println("Removing Client")
-			for i := range self.clients {
-				if self.clients[i] == cl {
-					self.clients = append(self.clients[:i], self.clients[i+1:]...)
+			for i := range this.clients {
+				if this.clients[i] == cl {
+					this.clients = append(this.clients[:i], this.clients[i+1:]...)
 					break
 				}						
 			
 			}
 		case msg := <- this.sendAll:
 			log.Println("sending all messages: ", msg)
-			self.messages = append(self.messages, msg)
- 			for _, client := range self.clients {
+			this.messages = append(this.messages, msg)
+ 			for _, client := range this.clients {
 				client.Write() <- msg
 			}
 		}
+	}
+}

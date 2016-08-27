@@ -6,6 +6,6 @@ type Message struct {
 }
 
 func (this *Message) String() string {
-  return this.Author + " says " + this.Body
+  return this.author + " says " + this.body
 }
 

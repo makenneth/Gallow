@@ -1,11 +1,12 @@
 import { NEW_MESSAGE } from "../constants/constants"
-export default submitMessage = (ws, author, body) => {
+
+export const submitMessage = (ws, author, body) => {
   const data = {author, body};
 
   ws.send(JSON.stringify(data));
 }
 
-export default addNewMessage = (msg) => {
+export const addNewMessage = (msg) => {
   let message = JSON.parse(msg);
 
   return {

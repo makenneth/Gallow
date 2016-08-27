@@ -5,8 +5,8 @@ import Messages from "./messages"
 import Input from "./input"
 import { addNewMessage } from "../actions/actions"
 
-const ws = new Websocket(url);
-const url = "ws://localhost:8080/entry"
+const url = "ws://localhost:8080/chat"
+const ws = new WebSocket(url);
 class Chat extends Component {
   constructor(props){
     super(props);
@@ -25,7 +25,7 @@ class Chat extends Component {
   }
   loading() {
     if (this.state.loading){
-      return <div className="loader">Loading...</div>;
+      return <div className="loader"><img src="/images/loading_logofinal_by_zegerdon-d60eb1v.gif"/></div>;
     }
   }
   render(){
