@@ -1,7 +1,7 @@
-const userReducer = (state = {name: "Anonymous"}, action) => {
+const userReducer = (state = {username: null}, action) => {
   switch (action.type){
     case "NEW_USER":
-      newState = {name: action.payload.name};
+      const newState = {username: action.user};
       return newState;
   }
 

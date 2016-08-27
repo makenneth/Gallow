@@ -17,12 +17,13 @@ class Input extends Component {
   }
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label htmlFor="body">Body</label>
+      <form onSubmit={this.handleSubmit} className="msg-input-form">
         <input type="text" id="body" 
                onChange={this.handleChange} 
-               value={this.state.body} />
-        <input type="submit" value="Submit" />
+               value={this.state.body} disabled={!this.props.author} 
+               placeholder="Enter your message..."
+               autoFocus/>
+        <input type="submit" value="Submit" disabled={!this.props.author} />
       </form>
       )
   }

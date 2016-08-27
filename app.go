@@ -13,6 +13,8 @@ func main() {
   http.HandleFunc("/public/", func(w http.ResponseWriter, r *http.Request){
     http.ServeFile(w, r, r.URL.Path[1:])
   })
+  // fs := http.FileServer(http.Dir("public"))
+  // http.Handle("/public/", http.StripPrefix("/public/", fs))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
     http.ServeFile(w, r, "index.html")
   })

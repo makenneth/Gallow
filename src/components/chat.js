@@ -1,7 +1,8 @@
-import React, { Component } from "react"
+import React, { Component } from "React"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import Messages from "./messages"
+import GetUsername from "./getUsername"
 import Input from "./input"
 import { addNewMessage } from "../actions/actions"
 
@@ -11,8 +12,7 @@ class Chat extends Component {
   constructor(props){
     super(props);
     this.state = {
-      loading: true,
-      author: null
+      loading: true
     }
   }
   componentWillMount() {
@@ -21,12 +21,14 @@ class Chat extends Component {
     }
     ws.onmessage = this.handleNewMessage;
   }
-  componentDidMount() {
-   let author = prompt("Please enter your name..")
-   this.setState({ author });
+  getUsername(){
+    if (!this.props.user.username){
+      return <GetUsername />
+    } else {
+      return ""
+    }
   }
   handleNewMessage = (res) => {
-    debugger;
     this.props.addNewMessage(res.data);
   }
   loading() {
@@ -35,18 +37,20 @@ class Chat extends Component {
     }
   }
   render(){
+    console.log(this.props.user)
     return <div>
+      { this.getUsername() }
       <Messages messages={this.props.messages} />
-      <Input ws={ws} author={this.state.author}/>
+      <Input ws={ws} author={this.props.user.username}/>
       { this.loading() }
     </div>
   }
 }
 
 
-const mapStateToProps = ({messages}) => {
+const mapStateToProps = ({messages, user}) => {
   return {
-    messages
+    messages, user
   }
 }
 

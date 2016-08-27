@@ -54,7 +54,7 @@ func (this *Client) ListenRead() {
     default:
       var msg Message
       err := websocket.JSON.Receive(this.ws, &msg)
-      log.Println("Message received is...", msg)
+      log.Println(err)
       if err != nil {
         this.done <- true
       } else {
