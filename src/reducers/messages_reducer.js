@@ -7,7 +7,7 @@ const messagesReducer = (state = [], action) => {
         Object.assign({}, msg)
       ));
 
-      newState.push(action.payload.msg);
+      newState.push(action.message);
       return newState;
       break;
   }

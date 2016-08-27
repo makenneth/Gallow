@@ -14,8 +14,9 @@ func main() {
     http.ServeFile(w, r, r.URL.Path[1:])
   })
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
-    http.ServeFile(w, r, "index.html");
+    http.ServeFile(w, r, "index.html")
   })
+  log.Println("Server listening at port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

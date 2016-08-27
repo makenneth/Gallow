@@ -1,7 +1,4 @@
 import React, { Component } from "react"
-import { bindActionCreators } from "redux"
-import { submitMessage } from "../actions/actions"
-import { connect } from "react-redux"
 class Input extends Component {
   constructor(props){
     super(props)
@@ -9,10 +6,13 @@ class Input extends Component {
       body: ""
     }
   }
-  handleSubmit = () => {
-    this.props.submitMessage(this.props.ws, this.props.author, this.state.body);
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const data = {"author": this.props.author, "body": this.state.body};
+    this.props.ws.send(JSON.stringify(data));
+    this.setState({body: ""})
   }
-  handleChange(e){
+  handleChange = (e) => {
     this.setState({ body: e.target.value })
   }
   render() {
@@ -27,7 +27,4 @@ class Input extends Component {
       )
   }
 }
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({submitMessage}, dispatch);
-}
-export default connect(null, mapDispatchToProps)(Input);
+export default Input;

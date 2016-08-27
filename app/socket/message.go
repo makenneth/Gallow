@@ -1,11 +1,11 @@
 package socket
 
 type Message struct {
-  author string `json:"author"`
-  body string `json:"body"`
+  Author string `json:"author"`
+  Body string `json:"body"`
 }
 
 func (this *Message) String() string {
-  return this.author + " says " + this.body
+  return this.Author + " says " + this.Body
 }
 

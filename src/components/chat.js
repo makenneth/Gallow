@@ -11,7 +11,8 @@ class Chat extends Component {
   constructor(props){
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      author: null
     }
   }
   componentWillMount() {
@@ -20,8 +21,13 @@ class Chat extends Component {
     }
     ws.onmessage = this.handleNewMessage;
   }
+  componentDidMount() {
+   let author = prompt("Please enter your name..")
+   this.setState({ author });
+  }
   handleNewMessage = (res) => {
-    addNewMessage(res.data);
+    debugger;
+    this.props.addNewMessage(res.data);
   }
   loading() {
     if (this.state.loading){
@@ -30,8 +36,8 @@ class Chat extends Component {
   }
   render(){
     return <div>
-      <Messages ws={ws} messages={this.props.messages} />
-      <Input ws={ws} />
+      <Messages messages={this.props.messages} />
+      <Input ws={ws} author={this.state.author}/>
       { this.loading() }
     </div>
   }

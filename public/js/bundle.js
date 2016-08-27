@@ -28952,11 +28952,13 @@
 	    var _this = _possibleConstructorReturn(this, (Chat.__proto__ || Object.getPrototypeOf(Chat)).call(this, props));
 
 	    _this.handleNewMessage = function (res) {
-	      (0, _actions.addNewMessage)(res.data);
+	      debugger;
+	      _this.props.addNewMessage(res.data);
 	    };
 
 	    _this.state = {
-	      loading: true
+	      loading: true,
+	      author: null
 	    };
 	    return _this;
 	  }
@@ -28970,6 +28972,12 @@
 	        _this2.setState({ loading: false });
 	      };
 	      ws.onmessage = this.handleNewMessage;
+	    }
+	  }, {
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      var author = prompt("Please enter your name..");
+	      this.setState({ author: author });
 	    }
 	  }, {
 	    key: "loading",
@@ -28988,8 +28996,8 @@
 	      return _react2.default.createElement(
 	        "div",
 	        null,
-	        _react2.default.createElement(_messages2.default, { ws: ws, messages: this.props.messages }),
-	        _react2.default.createElement(_input2.default, { ws: ws }),
+	        _react2.default.createElement(_messages2.default, { messages: this.props.messages }),
+	        _react2.default.createElement(_input2.default, { ws: ws, author: this.state.author }),
 	        this.loading()
 	      );
 	    }
@@ -29033,12 +29041,12 @@
 	  return messages.map(function (msg) {
 	    return _react2.default.createElement(
 	      "li",
-	      null,
+	      { key: msg.author + msg.body },
 	      _react2.default.createElement(
 	        "span",
 	        null,
 	        msg.author,
-	        ":&nbsp"
+	        ":"
 	      ),
 	      msg.body
 	    );
@@ -29075,12 +29083,6 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _redux = __webpack_require__(242);
-
-	var _actions = __webpack_require__(259);
-
-	var _reactRedux = __webpack_require__(235);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29097,8 +29099,15 @@
 
 	    var _this = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this, props));
 
-	    _this.handleSubmit = function () {
-	      _this.props.submitMessage(_this.props.ws, _this.props.author, _this.state.body);
+	    _this.handleSubmit = function (e) {
+	      e.preventDefault();
+	      var data = { "author": _this.props.author, "body": _this.state.body };
+	      _this.props.ws.send(JSON.stringify(data));
+	      _this.setState({ body: "" });
+	    };
+
+	    _this.handleChange = function (e) {
+	      _this.setState({ body: e.target.value });
 	    };
 
 	    _this.state = {
@@ -29108,11 +29117,6 @@
 	  }
 
 	  _createClass(Input, [{
-	    key: "handleChange",
-	    value: function handleChange(e) {
-	      this.setState({ body: e.target.value });
-	    }
-	  }, {
 	    key: "render",
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -29134,10 +29138,7 @@
 	  return Input;
 	}(_react.Component);
 
-	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return (0, _redux.bindActionCreators)({ submitMessage: _actions.submitMessage }, dispatch);
-	};
-	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(Input);
+	exports.default = Input;
 
 /***/ },
 /* 259 */
@@ -29148,22 +29149,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.addNewMessage = exports.submitMessage = undefined;
+	exports.addNewMessage = undefined;
 
 	var _constants = __webpack_require__(260);
 
-	var submitMessage = exports.submitMessage = function submitMessage(ws, author, body) {
-	  var data = { author: author, body: body };
-
-	  ws.send(JSON.stringify(data));
-	};
-
 	var addNewMessage = exports.addNewMessage = function addNewMessage(msg) {
 	  var message = JSON.parse(msg);
-
 	  return {
 	    type: _constants.NEW_MESSAGE,
-	    msg: msg
+	    message: message
 	  };
 	};
 
@@ -29231,7 +29225,7 @@
 	        return Object.assign({}, msg);
 	      });
 
-	      newState.push(action.payload.msg);
+	      newState.push(action.message);
 	      return newState;
 	      break;
 	  }

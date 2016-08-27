@@ -1,0 +1,1 @@
+//this component should handle getting the users name and using user reducers

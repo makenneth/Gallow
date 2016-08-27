@@ -65,7 +65,7 @@ func (this *SocketServer) Listen() {
 			for _, msg := range this.messages {
 				cl.Write() <- msg
 			}
-			log.Printf("Now.. there are %s clients.", len(this.clients))
+			log.Printf("Now.. there are %i clients.", len(this.clients))
 		case cl := <- this.removeClient:
 			log.Println("Removing Client")
 			for i := range this.clients {
