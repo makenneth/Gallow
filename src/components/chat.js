@@ -22,13 +22,14 @@ class Chat extends Component {
     ws.onmessage = this.handleNewMessage;
   }
   getUsername(){
-    if (!this.props.currrentUser.username){
-      return <GetUsername />
+    if (!this.props.currentUser.username){
+      return <GetUsername ws={ws}/>
     } else {
       return ""
     }
   }
   handleNewMessage = (res) => {
+    debugger;
     let message = JSON.parse(res.data);
     switch (message.Type) {
       case "NEW_MESSAGE":
@@ -50,6 +51,7 @@ class Chat extends Component {
   render(){
     console.log(this.props.currrentUser)
     return <div>
+      <div>{`${this.props.users.length} users are online.`}</div>
       { this.getUsername() }
       <Messages messages={this.props.messages} />
       <Input ws={ws} author={this.props.currentUser.username}/>

@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { bindActionCreators } from "redux"
 import { connect } from "react-redux"
-import { setUser } from "../actions/actions"
+import { setCurrentUser } from "../actions/actions"
 class GetUsername extends Component {
   constructor(props) {
     super(props);
@@ -14,11 +14,16 @@ class GetUsername extends Component {
   } 
   _handleSubmit = (e) => {
     e.preventDefault();
+    let username;
     if (this.state.username === ""){
-      this.props.setUser("Anonymous");
+      username = "Anonymous"
+      this.props.setCurrentUser("Anonymous");
     } else {
-      this.props.setUser(this.state.username);
+      debugger;
+      username = this.state.username;
+      this.props.setCurrentUser(this.state.username);
     }
+    this.props.ws.send(JSON.stringify({Type: "NEW_USER", Data: username}))
   }
   render(){
     return (
@@ -37,7 +42,7 @@ class GetUsername extends Component {
 }
 
 const mapActionsToProps = (dispatch) => {
-  return bindActionCreators({ setUser }, dispatch) 
+  return bindActionCreators({ setCurrentUser }, dispatch) 
 }
 
 

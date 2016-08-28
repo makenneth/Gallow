@@ -1,9 +1,9 @@
 import { NEW_MESSAGE, NEW_USER, CURRENT_USER } from "../constants/constants"
 
-export const setCurrentUser = (currrentUser) => {
+export const setCurrentUser = (currentUser) => {
   return {
     type: CURRENT_USER,
-    currrentUser
+    currentUser
   }
 }
 

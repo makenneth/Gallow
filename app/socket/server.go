@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"log"
 	"golang.org/x/net/websocket"
+	"encoding/json"
 )
 
 type SocketServer struct {
@@ -25,9 +26,11 @@ func NewServer(path string) *SocketServer {
 	return &SocketServer{path, clients, messages, sendAll, addClient, removeClient}
 }
 
-func (this *SocketServer) AllClients() []*Client {
-	clients := make([]*Client, len(this.clients))
-	copy(clients, this.clients)
+func (this *SocketServer) AllClients() []string {
+	clients := make([]string, len(this.clients))
+	for i, cl := range this.clients {
+		clients[i] = cl.username
+	}
 	return clients
 }
 func (this *SocketServer) AddClient() chan<- *Client {
@@ -53,7 +56,13 @@ func (this *SocketServer) Listen() {
 	
 	onConnect := func(ws *websocket.Conn){
 		client := NewClient(ws, this)
-		this.addClient <- client
+		allClients, err := json.Marshal(this.AllClients())
+
+		log.Println("Marshalled clients", allClients)
+		if err != nil {
+			log.Fatal(err)
+		}
+		client.Write() <- &Message{"Current Users", allClients}
 		client.Listen()
 		defer ws.Close()
 	}
@@ -69,11 +78,23 @@ func (this *SocketServer) Listen() {
 			for _, msg := range this.messages {
 				cl.Write() <- msg
 			}
-			cl.Write() <- &Message{"Current Users", self.AllClients()}
-			this.sendAll <- &Message{"New User", cl}
 			log.Printf("Now.. there are %i clients.", len(this.clients))
+
+			newClient, err := json.Marshal(cl.username)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+
+			this.SendAll()<- &Message{"NEW_USER", newClient}
+			return
 		case cl := <- this.removeClient:
 			log.Println("Removing Client")
+
+			removeClient, err := json.Marshal(cl)
+			if err != nil {
+				log.Fatal(err)
+			}
 			for i := range this.clients {
 				if this.clients[i] == cl {
 					this.clients = append(this.clients[:i], this.clients[i+1:]...)
@@ -81,12 +102,12 @@ func (this *SocketServer) Listen() {
 				}						
 				
 				for _, client := range this.clients {
-					client.Write() <- &Message{"REMOVE_USER", cl}
+					client.Write()<- &Message{"REMOVE_USER", removeClient}
 				}
 			}
 		case msg := <- this.sendAll:
 			log.Println("sending all messages: ", msg)
-			if msg.Type == "New Message" {
+			if msg.Type == "NEW_MESSAGE" {
 				this.messages = append(this.messages, msg)
 			}
  			for _, client := range this.clients {
