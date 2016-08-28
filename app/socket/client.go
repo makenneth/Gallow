@@ -71,6 +71,13 @@ func (this *Client) ListenRead() {
 
         this.username = username
         this.server.AddClient() <- this
+
+        newClient, err := json.Marshal(username)
+        log.Println("newClient json, ", newClient)
+        if err != nil {
+          log.Fatal(err)
+        }
+        this.server.SendAll() <- &Message{"NEW_USER", newClient}
       } else {
         log.Println("Sending Message, ", msg)
         this.server.SendAll() <- &msg

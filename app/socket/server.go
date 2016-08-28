@@ -62,7 +62,7 @@ func (this *SocketServer) Listen() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		client.Write() <- &Message{"Current Users", allClients}
+		client.Write() <- &Message{"CURRENT_USERS", allClients}
 		client.Listen()
 		defer ws.Close()
 	}
@@ -79,19 +79,10 @@ func (this *SocketServer) Listen() {
 				cl.Write() <- msg
 			}
 			log.Printf("Now.. there are %i clients.", len(this.clients))
-
-			newClient, err := json.Marshal(cl.username)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-
-			this.SendAll()<- &Message{"NEW_USER", newClient}
-			return
 		case cl := <- this.removeClient:
 			log.Println("Removing Client")
 
-			removeClient, err := json.Marshal(cl)
+			removeClient, err := json.Marshal(cl.username)
 			if err != nil {
 				log.Fatal(err)
 			}

@@ -19,7 +19,6 @@ class GetUsername extends Component {
       username = "Anonymous"
       this.props.setCurrentUser("Anonymous");
     } else {
-      debugger;
       username = this.state.username;
       this.props.setCurrentUser(this.state.username);
     }

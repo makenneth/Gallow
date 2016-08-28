@@ -12,7 +12,6 @@ class Input extends Component {
       type: "NEW_MESSAGE",
       data: {"author": this.props.author, "body": this.state.body}
     };
-    debugger;
     this.props.ws.send(JSON.stringify(data));
     this.setState({body: ""})
   }

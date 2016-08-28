@@ -1,4 +1,4 @@
-import { NEW_MESSAGE, NEW_USER, CURRENT_USER } from "../constants/constants"
+import { NEW_MESSAGE, NEW_USER, CURRENT_USER, REMOVE_USER, SET_USERS } from "../constants/constants"
 
 export const setCurrentUser = (currentUser) => {
   return {
@@ -6,7 +6,12 @@ export const setCurrentUser = (currentUser) => {
     currentUser
   }
 }
-
+export const setUsers = (users) => {
+  return {
+    type: SET_USERS,
+    users
+  }
+}
 export const removeUser = (user) => {
   return {
     type: REMOVE_USER,

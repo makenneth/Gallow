@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux"
 import Messages from "./messages"
 import GetUsername from "./getUsername"
 import Input from "./input"
-import { addNewMessage } from "../actions/actions"
+import { addNewMessage, addNewUser, removeUser, setUsers } from "../actions/actions"
 
 const url = "ws://localhost:8080/chat"
 const ws = new WebSocket(url);
@@ -29,9 +29,11 @@ class Chat extends Component {
     }
   }
   handleNewMessage = (res) => {
-    debugger;
     let message = JSON.parse(res.data);
     switch (message.Type) {
+      case "CURRENT_USERS":
+        this.props.setUsers(message.Data);
+        break;
       case "NEW_MESSAGE":
         this.props.addNewMessage(message.Data);
         break;
@@ -51,7 +53,7 @@ class Chat extends Component {
   render(){
     console.log(this.props.currrentUser)
     return <div>
-      <div>{`${this.props.users.length} users are online.`}</div>
+      <div>{`${this.props.users.length} user` + `${this.props.users.length === 1 ? " is" : "s are"} online.`}</div>
       { this.getUsername() }
       <Messages messages={this.props.messages} />
       <Input ws={ws} author={this.props.currentUser.username}/>
@@ -69,6 +71,6 @@ const mapStateToProps = ({messages, currentUser, users}) => {
 
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({addNewMessage}, dispatch)
+  return bindActionCreators({addNewMessage, addNewUser, removeUser, setUsers}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);
