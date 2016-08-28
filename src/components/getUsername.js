@@ -1,4 +1,4 @@
-import React, { Component } from "React"
+import React, { Component } from "react"
 import { bindActionCreators } from "redux"
 import { connect } from "react-redux"
 import { setUser } from "../actions/actions"

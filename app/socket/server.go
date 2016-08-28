@@ -25,7 +25,11 @@ func NewServer(path string) *SocketServer {
 	return &SocketServer{path, clients, messages, sendAll, addClient, removeClient}
 }
 
-
+func (this *SocketServer) AllClients() []*Client {
+	clients := make([]*Client, len(this.clients))
+	copy(clients, this.clients)
+	return clients
+}
 func (this *SocketServer) AddClient() chan<- *Client {
 	return (chan<- *Client)(this.addClient)
 }
@@ -65,6 +69,8 @@ func (this *SocketServer) Listen() {
 			for _, msg := range this.messages {
 				cl.Write() <- msg
 			}
+			cl.Write() <- &Message{"Current Users", self.AllClients()}
+			this.sendAll <- &Message{"New User", cl}
 			log.Printf("Now.. there are %i clients.", len(this.clients))
 		case cl := <- this.removeClient:
 			log.Println("Removing Client")
@@ -73,11 +79,16 @@ func (this *SocketServer) Listen() {
 					this.clients = append(this.clients[:i], this.clients[i+1:]...)
 					break
 				}						
-			
+				
+				for _, client := range this.clients {
+					client.Write() <- &Message{"REMOVE_USER", cl}
+				}
 			}
 		case msg := <- this.sendAll:
 			log.Println("sending all messages: ", msg)
-			this.messages = append(this.messages, msg)
+			if msg.Type == "New Message" {
+				this.messages = append(this.messages, msg)
+			}
  			for _, client := range this.clients {
 				client.Write() <- msg
 			}

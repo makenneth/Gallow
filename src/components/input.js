@@ -8,7 +8,10 @@ class Input extends Component {
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    const data = {"author": this.props.author, "body": this.state.body};
+    const data = {
+      type: "NEW_MESSAGE",
+      data: {"author": this.props.author, "body": this.state.body}
+    };
     this.props.ws.send(JSON.stringify(data));
     this.setState({body: ""})
   }

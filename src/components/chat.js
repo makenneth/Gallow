@@ -1,4 +1,4 @@
-import React, { Component } from "React"
+import React, { Component } from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import Messages from "./messages"
@@ -22,14 +22,25 @@ class Chat extends Component {
     ws.onmessage = this.handleNewMessage;
   }
   getUsername(){
-    if (!this.props.user.username){
+    if (!this.props.currrentUser.username){
       return <GetUsername />
     } else {
       return ""
     }
   }
   handleNewMessage = (res) => {
-    this.props.addNewMessage(res.data);
+    let message = JSON.parse(res.data);
+    switch (message.Type) {
+      case "NEW_MESSAGE":
+        this.props.addNewMessage(message.Data);
+        break;
+      case "NEW_USER":
+        this.props.addNewUser(message.Data);
+        break;
+      case "REMOVE_USER":
+        this.props.removeUser(message.Data);
+        break;
+    }
   }
   loading() {
     if (this.state.loading){
@@ -37,20 +48,20 @@ class Chat extends Component {
     }
   }
   render(){
-    console.log(this.props.user)
+    console.log(this.props.currrentUser)
     return <div>
       { this.getUsername() }
       <Messages messages={this.props.messages} />
-      <Input ws={ws} author={this.props.user.username}/>
+      <Input ws={ws} author={this.props.currentUser.username}/>
       { this.loading() }
     </div>
   }
 }
 
 
-const mapStateToProps = ({messages, user}) => {
+const mapStateToProps = ({messages, currentUser, users}) => {
   return {
-    messages, user
+    messages, currentUser, users
   }
 }
 
