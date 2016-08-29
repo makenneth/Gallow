@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import Messages from "./messages"
-import GetUsername from "./getUsername"
+import GetUsername from "../getUsername"
 import Input from "./input"
 import { addNewMessage, addNewUser, removeUser, setUsers } from "../actions/actions"
 
@@ -12,7 +12,8 @@ class Chat extends Component {
   constructor(props){
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      bool: false
     }
   }
   componentWillMount() {
@@ -51,7 +52,6 @@ class Chat extends Component {
     }
   }
   render(){
-    console.log(this.props.currrentUser)
     return <div>
       <div>{`${this.props.users.length} user` + `${this.props.users.length === 1 ? " is" : "s are"} online.`}</div>
       { this.getUsername() }

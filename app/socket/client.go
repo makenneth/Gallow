@@ -4,8 +4,10 @@ import (
   "log"
   "golang.org/x/net/websocket"
   "encoding/json"
+  "net/http"
+  "io/ioutil"
 )
-
+const base = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160828T175443Z.b89b6aecd85a7988.9fdaa1ea4264cb8337e528211d627877c2e898d9"
 
 type Client struct {
   ws *websocket.Conn
@@ -56,7 +58,6 @@ func (this *Client) ListenRead() {
     default:
       var msg Message
       err := websocket.JSON.Receive(this.ws, &msg)
-
       if err != nil {
         this.done <- true
       }
@@ -99,4 +100,23 @@ func (this *Client) ListenWrite() {
       return
     }
   }
+}
+
+func Translate(client *http.Client, text, lang1, lang2 string) string {
+  url := base + "&text=" + text + "&lang=" + lang1 + "-" + lang2
+  log.Println(url)
+  req, err := http.NewRequest("POST", url, nil)
+  if err != nil {
+    panic(err)
+  }
+
+  resp, err := client.Do(req)
+
+  if err != nil {
+    panic(err)
+  }
+  defer resp.Body.Close()
+  log.Println("Response Status:", resp.Status)
+  body, _ := ioutil.ReadAll(resp.Body)
+  return string(body)
 }

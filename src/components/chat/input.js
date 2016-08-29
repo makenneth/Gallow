@@ -15,6 +15,7 @@ class Input extends Component {
     this.props.ws.send(JSON.stringify(data));
     this.setState({body: ""})
   }
+
   handleChange = (e) => {
     this.setState({ body: e.target.value })
   }
