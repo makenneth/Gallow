@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux"
 import Messages from "./messages"
 import GetUsername from "../getUsername"
 import Input from "./input"
-import { addNewMessage, addNewUser, removeUser, setUsers } from "../actions/actions"
+import { addNewMessage, addNewUser, removeUser, setUsers } from "../../actions/actions"
 
 const url = "ws://localhost:8080/chat"
 const ws = new WebSocket(url);

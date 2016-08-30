@@ -12,6 +12,7 @@
   min-height: 300px;
   max-height: 800px;
 }
+
 .msg-input-form {
   margin-top: 10px;
   padding: 10px;
@@ -86,4 +87,18 @@ h3 {
   top: 0;
   left: 0;
   opacity: 0.8;
+}
+
+
+
+.letter-box {
+  border: 2px solid black;
+  background-color: yellow;
+  color: black;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.used {
+  background-color: gray;
 }

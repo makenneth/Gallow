@@ -6,6 +6,13 @@ class Input extends Component {
       body: ""
     }
   }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.author !== this.props.author || this.state.body !== nextState.body){
+      return true;
+    } 
+
+    return false;
+  }
   handleSubmit = (e) => {
     e.preventDefault();
     const data = {

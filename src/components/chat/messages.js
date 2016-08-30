@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Component } from "react"
 
 const mapMessages = (messages = []) => {
   return messages.map(msg => {
@@ -10,14 +10,27 @@ const mapMessages = (messages = []) => {
     })
 }
 
-const messages = (props) => {
-  return (
-      <div className="message-list">
-        <ul>
-          { mapMessages(props.messages) }
-        </ul>
-      </div>
-    )
+class Messages extends Component {
+  constructor(props){
+    super(props);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.messages.length !== nextProps.messages.length){
+      return true;
+    } 
+
+    return false;
+  }
+  render(){
+    return (
+        <div className="message-list">
+          <ul>
+            { mapMessages(props.messages) }
+          </ul>
+        </div>
+      )
+  }
 }
 
-export default messages
+export default Messages
