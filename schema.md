@@ -4,10 +4,7 @@
 column name | data type | details
 ------------|-----------|----------------
 id          | integer   | not null, primary key 
-user_id1    | integer   | not null, foreign key, indexed
-user_id2    | integer   | not null, foreign key, indexed
-game state  | text      | 
-             (json_bytes)
+game_state  | text      | (jsonbytes)
 
 ## GameMessages(join table)
 column name | data type | details
@@ -28,8 +25,14 @@ column name | data type | details
 ------------|-----------|----------------
 id          | integer   | not null, primary key 
 OAuth Token?| string    | not null, indexed
+SessionToken| string    | not null
 Info?       | string    | not null, foreign key, indexed
 Wins        | integer   |
 Losses      | integer   |
 
-
+## UsersGames
+column name | data type | details
+------------|-----------|----------------
+id          | integer   | not null, primary key 
+user_id     | integer   | not null, foreign key, indexed
+game_id     | integer   | not null, foreign key, indexed 

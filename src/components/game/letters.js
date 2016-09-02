@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Component } from "react"
 import Letter from "./letter"
 
 const alphabets = ["a", "b", "c", "d", "e", 
@@ -18,13 +18,13 @@ class Letters extends Component {
 
     return false;
   }
-  
+
   render(){
     return (
-      <div>
+      <div className="alphabets-container cf">
         {
            alphabets.map(alphabet => {
-              let bool = this.props.usedLetters.indexOf(alphabet) > -1
+              let bool = this.props.usedLetters.indexOf(alphabet) > -1;
               return <Letter key={alphabet} used={bool} letter={alphabet} />
            }) 
          }

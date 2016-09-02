@@ -4,20 +4,21 @@ class GameInput extends Component {
   constructor(props) {
     super(props);
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.guesses.length !== nextProps.guesses.length){
-      return true;
-    }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.props.guesses.length !== nextProps.guesses.length){
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
   render(){
     return (
-      <div>
+      <div className="correct-container cf">
         { 
-          props.guess.split("").map(letter => {
-            return (<div key={letter} className="guess-letter">
-                {letter}
+          this.props.guesses.map((letter, i) => {
+            let style = "guess-letter" + ( letter ? "" : " empty");
+            return (<div key={letter + " " + i} className={style}>
+                { letter }
               </div>)
           })
         }

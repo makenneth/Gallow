@@ -18,12 +18,11 @@ export default (state = {
             newState[key] = ++state[key];
             break;
           case "guess":
-            newState[key] = state[key];
+            newState[key] = action.guess;
             break;
         }
       }
-
-      if (state.indexOf(action.guess) !== -1){
+      if (newState.guessed.indexOf(action.guess) === -1){
         newState.guessed.push(action.guess);
       }
 

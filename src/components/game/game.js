@@ -3,32 +3,48 @@ import { connect } from "react-redux"
 import Diagram from "./diagram"
 import GameInput from "./gameInput"
 import Letters from "./letters"
+import SetAnswer from "./setAnswer"
 
 class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      answer: "hello",
       correctGuesses: []
     }
   }
+
   componentWillReceiveProps(nextProps) {
-    let { answer, correctGuesses } = this.state;
-    if (answer.indexOf(nextProps.guess) > -1 && 
-      correctGuesses.indexOf(nextProps.guess) === -1){
-      correctGuesses.push(answer);
-      this.setState({ correctGuesses });
+    let correctGuesses = this.state.correctGuesses,
+        guess = nextProps.guess.guess,
+        answer = nextProps.answer;
+
+    let indexOfGuess = answer.indexOf(guess);
+    if (indexOfGuess > -1 && 
+      correctGuesses.indexOf(guess) === -1){
+      for (let i = 0; i < answer.length; i++) {
+        if (answer[i] === guess){
+          correctGuesses[i] = guess;
+        }
+      }
+    }
+
+    if (this.props.answer !== answer){
+      this.state.correctGuesses = [...Array(answer.length)];
     }
 
   }
-  // shouldComponentUpdate(nextProps, nextState) {
-    
-  // }
+
+  answerForm = () => {
+    if (!this.props.answer){
+      return <SetAnswer />
+    }
+  }
   render() {
     return (
       <div>
         <h1>Hangman</h1>
         <Diagram guessCount={this.props.guess.guessCount}/>
+        { this.answerForm() }
         <GameInput guesses={this.state.correctGuesses}/>
         <Letters usedLetters={this.props.guess.guessed}/>
       </div>
@@ -36,8 +52,8 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = ({ guess }) => {
-  return { guess };
+const mapStateToProps = ({ guess, answer }) => {
+  return { guess, answer };
 }
 
-export default connect(mapStateToProps)(Game)
+export default connect(mapStateToProps)(Game);

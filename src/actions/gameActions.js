@@ -1,4 +1,4 @@
-import { FETCHED_GAME, USER_GUESS, NEW_GAME } from "../constants/constants"
+import { FETCHED_GAME, USER_GUESS, NEW_GAME, SET_ANSWER } from "../constants/constants"
 
 
 export const fetchGame = (id) => {
@@ -16,3 +16,10 @@ export const userGuess = (guess) => {
     guess
   }
 } 
+
+export const setAnswer = (answer) => {
+  return {
+    type: SET_ANSWER,
+    answer
+  }
+}

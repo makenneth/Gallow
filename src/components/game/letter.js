@@ -4,9 +4,10 @@ import { bindActionCreators } from "redux"
 import { userGuess } from "../../actions/gameActions"
 
 const Letter = (props) => {
+  let className = "letter-box" + (props.used ? " used" : "");
   return (
-    <div onClick={props.userGuess} className={"letter-box" + props.used ? " used" : ""}>
-      { props.letter }
+    <div onClick={() => props.userGuess(props.letter)} className={className}>
+      <p>{ props.letter }</p>
     </div>
     )
 }
