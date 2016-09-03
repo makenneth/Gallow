@@ -10,8 +10,8 @@ const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
 
 const reducers = combineReducers({
   messages: messagesReducer,
-  currentUser: userReducer,
-  users: usersReducer,
+  user: userReducer,
+  // users: usersReducer,
   guess: guessReducer,
   answer: answerReducer
 })

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lost In Translation</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway:200,400,700" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/public/styles/reset.css">
+  <link rel="stylesheet" type="text/css" href="/public/styles/main.css">
+  <meta name="csrf_token" content="{{.CSRFToken}}" />
+</head>
+<body>
+  <form id="sign-up-form">
+    <h1>Sign Up</h1>
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      placeholder="Username"
+      />
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      />
+    <div>Already have an account? <a href="/login">Log In</a></div>
+    <div>Log in with Facebook</div>
+    <div>Log In With Google</div>
+    <input type="submit" value="Sign Up"/>
+  </form>
+</body>
+</html>

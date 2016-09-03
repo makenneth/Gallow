@@ -26,8 +26,9 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   expiration := time.Now().Add(30 * 24 * time.Hour)
   cookie := http.Cookie{Name: "sessiontokenLit", Value: token, Expires: expiration}
   http.SetCookie(w, &cookie)
-  w.WriteHeader(http.StatusOK)
-  // w.Write(json.Marshal(&UserData{newPlayerId, u.username}))
+  w.Header().Set("Content-Type", "application/json")
+  data, _ := json.Marshal(&UserData{newPlayerId, u.Username})
+  w.Write(data)
 }
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {

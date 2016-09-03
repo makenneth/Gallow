@@ -10,6 +10,8 @@ import (
   _ "github.com/lib/pq"
   "regexp"
   "./app/database"
+  "./app/token"
+  "http/template"
 )
 
 const (
@@ -24,6 +26,9 @@ type route struct {
 
 type RegexHandler struct {
   routes []*route
+}
+type TemplateData struct {
+  CSRFToken string
 }
 
 func (handler *RegexHandler) AddRoute(reg string, h func(http.ResponseWriter, *http.Request, []string)) {
@@ -42,12 +47,22 @@ func (handler *RegexHandler) HandleRoutes(w http.ResponseWriter, r *http.Request
   }
 }
 
-func ReactHandler(w http.ResponseWriter, r *http.Request) {
-  http.ServeFile(w, r, "index.html")
+func templateHandler(w http.ResponseWriter, r *http.Request){
+    t := template.ParseFiles("index.html")
+    d := TemplateData{CSRFToken: token.GenerateRandomToken(32)}
+    t.Execute(w, d)
 }
 
-func StaticFileHandler(w http.ResponseWriter, r *http.Request) {
-  http.ServeFile(w, r, r.URL.Path[1:])
+func LogInPageHandler(w http.ResponseWriter, r *http.Request){
+  t := template.ParseFiles("templates/logInPage.html")
+  d := TemplateData{CSRFToken: token.GenerateRandomToken(32)}
+  t.Execute(w, d)
+}
+
+func LogInPageHandler(w http.ResponseWriter, r *http.Request){
+  t := template.ParseFiles("templates/signUpPage.html")
+  d := TemplateData{CSRFToken: token.GenerateRandomToken(32)}
+  t.Execute(w, d)
 }
 
 func main() {
@@ -76,9 +91,9 @@ func main() {
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
   http.HandleFunc("/api/games", api.NewGameHandler)
-  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
-    http.ServeFile(w, r, "index.html")
-  })
+  http.HandleFunc("/login", LogInPageHandler)
+  http.HandleFunc("/signup", SignUpPageHandler)
+  http.HandleFunc("/", templateHandler)
   log.Println("Server listening at port 8080")
   log.Fatal(http.ListenAndServe(":8080", nil))
 }
