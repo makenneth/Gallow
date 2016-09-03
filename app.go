@@ -4,7 +4,7 @@ import (
   "fmt"
 	"log"
 	"net/http"
-	"./app/socket"
+	// "./app/socket"
   "./app/api"
   "database/sql"
   _ "github.com/lib/pq"
@@ -15,7 +15,7 @@ import (
 const (
   DB_USER = "postgres"
   DB_PASSWORD = "postgres"
-  DB_NAME = "test"
+  DB_NAME = "hangman"
 )
 type route struct {
   re *regexp.Regexp
@@ -51,7 +51,7 @@ func StaticFileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-  dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disabled",
+  dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
     DB_USER, DB_PASSWORD, DB_NAME)
   var err error
   database.DBConn, err = sql.Open("postgres", dbinfo)
@@ -59,23 +59,23 @@ func main() {
   log.Println("db connected...")
   defer database.DBConn.Close();
 
-	server := socket.NewServer("/chat")
-	go server.Listen()
+	// server := socket.NewServer("/chat")
+	// go server.Listen()
 
   http.HandleFunc("/public/", func(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, r.URL.Path[1:])
   })
 
   regHandler := new(RegexHandler)
-  regHandler.AddRoute("/games/([0-9]+)$", api.GameRoutesHandler)
-  regHandler.AddRoute("/games/([0-9]+)/messages$", api.MessageRoutesHandler)
+  regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
+  regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
 
-  http.HandleFunc("/user/games", api.GamesRouteHandler)
-  http.HandleFunc("/user/new", api.SignUpHandler)
-  http.HandleFunc("/user", api.UserHandler) 
-  http.HandleFunc("/session/new", api.LogInHandler)
-  http.HandleFunc("/session", api.LogOutHandler)
-  http.HandleFunc("/games", api.NewGameHandler)
+  http.HandleFunc("/api/user/games", api.GamesRouteHandler)
+  http.HandleFunc("/api/user/new", api.SignUpHandler)
+  http.HandleFunc("/api/user", api.UserHandler) 
+  http.HandleFunc("/api/session/new", api.LogInHandler)
+  http.HandleFunc("/api/session", api.LogOutHandler)
+  http.HandleFunc("/api/games", api.NewGameHandler)
   http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
     http.ServeFile(w, r, "index.html")
   })

@@ -1,49 +1,66 @@
-package api
-
+package api 
 import (
-  "net/http"
-  // "log"
   "../database"
   "golang.org/x/crypto/bcrypt"
-  "encoding/json"
-  "../token"
-  "time"
-)
+    "../token"
+  )
 type User struct {
+  Username string `json:"username"`
+  Password string `json:"password"`
+}
+
+type UserData struct {
+  id int
   username string
-  password string
-}
-func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
-
 }
 
-func SignUpHandler(w http.ResponseWriter, r *http.Request) {
-  decoder := json.NewDecoder(r.Body)
-  var u User
-  err := decoder.Decode(&u)
+func (u *User) checkPassword() error {
+  var (
+  passwordDigest string
+  sessionToken string
+  )
+  err := database.DBConn.QueryRow(`SELECT password_digest, session_token 
+    FROM users 
+    WHERE username = $1`, u.Username).Scan(&passwordDigest, &sessionToken)
 
-  token, _ := token.GenerateRandomToken(32)
-  password := []byte(u.password)
+  if err != nil {
+    return err
+  }
+
+  password, digest := []byte(u.Password), []byte(passwordDigest)
+  err = bcrypt.CompareHashAndPassword(digest, password)
+
+  return err
+}
+
+func (u *User) resetSessionToken() (string, error) {
+  newToken, _ := token.GenerateRandomToken(32)
+  _, err := database.DBConn.Query(`UPDATE users 
+    SET session_token = $1
+    WHERE id = $2`, newToken, u.Username)
+
+  return newToken, err
+}
+
+func (u *User) InsertUser() (string, int, error) { 
+
+  password := []byte(u.Password)
   digest, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
   if err != nil {
-    //status500
-    return
+    panic(err)
   }
+
+  token, err := token.GenerateRandomToken(32)
+  if err != nil {
+    panic(err)
+  }
+
   var newPlayerId int
   err = database.DBConn.QueryRow(`INSERT INTO 
     users (session_token, username, password_digest) 
-    FROM $1, $2, $3 returning id`, token, u.username, digest).Scan(&newPlayerId)
-  if err != nil {
-    return
-  }
+    VALUES ($1, $2, $3) returning id`, token, u.Username, digest).Scan(&newPlayerId)
 
-  expiration := time.Now().Add(30 * 24 * time.Hour)
-  cookie := http.Cookie{Name: "sessiontokenLit", Value: token, Expires: expiration}
+  return token, newPlayerId, err
+}  
 
-  http.SetCookie(w, &cookie)
-    //status ok
-}
 
-func UserHandler(w http.ResponseWriter, r *http.Request) {
-
-}

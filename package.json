@@ -4,12 +4,14 @@
   "description": "Chat app with Golang on the backend and React/Redux.",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.14.0",
     "babel-core": "^6.14.0",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.7.0",
-    "redux": "^3.5.2"
+    "redux": "^3.5.2",
+    "redux-promise": "^0.5.3"
   },
   "devDependencies": {
     "babel-cli": "^6.14.0",

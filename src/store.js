@@ -1,9 +1,12 @@
-import { combineReducers, createStore } from "redux"
+import { combineReducers, createStore, applyMiddleware } from "redux"
 import messagesReducer from "./reducers/messages_reducer"
 import userReducer from "./reducers/user_reducer"
 import usersReducer from "./reducers/users_reducer"
 import guessReducer from "./reducers/guess_reducer"
 import answerReducer from "./reducers/answer_reducer"
+import ReduxPromise from "redux-promise"
+const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
+
 
 const reducers = combineReducers({
   messages: messagesReducer,
@@ -13,6 +16,6 @@ const reducers = combineReducers({
   answer: answerReducer
 })
 
-const store = createStore(reducers);
+const store = createStoreWithMiddleware(reducers);
 
 export default store
