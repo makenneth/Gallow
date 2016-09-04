@@ -20,4 +20,4 @@ Online two-players Hangman with Golang on the backend and React/Redux.
 
 ## TODO
 - [ ] CSRF
-- [ ] Regular Auth (Separate from React)
+- [x] Regular Auth (Separate from React)

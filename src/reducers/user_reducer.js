@@ -12,14 +12,16 @@
 
 // export default userReducer
 
-import { LOGGED_IN } from "../constants/constants"
+import { LOGGED_IN, LOGGED_OUT } from "../constants/constants"
 
 export default (state = null, action) => {
   switch (action.Type){
     case LOGGED_IN:
       debugger;
-      user = JSON.parse(action.payload.config.data);
+      let user = action.payload.data;
       return user;
+    case LOGGED_OUT:
+      return null;
   }
 
   return state

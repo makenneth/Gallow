@@ -5,6 +5,7 @@
   <link href="https://fonts.googleapis.com/css?family=Raleway:200,400,700" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/public/styles/reset.css">
   <link rel="stylesheet" type="text/css" href="/public/styles/main.css">
+    <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
   <meta name="csrf_token" content="{{.CSRFToken}}" />
 </head>
 <body>
@@ -27,5 +28,28 @@
     <div>Log In With Google</div>
     <input type="submit" value="Sign Up"/>
   </form>
+
+  <script>
+    $("#sign-up-form").on("submit", function(e) {
+      e.preventDefault();
+      let data = {
+        username: $("#username").val(),
+        password: $("#password").val()
+      }
+      $.ajax({
+        method: "POST",
+        url: "/api/user/new",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function(data){
+          console.log(data);
+          window.location.replace("/");
+        },
+        err: function(err) {
+          console.log(err);
+        }
+      })
+    })
+  </script>
 </body>
 </html>

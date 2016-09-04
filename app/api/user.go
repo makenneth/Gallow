@@ -9,15 +9,53 @@ type User struct {
   Password string `json:"password"`
 }
 
-type UserData struct {
-  id int
-  username string
+type CurrentUser struct {
+  Id int
+  Username string
+}
+var currentUser CurrentUser;
+
+func SetCurrentUser(u CurrentUser){
+  currentUser = u
+}
+
+func GetCurrentUser(userToken string) CurrentUser {
+  if currentUser != (CurrentUser{}){
+    return currentUser
+  }
+  bool := FindCurrentUser(userToken)
+
+  if !bool {
+    return (CurrentUser{})
+  }
+  return currentUser
+}
+func FindCurrentUser(userToken string) bool {
+  var (
+    id int
+    username string
+    )
+  err := database.DBConn.QueryRow(`SELECT id, username
+    FROM users
+    WHERE session_token = $1`, userToken).Scan(&id, &username)
+  if id == 0 || err != nil {
+    return false
+  }
+  newToken, _ := token.GenerateRandomToken(32)
+  _, err = database.DBConn.Query(`UPDATE users (session_token)
+    VALUES ($1)
+    WHERE id = $2`, newToken, id)
+  if err != nil {
+    return false
+  }
+  SetCurrentUser(CurrentUser{id, username});
+  return true
 }
 
 func (u *User) checkPassword() error {
   var (
-  passwordDigest string
-  sessionToken string
+    passwordDigest string
+    sessionToken string
   )
   err := database.DBConn.QueryRow(`SELECT password_digest, session_token 
     FROM users 
@@ -33,13 +71,14 @@ func (u *User) checkPassword() error {
   return err
 }
 
-func (u *User) resetSessionToken() (string, error) {
+func (u *User) resetSessionToken() (int, string, error) {
   newToken, _ := token.GenerateRandomToken(32)
-  _, err := database.DBConn.Query(`UPDATE users 
+  var playerId int
+  err := database.DBConn.QueryRow(`UPDATE users 
     SET session_token = $1
-    WHERE id = $2`, newToken, u.Username)
+    WHERE username = $2 returning id`, newToken, u.Username).Scan(&playerId)
 
-  return newToken, err
+  return playerId, newToken, err
 }
 
 func (u *User) InsertUser() (string, int, error) { 

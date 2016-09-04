@@ -11,7 +11,7 @@ import (
   "regexp"
   "./app/database"
   "./app/token"
-  "http/template"
+  "html/template"
 )
 
 const (
@@ -48,20 +48,48 @@ func (handler *RegexHandler) HandleRoutes(w http.ResponseWriter, r *http.Request
 }
 
 func templateHandler(w http.ResponseWriter, r *http.Request){
-    t := template.ParseFiles("index.html")
-    d := TemplateData{CSRFToken: token.GenerateRandomToken(32)}
-    t.Execute(w, d)
-}
-
-func LogInPageHandler(w http.ResponseWriter, r *http.Request){
-  t := template.ParseFiles("templates/logInPage.html")
-  d := TemplateData{CSRFToken: token.GenerateRandomToken(32)}
+  cookie, err := r.Cookie("sessiontokenLit")
+  if err != nil || cookie.String() == "" {
+    http.Redirect(w, r, "/login", http.StatusSeeOther)
+    return
+  }
+    
+  if user := api.GetCurrentUser(cookie.Value); user == (api.CurrentUser{})  {
+    http.Redirect(w, r, "/login", http.StatusSeeOther)
+    return
+  }
+  
+  t, _ := template.ParseFiles("index.html")
+  csrf_token, _ := token.GenerateRandomToken(32)
+  d := TemplateData{CSRFToken: csrf_token}
   t.Execute(w, d)
 }
 
 func LogInPageHandler(w http.ResponseWriter, r *http.Request){
-  t := template.ParseFiles("templates/signUpPage.html")
-  d := TemplateData{CSRFToken: token.GenerateRandomToken(32)}
+  cookie, _ := r.Cookie("sessiontokenLit")
+  if cookie.String() != "" {
+    user := api.GetCurrentUser(cookie.Value)
+    if user != (api.CurrentUser{}) {
+      http.Redirect(w, r, "/", http.StatusSeeOther)
+    }
+  }
+  t, _ := template.ParseFiles("templates/logInPage.html")
+  csrf_token, _ := token.GenerateRandomToken(32)
+  d := TemplateData{CSRFToken: csrf_token}
+  t.Execute(w, d)
+}
+
+func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
+  cookie, _ := r.Cookie("sessiontokenLit")
+  if cookie.String() != "" {
+    
+    if user := api.GetCurrentUser(cookie.Value); user != (api.CurrentUser{}){
+      http.Redirect(w, r, "/", http.StatusSeeOther)
+    }
+  }
+  t, _ := template.ParseFiles("templates/signUpPage.html")
+  csrf_token, _ := token.GenerateRandomToken(32)
+  d := TemplateData{CSRFToken: csrf_token}
   t.Execute(w, d)
 }
 
@@ -88,6 +116,7 @@ func main() {
   http.HandleFunc("/api/user/games", api.GamesRouteHandler)
   http.HandleFunc("/api/user/new", api.SignUpHandler)
   http.HandleFunc("/api/user", api.UserHandler) 
+  http.HandleFunc("/api/user/current", api.CurrentUserHandler) 
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
   http.HandleFunc("/api/games", api.NewGameHandler)

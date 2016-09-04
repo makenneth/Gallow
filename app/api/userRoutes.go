@@ -7,13 +7,31 @@ import (
   "time"
   "io/ioutil"
 )
+type Error struct {
+  Message string
+}
 
 func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
 
+func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
+  cookie, _ := r.Cookie("sessiontokenLit")
 
+  if cookie.String() == "" {
+    data, _ := json.Marshal(&Error{"No such User"})
+    w.WriteHeader(http.StatusNotFound)
+    w.Write(data)
+  } else {
+    user := GetCurrentUser(cookie.Value)  
+    log.Println("token: ", cookie.Value)
+    data, _ := json.Marshal(user)
+    log.Println(user)
+    w.Write(data)
+  }
+
+}
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   body, _ := ioutil.ReadAll(r.Body)
   var u User
@@ -27,7 +45,9 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   cookie := http.Cookie{Name: "sessiontokenLit", Value: token, Expires: expiration}
   http.SetCookie(w, &cookie)
   w.Header().Set("Content-Type", "application/json")
-  data, _ := json.Marshal(&UserData{newPlayerId, u.Username})
+  cu := CurrentUser{newPlayerId, u.Username}
+  SetCurrentUser(cu)
+  data, _ := json.Marshal(&cu)
   w.Write(data)
 }
 

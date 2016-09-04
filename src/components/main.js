@@ -1,19 +1,38 @@
 import React, { Component } from "react"
 import NavBar from "./navBar"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
+import { getCurrentUser } from "../actions/userActions"
 class Main extends Component {
   constructor(props){
     super(props);
   }
-
+  componentDidMount() {
+     this.props.getCurrentUser().then(() => {
+      debugger;
+     }).catch(err => {
+      debugger;
+     });
+  }
   render() {
+    console.log(this.props.user)
     return (
       <div>
         <h2>Gallows</h2>
-        <NavBar />
-        { this.props.children }
+        <NavBar user={this.props.user}/>
+        { 
+          React.Children.map(this.props.children, (child) => {
+            React.cloneElement(child, {
+              user: this.props.user
+            })
+          }) 
+        }
       </div>
       )
   }
 }
+const mapStateToProps = ({ user }) => {
+  return { user }
+}
 
-export default Main
+export default connect(mapStateToProps, { getCurrentUser })(Main)
