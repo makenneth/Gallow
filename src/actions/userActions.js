@@ -1,7 +1,9 @@
 import { LOGGED_IN, LOGGED_OUT } from "../constants/constants"
 import axios from "axios"
+
+
 export const getCurrentUser = () => {
-  debugger
+  debugger;
   const req = axios.get("/api/user/current")
 
   return {

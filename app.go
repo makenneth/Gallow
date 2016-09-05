@@ -49,12 +49,14 @@ func (handler *RegexHandler) HandleRoutes(w http.ResponseWriter, r *http.Request
 
 func templateHandler(w http.ResponseWriter, r *http.Request){
   cookie, err := r.Cookie("sessiontokenLit")
+  log.Println(cookie)
   if err != nil || cookie.String() == "" {
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
-    
-  if user := api.GetCurrentUser(cookie.Value); user == (api.CurrentUser{})  {
+  user := api.GetCurrentUser(cookie.Value)
+  log.Println(user)
+  if user == (api.CurrentUser{})  {
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }

@@ -5,6 +5,7 @@ import usersReducer from "./reducers/users_reducer"
 import guessReducer from "./reducers/guess_reducer"
 import answerReducer from "./reducers/answer_reducer"
 import ReduxPromise from "redux-promise"
+
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
 
 

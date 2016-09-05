@@ -8,11 +8,11 @@ class Main extends Component {
     super(props);
   }
   componentDidMount() {
-     this.props.getCurrentUser().then(() => {
+    this.props.getCurrentUser().then(data => {
       debugger;
-     }).catch(err => {
+    }).catch(err => {
       debugger;
-     });
+    });
   }
   render() {
     console.log(this.props.user)
@@ -35,4 +35,7 @@ const mapStateToProps = ({ user }) => {
   return { user }
 }
 
-export default connect(mapStateToProps, { getCurrentUser })(Main)
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ getCurrentUser }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Main)

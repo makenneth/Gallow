@@ -1,0 +1,111 @@
+form {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  border: 1px solid #E0E0E0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  align-items: center;
+}
+input {
+  padding: 5px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  width: 230px;
+  height: 25px;
+}
+input[type="submit"] {
+  margin-top: 10px;
+  margin-bottom: 0;
+  cursor: pointer;
+  font-size: 16px;
+  border: 1px solid transparent;
+  background-color: #f5321d;
+  color: white;
+  width: 240px;
+  height: 40px;
+}
+
+
+.or {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+.redirect {
+  font-size: 12px;
+}
+.facebook-icon, .google-icon {
+  cursor: pointer;
+  width: 230px;
+  height: 40px;
+  font-size: 16px;
+  align-items: center;
+  padding-right: 10px;
+  padding-left: 5px;
+  justify-content: space-between;
+  color: white;
+  display: flex;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.facebook-icon {
+  background-color: #3a5b9b;
+}
+.google-icon {
+  background-color: #f5321d;
+}
+.__facebook-logo {
+  background-size: cover;
+  width: 35px;
+  height: 35px;
+}
+.__google-logo {
+  background-size: cover;
+  width: 30px;
+  height: 30px;
+}
+.__google-logo {
+  background-image: url("/public/images/google-logo.png");
+}
+.__facebook-logo {
+  background-image: url("/public/images/fb-logo.png");
+}
+
+.nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  top: -35px;
+  color: white;
+}
+#login {
+  background-color: #009688;
+}
+#signup {
+  background-color: #BF360C;
+}
+.active, .link {
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+.active {
+  background-color: #607D8B;
+
+}
+.link {
+  background-color: #E0E0E0;
+}
+.link a {
+  color: black;
+}

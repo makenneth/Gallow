@@ -33,8 +33,9 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
     id, sessionToken, err := u.resetSessionToken()
     checkErr(err)
     expiration := time.Now().Add(30 * 24 * time.Hour)
-    cookie := http.Cookie{Name: "sessiontokenLit", Value: sessionToken, Expires: expiration}
-    http.SetCookie(w, &cookie)
+    cookie := &http.Cookie{Name: "sessiontokenLit", Value: sessionToken, Expires: expiration, Path: "/"}
+    log.Println("setting cookie: ", cookie)
+    http.SetCookie(w, cookie)
     w.Header().Set("Content-Type", "application/json")
     cu := CurrentUser{id, u.Username}
     SetCurrentUser(cu)
@@ -61,7 +62,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
         (session_token) VALUES $1
         WHERE session_token = $2`, newToken, cookie.Value)
       currentUser = (CurrentUser{})
-      cookie = &http.Cookie{Name: "sessiontokenLit", Value: "", MaxAge: -1 }
+      cookie = &http.Cookie{Name: "sessiontokenLit", Value: "", MaxAge: -1, Path: "/" }
       http.SetCookie(w, cookie)
     }
     http.Redirect(w, r, "/login", http.StatusSeeOther)

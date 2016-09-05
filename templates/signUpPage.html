@@ -4,29 +4,31 @@
   <title>Lost In Translation</title>
   <link href="https://fonts.googleapis.com/css?family=Raleway:200,400,700" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/public/styles/reset.css">
-  <link rel="stylesheet" type="text/css" href="/public/styles/main.css">
+  <link rel="stylesheet" type="text/css" href="/public/styles/userform.css">
     <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
   <meta name="csrf_token" content="{{.CSRFToken}}" />
 </head>
 <body>
   <form id="sign-up-form">
-    <h1>Sign Up</h1>
-    <label for="username">Username</label>
+    <div class="nav">
+      <div class="active">Sign Up</div>
+      <div class="link"><a href="/login">Log In</a></div>
+    </div>
     <input
       type="text"
       id="username"
       placeholder="Username"
       />
-    <label for="password">Password</label>
     <input
       type="password"
       id="password"
       placeholder="Password"
       />
-    <div>Already have an account? <a href="/login">Log In</a></div>
-    <div>Log in with Facebook</div>
-    <div>Log In With Google</div>
-    <input type="submit" value="Sign Up"/>
+
+    <input type="submit" value="Sign Up" id="signup"/>
+    <div class="or">OR</div>
+    <div class="facebook-icon"><div class="__facebook-logo"></div><span>Log in with Facebook</span></div>
+    <div class="google-icon"><div class="__google-logo"></div><span>Log In With Google</span></div>
   </form>
 
   <script>
