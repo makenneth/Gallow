@@ -1,9 +1,8 @@
 import { LOGGED_IN, LOGGED_OUT } from "../constants/constants"
 
 const UserReducer = (state = null, action) => {
-  switch (action.Type){
+  switch (action.type){
     case LOGGED_IN:
-      debugger;
       let user = action.payload.data;
       return user;
     case LOGGED_OUT:

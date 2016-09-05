@@ -59,14 +59,15 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
     if cookie.String() != "" {
       newToken, _ := token.GenerateRandomToken(32)  
       _, _ = database.DBConn.Query(`UPDATE users
-        (session_token) VALUES $1
+        SET session_token = $1
         WHERE session_token = $2`, newToken, cookie.Value)
       currentUser = (CurrentUser{})
       cookie = &http.Cookie{Name: "sessiontokenLit", Value: "", MaxAge: -1, Path: "/" }
       http.SetCookie(w, cookie)
     }
-    http.Redirect(w, r, "/login", http.StatusSeeOther)
-    break;
+    // log.Println("logout redirecting...")
+    // http.Redirect(w, r, "/login", http.StatusSeeOther)
+    return;
   default: 
     log.Println("does not match any routes");
     break;

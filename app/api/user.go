@@ -1,5 +1,8 @@
 package api 
 import (
+  "log"
+  "net/http"
+  "time"
   "../database"
   "golang.org/x/crypto/bcrypt"
     "../token"
@@ -19,32 +22,33 @@ func SetCurrentUser(u CurrentUser){
   currentUser = u
 }
 
-func GetCurrentUser(userToken string) CurrentUser {
+func GetCurrentUser(w http.ResponseWriter, userToken string) CurrentUser {
   if currentUser != (CurrentUser{}){
     return currentUser
   }
-  bool := FindCurrentUser(userToken)
-
+  bool := FindCurrentUser(w, userToken)
   if !bool {
     return (CurrentUser{})
   }
   return currentUser
 }
-func FindCurrentUser(userToken string) bool {
+func FindCurrentUser(w http.ResponseWriter, userToken string) bool {
   var (
     id int
     username string
     )
-  err := database.DBConn.QueryRow(`SELECT id, username
-    FROM users
-    WHERE session_token = $1`, userToken).Scan(&id, &username)
+  newToken, _ := token.GenerateRandomToken(32)
+  err := database.DBConn.QueryRow(`UPDATE users
+    SET session_token = $1
+    WHERE session_token = $2 
+    returning id, username`, newToken, userToken).Scan(&id, &username)
+  log.Println(err)
   if id == 0 || err != nil {
     return false
   }
-  newToken, _ := token.GenerateRandomToken(32)
-  _, err = database.DBConn.Query(`UPDATE users (session_token)
-    VALUES ($1)
-    WHERE id = $2`, newToken, id)
+  expiration := time.Now().Add(30 * 24 * time.Hour)
+  cookie := &http.Cookie{Name: "sessiontokenLit", Value: newToken, Expires: expiration, Path: "/"}
+  http.SetCookie(w, cookie)
   if err != nil {
     return false
   }

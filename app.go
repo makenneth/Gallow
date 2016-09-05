@@ -54,7 +54,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request){
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
-  user := api.GetCurrentUser(cookie.Value)
+  user := api.GetCurrentUser(w, cookie.Value)
   log.Println(user)
   if user == (api.CurrentUser{})  {
     http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -70,9 +70,9 @@ func templateHandler(w http.ResponseWriter, r *http.Request){
 func LogInPageHandler(w http.ResponseWriter, r *http.Request){
   cookie, _ := r.Cookie("sessiontokenLit")
   if cookie.String() != "" {
-    user := api.GetCurrentUser(cookie.Value)
-    if user != (api.CurrentUser{}) {
+    if user := api.GetCurrentUser(w, cookie.Value); user != (api.CurrentUser{}) {
       http.Redirect(w, r, "/", http.StatusSeeOther)
+      return
     }
   }
   t, _ := template.ParseFiles("templates/logInPage.html")
@@ -85,7 +85,7 @@ func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
   cookie, _ := r.Cookie("sessiontokenLit")
   if cookie.String() != "" {
     
-    if user := api.GetCurrentUser(cookie.Value); user != (api.CurrentUser{}){
+    if user := api.GetCurrentUser(w, cookie.Value); user != (api.CurrentUser{}){
       http.Redirect(w, r, "/", http.StatusSeeOther)
     }
   }

@@ -24,7 +24,7 @@ func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(http.StatusNotFound)
     w.Write(data)
   } else {
-    user := GetCurrentUser(cookie.Value)  
+    user := GetCurrentUser(w, cookie.Value)  
     log.Println("token: ", cookie.Value)
     data, _ := json.Marshal(user)
     log.Println(user)
