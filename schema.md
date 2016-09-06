@@ -36,3 +36,12 @@ column name | data type | details
 id          | integer   | not null, primary key 
 user_id     | integer   | not null, foreign key, indexed
 game_id     | integer   | not null, foreign key, indexed 
+
+## Inter-Players Record  (how to implement?)
+column name | data type | details
+------------|-----------|------------------
+id          | integer   | not null, primary key
+user_id1    | integer   | not null, foreign key, indexed
+user_id2    | integer   | not null, foreign key, indexed
+win         | integer   | default 0
+loss        | integer   | default 0
