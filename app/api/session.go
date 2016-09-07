@@ -15,7 +15,7 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
   case "POST":
     body, err := ioutil.ReadAll(r.Body)
     checkErr(err)
-    var u User
+    var u UserData
     err = json.Unmarshal(body, &u)
     checkErr(err)
 
@@ -37,7 +37,7 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
     log.Println("setting cookie: ", cookie)
     http.SetCookie(w, cookie)
     w.Header().Set("Content-Type", "application/json")
-    cu := CurrentUser{id, u.Username}
+    cu := User{id, u.Username}
     SetCurrentUser(cu)
     data, _ := json.Marshal(&cu)
     w.Write(data)
@@ -61,7 +61,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
       _, _ = database.DBConn.Query(`UPDATE users
         SET session_token = $1
         WHERE session_token = $2`, newToken, cookie.Value)
-      currentUser = (CurrentUser{})
+      currentUser = (User{})
       cookie = &http.Cookie{Name: "sessiontokenLit", Value: "", MaxAge: -1, Path: "/" }
       http.SetCookie(w, cookie)
     }

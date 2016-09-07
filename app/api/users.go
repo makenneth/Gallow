@@ -1,39 +1,54 @@
-package main
+package api
 
 import (
+  "encoding/json"
   "net/http"
   "log"
   "../database"
 )
-type UserQuery struct {
-  id int
-  username string
-}
 
-func UsersFindHandler(w http.ResponseWriter, r *http.Request) {
-  searchQuery := r.URL.Query().Get("name")
-  users := make([]UserQuery)
-  
-  if searchQuery != "" {
-    var (
-      id int
-      username string 
-    )
 
-    rows, err := database.DBConn.query(`
-      SELECT id, username 
-      FROM users
-      WHERE username LIKE '%' || $1 || '%'`, searchQuery) 
+func UsersQueryHandler(w http.ResponseWriter, r *http.Request) {
+  switch r.Method {
+  case "GET":
+    searchQuery := r.URL.Query().Get("name")
+    log.Println("query: ", searchQuery)
+    users := make([]User, 0)
 
-    for rows.next() {
-      err := rows.Scan(&id, &username)
+    if searchQuery != "" {
+      var (
+        id int
+        username string 
+      )
+
+      rows, err := database.DBConn.Query(`
+        SELECT id, username 
+        FROM users
+        WHERE username LIKE '%' || $1 || '%'`, searchQuery) 
       if err != nil {
-        log.Fatal(err)
+        log.Println(err)
+        break;
       }
-      users.append(users, &UserQuery{id, username})
+      for rows.Next() {
+        err := rows.Scan(&id, &username)
+        if err != nil {
+          log.Println(err)
+          break;
+        }
+        users = append(users, User{id, username})
+      }
     }
+    
+    data, err := json.Marshal(users)
+    if err != nil {
+      log.Fatal(err)
+    }
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(data);
+    break;
+  default:
+    log.Println("invalid routes");
+    break;
   }
 
-  data, err := json.Marshal(users)
-  w.Write(data)
 }

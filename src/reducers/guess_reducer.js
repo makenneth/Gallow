@@ -5,8 +5,6 @@ export default (state = {
   guess: ""
 }, action) => {
   switch(action.type){
-    // case FETCHED_GAME:
-    //   return action.game.guesses;
     case USER_GUESS:
       let newState = {};
       for (let key in state) {

@@ -7,28 +7,28 @@ import (
   "golang.org/x/crypto/bcrypt"
     "../token"
   )
-type User struct {
+type UserData struct {
   Username string `json:"username"`
   Password string `json:"password"`
 }
 
-type CurrentUser struct {
-  Id int
-  Username string
+type User struct {
+  Id int `json:"id"`
+  Username string `json:"username"`
 }
-var currentUser CurrentUser;
+var currentUser User;
 
-func SetCurrentUser(u CurrentUser){
+func SetCurrentUser(u User){
   currentUser = u
 }
 
-func GetCurrentUser(w http.ResponseWriter, userToken string) CurrentUser {
-  if currentUser != (CurrentUser{}){
+func GetCurrentUser(w http.ResponseWriter, userToken string) User {
+  if currentUser != (User{}){
     return currentUser
   }
   bool := FindCurrentUser(w, userToken)
   if !bool {
-    return (CurrentUser{})
+    return (User{})
   }
   return currentUser
 }
@@ -52,11 +52,11 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) bool {
   if err != nil {
     return false
   }
-  SetCurrentUser(CurrentUser{id, username});
+  SetCurrentUser(User{id, username});
   return true
 }
 
-func (u *User) checkPassword() error {
+func (u *UserData) checkPassword() error {
   var (
     passwordDigest string
     sessionToken string
@@ -75,7 +75,7 @@ func (u *User) checkPassword() error {
   return err
 }
 
-func (u *User) resetSessionToken() (int, string, error) {
+func (u *UserData) resetSessionToken() (int, string, error) {
   newToken, _ := token.GenerateRandomToken(32)
   var playerId int
   err := database.DBConn.QueryRow(`UPDATE users 
@@ -85,7 +85,7 @@ func (u *User) resetSessionToken() (int, string, error) {
   return playerId, newToken, err
 }
 
-func (u *User) InsertUser() (string, int, error) { 
+func (u *UserData) InsertUser() (string, int, error) { 
 
   password := []byte(u.Password)
   digest, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)

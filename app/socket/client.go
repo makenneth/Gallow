@@ -12,6 +12,8 @@ type Client struct {
   done chan bool
   msgCh chan *Message
   username string
+  //ok so it may be better to use a map to store the clients
+  //so it can be quickly accessed
 }
 
 const buffSize = 1000

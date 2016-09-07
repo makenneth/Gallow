@@ -48,13 +48,7 @@ class Main extends Component {
       <div>
         <h2>Gallows</h2>
         <NavBar user={this.props.user} logOut={this.logOut}/>
-        { 
-          React.Children.map(this.props.children, (child) => {
-            React.cloneElement(child, {
-              user: this.props.user
-            })
-          }) 
-        }
+        { this.props.children }
         { this.loadingScreen() }
       </div>
       )

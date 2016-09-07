@@ -7,7 +7,8 @@ class NavBar extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if ((!this.props.user && nextProps.user) || 
-        (this.props.user && this.props.user.Username !== nextProps.user.Username)){
+        (this.props.user && this.props.user.username !== nextProps.user.username)){
+      debugger;
       return true
     } 
 
@@ -21,7 +22,7 @@ class NavBar extends Component {
       <div className="navbar">
         <ul>
           <li><Link to="/">Home</Link></li>
-          <li>{ "Welcome, " + this.props.user.Username }</li>
+          <li>{ "Welcome, " + this.props.user.username }</li>
           <li><Link to="/games/new">Start a new Game</Link></li>
           <li><a onClick={this.props.logOut}>Log Out</a></li>
         </ul>

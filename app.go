@@ -49,14 +49,13 @@ func (handler *RegexHandler) HandleRoutes(w http.ResponseWriter, r *http.Request
 
 func templateHandler(w http.ResponseWriter, r *http.Request){
   cookie, err := r.Cookie("sessiontokenLit")
-  log.Println(cookie)
   if err != nil || cookie.String() == "" {
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
   user := api.GetCurrentUser(w, cookie.Value)
   log.Println(user)
-  if user == (api.CurrentUser{})  {
+  if user == (api.User{})  {
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
@@ -70,7 +69,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request){
 func LogInPageHandler(w http.ResponseWriter, r *http.Request){
   cookie, _ := r.Cookie("sessiontokenLit")
   if cookie.String() != "" {
-    if user := api.GetCurrentUser(w, cookie.Value); user != (api.CurrentUser{}) {
+    if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}) {
       http.Redirect(w, r, "/", http.StatusSeeOther)
       return
     }
@@ -85,7 +84,7 @@ func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
   cookie, _ := r.Cookie("sessiontokenLit")
   if cookie.String() != "" {
     
-    if user := api.GetCurrentUser(w, cookie.Value); user != (api.CurrentUser{}){
+    if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}){
       http.Redirect(w, r, "/", http.StatusSeeOther)
     }
   }
@@ -122,6 +121,7 @@ func main() {
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
   http.HandleFunc("/api/games", api.NewGameHandler)
+  http.HandleFunc("/api/users", api.UsersQueryHandler) 
   http.HandleFunc("/login", LogInPageHandler)
   http.HandleFunc("/signup", SignUpPageHandler)
   http.HandleFunc("/", templateHandler)

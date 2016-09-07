@@ -2,13 +2,22 @@ import { FETCHED_GAME,
          USER_GUESS, 
          NEW_GAME, 
          SET_ANSWER,
-         FETCHED_USERS } from "../constants/constants"
-
+         FETCHED_USERS,
+         CREATED_GAME } from "../constants/constants"
+import axios from "axios"
 export const fetchUsers = (string) => {
-  const req = axios.get(`/api/users/?name=${string}`)
+  const req = axios.get(`/api/users?name=${string}`)
   //this function should be implemented with elasticsearch
-  retunr {
+  return {
     type: FETCHED_USERS,
+    payload: req
+  }
+}
+
+export const createGame = (string) => {
+  const req = axios.post("/api/game/new")
+  return {
+    type: CREATED_GAME,
     payload: req
   }
 }

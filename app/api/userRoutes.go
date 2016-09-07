@@ -34,7 +34,7 @@ func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   body, _ := ioutil.ReadAll(r.Body)
-  var u User
+  var u UserData
   err := json.Unmarshal(body, &u)
   checkErr(err)
 
@@ -46,7 +46,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   log.Println("setting cookie: ", cookie)
   http.SetCookie(w, cookie)
   w.Header().Set("Content-Type", "application/json")
-  cu := CurrentUser{newPlayerId, u.Username}
+  cu := User{newPlayerId, u.Username}
   SetCurrentUser(cu)
   data, _ := json.Marshal(&cu)
   w.Write(data)

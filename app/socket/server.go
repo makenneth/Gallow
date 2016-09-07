@@ -9,7 +9,7 @@ import (
 
 type SocketServer struct {
 	path string
-	clients []*Client
+	clients map[string]*Client
 	messages []*Message
 	sendAll chan *Message
 	addClient chan *Client
@@ -17,7 +17,7 @@ type SocketServer struct {
 }
 
 func NewServer(path string) *SocketServer {
-	clients := make([]*Client, 0)
+	clients := make(map[string]*Client, 0)
 	messages := make([]*Message, 0)
 	addClient := make(chan *Client)
 	removeClient := make(chan *Client)
@@ -28,8 +28,10 @@ func NewServer(path string) *SocketServer {
 
 func (this *SocketServer) AllClients() []string {
 	clients := make([]string, len(this.clients))
-	for i, cl := range this.clients {
+	i := 0
+	for key, cl := range this.clients {
 		clients[i] = cl.username
+		i++
 	}
 	return clients
 }

@@ -31,18 +31,18 @@ class Chat extends Component {
   }
   handleNewMessage = (res) => {
     let message = JSON.parse(res.data);
-    switch (message.Type) {
+    switch (message.type) {
       case "CURRENT_USERS":
-        this.props.setUsers(message.Data);
+        this.props.setUsers(message.data);
         break;
       case "NEW_MESSAGE":
-        this.props.addNewMessage(message.Data);
+        this.props.addNewMessage(message.data);
         break;
       case "NEW_USER":
-        this.props.addNewUser(message.Data);
+        this.props.addNewUser(message.data);
         break;
       case "REMOVE_USER":
-        this.props.removeUser(message.Data);
+        this.props.removeUser(message.data);
         break;
     }
   }
