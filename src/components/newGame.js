@@ -1,14 +1,14 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
-import { fetchUsers, createGame } from "../../actions/gameActions"
+import { fetchUsers, createGame } from "../actions/gameActions"
 
 class NewGame extends Component {
   constructor(props, context){
     super(props);
     this.state = {
       name: "",
-      selectedPlayer: null
+      selectedOpponent: null
     }
   }
   static contextTypes = {
@@ -16,14 +16,24 @@ class NewGame extends Component {
   }
 
   startGame = () => {
-    if (!this.state.selectedPlayer){
+    if (!this.state.selectedOpponent){
       alert("You have to select a player first!")
     } else {
-      this.props.createGame(this.props.currentUser.id, selectedPlayer)
-        .then((res) => {
-          this.context.router.push(`/games/res.data.id`)
-        });
+      this.props.createGame(this.props.user.id, 
+        this.props.user.username, 
+        this.state.selectedOpponent.id,
+        this.state.selectedOpponent.username)
+        .then(res => {
+          debugger;
+          this.context.router.push(`/games/${res.payload.data.id}`)
+        }).catch(err => {
+          debugger;
+          console.log(err)
+        }); 
     }
+  }
+  handleSelect = (e) => {
+    this.setState({ selectedOpponent: JSON.parse(e.target.dataset.user) })
   }
   handleChange = (e) => {
     let __timer;
@@ -31,22 +41,23 @@ class NewGame extends Component {
     clearTimeout(__timer);
     __timer = setTimeout(() => {
         this.props.fetchUsers(this.state.name)
-    }, 900)
+    }, 700)
   }
   render(){
     return (
     <div>
       New Game
-      <div type="select-player">
+      <div type="select-opponent">
         <input type="text" 
                placeholder="Enter the user name"
                onChange={this.handleChange} 
                value={this.state.name}
                />
-        <ul>
+        <ul onClick={this.handleSelect}>
           { 
             this.props.usersQuery.map( (user) => {
-              return <li key={user.id}>{ user.username }</li>;
+              //check if data is json
+              return <li data-user={JSON.stringify(user)} key={user.id}>{ user.username }</li>;
             }) 
           }
         </ul>

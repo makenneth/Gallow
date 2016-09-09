@@ -4,6 +4,7 @@ import (
   "log"
   "golang.org/x/net/websocket"
   "encoding/json"
+  "../database"
 )
 
 type Client struct {
@@ -12,13 +13,31 @@ type Client struct {
   done chan bool
   msgCh chan *Message
   username string
-  //ok so it may be better to use a map to store the clients
-  //so it can be quickly accessed
 }
 
+type Game struct {
+  id int `json:"Id"`
+  userId1 int `json:"userId1"`
+  userId2 int `json:"userId2"`
+  username1 string `json:"username1"`
+  username2 string `json:"username2"`
+  state []byte `json:"state"`
+}
+type ChatMsg struct {
+  author string `json:"author"`
+  body string `json:"body"`
+}
+type NewChatMsg struct {
+  game_id int `json:"game_id"`
+  user_id int `json:"user_id"`
+  author string `json:"author"`
+  body string `json:"body"`
+  username1 string `json:"username1"`
+  username2 string `json:"username2"`
+}
 const buffSize = 1000
 
-func NewClient(ws *websocket.Conn, server *SocketServer) *Client {
+func NewClient(ws *websocket.Conn, server *SocketServer) *Client { 
   if ws == nil {
     panic("Websocket can't be nil!!")
   } else if server == nil {
@@ -30,6 +49,7 @@ func NewClient(ws *websocket.Conn, server *SocketServer) *Client {
 
   return &Client{ws, server, done, msgCh, ""}
 }
+
 func (this *Client) Conn() *websocket.Conn {
   return this.ws
 }
@@ -60,7 +80,9 @@ func (this *Client) ListenRead() {
       if err != nil {
         this.done <- true
       }
-      if msg.Type == "NEW_USER" {
+      log.Println("message-received, type: ", msg.Type)
+      switch msg.Type {
+      case "USER_CONNECTED": 
         var username string
         err := json.Unmarshal(msg.Data, &username)
         log.Println("New User: ", username)
@@ -71,16 +93,49 @@ func (this *Client) ListenRead() {
 
         this.username = username
         this.server.AddClient() <- this
-
-        newClient, err := json.Marshal(username)
-        log.Println("newClient json, ", newClient)
+        break;
+      case "GAME_CONNECTED": 
+      //also should connect to chat
+        var gameId int;
+        err := json.Unmarshal(msg.Data, &gameId)
         if err != nil {
-          log.Fatal(err)
+          this.done <- true
         }
-        this.server.SendAll() <- &Message{"NEW_USER", newClient}
-      } else {
+        log.Println("Game %i connected", gameId)
+        gameData, err := RetreiveData(gameId)
+        if err != nil {
+          this.done <- true
+        }
+        log.Println("gameData: ", gameData)
+        jsonData, _ := json.Marshal(gameData)
+        dest := []string{gameData.username1, gameData.username2}
+        newMessage := &Message{"GAME_CONNECTED", jsonData}
+        go this.RetreiveChatMessages(gameId, dest)
+
+        messageWithDest := &InterclientMessage{dest, newMessage}
+        this.server.Send() <- messageWithDest
+        break;
+      case "USER_MOVE":
+        break;
+      case "NEW_MESSAGE":
+        var newChatMsg NewChatMsg
+        err := json.Unmarshal(msg.Data, &newChatMsg)
+        if err != nil {
+          this.done <- true
+        }
+
+        dest := []string{newChatMsg.username1, newChatMsg.username2}
+        newChat := &ChatMsg{newChatMsg.author, newChatMsg.body}
+        data, _ := json.Marshal(newChat)
+        newMessage := &Message{"NEW_MESSAGE", data}
+        broadcastMessage := &InterclientMessage{dest, newMessage}
+        go SaveChatMessage(newChat, newChatMsg.username1, newChatMsg.user_id, newChatMsg.game_id)
+        this.server.Send() <- broadcastMessage
+        break;
+      default:
         log.Println("Sending Message, ", msg)
-        this.server.SendAll() <- &msg
+        // this.server.Send() <- &msg
+        break;
       }
    
     }    
@@ -89,7 +144,7 @@ func (this *Client) ListenRead() {
 
 func (this *Client) ListenWrite() {
   for {
-    select{
+    select {
     case msg := <- this.msgCh:
       log.Println("Sending..", msg)
       websocket.JSON.Send(this.ws, msg)
@@ -99,4 +154,59 @@ func (this *Client) ListenWrite() {
       return
     }
   }
+}
+
+func SaveChatMessage(chatMsg *ChatMsg, username string, user_id, game_id int){
+  _, _ = database.DBConn.Query(`INSERT INTO messages
+    (author, body, user_id, game_id)
+    VALUES ($1, $2, $3, $4)`, chatMsg.author, chatMsg.body, user_id, game_id)
+}
+func (this *Client) RetreiveChatMessages(gameId int, dest []string) { 
+  chatMsgs := make([]ChatMsg, 0)
+  var (
+    author string
+    body string
+  )
+  rows, err := database.DBConn.Query(`SELECT m.author, m.body FROM games AS g
+    INNER JOIN gamesmessages AS gm
+    ON g.id = gm.game_id
+    INNER JOIN messages AS m
+    ON m.id = gm.message_id
+    WHERE g.id = $1
+    ORDER BY stamp DESC
+    LIMIT 20`, gameId)
+
+  if err != nil {
+    log.Println(err)
+    this.done <- true
+  }
+  for rows.Next() {
+    _ = rows.Scan(&author, &body)
+    chatMsgs = append(chatMsgs, ChatMsg{author, body})
+  }
+  data, _ := json.Marshal(chatMsgs)
+  message := &Message{"FETCHED_MESSAGES", data}
+  messageWithDest := &InterclientMessage{dest, message}
+  this.server.Send() <- messageWithDest
+}
+func RetreiveData(gameId int) (*Game, error) {
+  var (
+    username1 string
+    username2 string
+    user_id1 int
+    user_id2 int
+    id int
+    game_state []byte
+   )
+  err := database.DBConn.QueryRow(`SELECT g.*, u1.username AS username1, u2.username AS username2
+    FROM games AS g
+    INNER JOIN users AS u1
+    ON u1.id = ug.user_id1
+    INNER JOIN users AS u2
+    ON u2.id = ug.user_id2
+    WHERE g.id = $1
+    LIMIT 1`, gameId).Scan(&username1, &username2, &user_id1, &user_id2, &id, &game_state)
+
+  //not sure if we need to unmarshall game_state to map
+  return &Game{id, user_id1, user_id2, username1, username2, game_state}, err
 }

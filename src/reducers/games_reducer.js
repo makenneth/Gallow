@@ -6,10 +6,8 @@ export default (state = [], action) => {
       return action.payload.data;
       
     case CREATED_GAME:
-      var newGame = action.payload.data,
-          newState = state.map(game => Object.assign({}, game));
-
-      newState.push(newGame);
+      //this should be a whole game object
+      let newState = [...state, action.payload.data]
       return newState;
   }
 

@@ -1,4 +1,4 @@
-import { NEW_MESSAGE, NEW_USER } from "../constants/constants"
+import { NEW_MESSAGE, FETCHED_MESSAGES } from "../constants/constants"
 
 const copyState = (state) => {
   return state.map((msg) => (
@@ -9,14 +9,11 @@ const copyState = (state) => {
 const messagesReducer = (state = [], action) => {
   let newState;
   switch (action.type) {
+    case FETCHED_MESSAGES:
+      return action.payload;
     case NEW_MESSAGE:
-      newState = copyState(state);
-      newState.push(action.message);
-      return newState;
-      break;
-    case NEW_USER:
-      newState = copyState(state);
-      newState.push({author: "___newMessage*__", body: `${action.user} has joined the chat.`})
+      debugger;
+      newState = [...state, action.payload];
       return newState;
   }
   return state;

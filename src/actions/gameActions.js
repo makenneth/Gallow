@@ -3,8 +3,12 @@ import { FETCHED_GAME,
          NEW_GAME, 
          SET_ANSWER,
          FETCHED_USERS,
-         CREATED_GAME } from "../constants/constants"
+         CREATED_GAME,
+         SET_GAME,
+         UPDATED_GAME } from "../constants/constants"
+
 import axios from "axios"
+
 export const fetchUsers = (string) => {
   const req = axios.get(`/api/users?name=${string}`)
   //this function should be implemented with elasticsearch
@@ -14,8 +18,25 @@ export const fetchUsers = (string) => {
   }
 }
 
-export const createGame = (string) => {
-  const req = axios.post("/api/game/new")
+export const createGame = (userId1, username1, userId2, username2) => {
+  debugger;
+  const req = axios({
+    url: "/api/games/new", 
+    method: "post",
+    headers: {'Content-Type': 'application/json; charset=UTF-8'},
+    data: {
+      id: 0,
+      userId1: userId1, 
+      userId2: userId2,
+      state: {
+        turn: userId1,
+        correctGuesses: [],
+        usedLetters: [],
+        numberOfGuesses: 0,
+        guess: "" //this is the current guess
+      }
+    }
+  })
   return {
     type: CREATED_GAME,
     payload: req
@@ -25,28 +46,40 @@ export const createGame = (string) => {
 export const fetchGames = () => {
   return {
     type: FETCHED_GAME,
-    games
+    payload: games
   }
 }
-export const fetchGame = (id) => {
-  //so this should send the same object to all reducers
-  const game = axios.get(`/games/${id}`);
 
+export const setGame = (game) => {
   return {
-    type: FETCHED_GAME,
-    game
+    type: SET_GAME,
+    payload: game
   }
 }
+export const updatedGame = (game) => {
+  return {
+    type: UPDATED_GAME,
+    payload: game
+  }
+}
+// export const fetchGame = (id) => {
+//   //so this should send the same object to all reducers
+//   const game = axios.get(`/games/${id}`);
+
+//   return {
+//     type: FETCHED_GAME,
+//     game
+//   }
+// }
 export const userGuess = (guess) => {
   return {
     type: USER_GUESS,
     guess
   }
 } 
-
-export const setAnswer = (answer) => {
+export const fetchedGameData = (game) => {
   return {
-    type: SET_ANSWER,
-    answer
+    type: FETCHED_GAME,
+    payload: game
   }
 }

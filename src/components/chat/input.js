@@ -6,18 +6,18 @@ class Input extends Component {
       body: ""
     }
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.author !== this.props.author || this.state.body !== nextState.body){
-      return true;
-    } 
 
-    return false;
-  }
   handleSubmit = (e) => {
     e.preventDefault();
     const data = {
       type: "NEW_MESSAGE",
-      data: {"author": this.props.author, "body": this.state.body}
+      data: {
+        game_id: this.props.params.id,
+        user_id: this.props.user.id,
+        author: this.props.user.username, 
+        body: this.state.body, 
+        username1: this.props.user.username
+      }
     };
     this.props.ws.send(JSON.stringify(data));
     this.setState({body: ""})
@@ -31,10 +31,10 @@ class Input extends Component {
       <form onSubmit={this.handleSubmit} className="msg-input-form">
         <input type="text" id="body" 
                onChange={this.handleChange} 
-               value={this.state.body} disabled={!this.props.author} 
+               value={this.state.body}  
                placeholder="Enter your message..."
                autoFocus/>
-        <input type="submit" value="Submit" disabled={!this.props.author} />
+        <input type="submit" value="Submit"  />
       </form>
       )
   }

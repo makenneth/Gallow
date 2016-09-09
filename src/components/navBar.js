@@ -8,7 +8,6 @@ class NavBar extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     if ((!this.props.user && nextProps.user) || 
         (this.props.user && this.props.user.username !== nextProps.user.username)){
-      debugger;
       return true
     } 
 

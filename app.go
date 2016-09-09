@@ -4,7 +4,7 @@ import (
   "fmt"
 	"log"
 	"net/http"
-	// "./app/socket"
+	"./app/socket"
   "./app/api"
   "database/sql"
   _ "github.com/lib/pq"
@@ -103,8 +103,8 @@ func main() {
   log.Println("db connected...")
   defer database.DBConn.Close();
 
-	// server := socket.NewServer("/chat")
-	// go server.Listen()
+	server := socket.NewServer("/chat")
+	go server.Listen()
 
   http.HandleFunc("/public/", func(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, r.URL.Path[1:])
@@ -120,7 +120,7 @@ func main() {
   http.HandleFunc("/api/user/current", api.CurrentUserHandler) 
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
-  http.HandleFunc("/api/games", api.NewGameHandler)
+  http.HandleFunc("/api/games/new", api.NewGameHandler)
   http.HandleFunc("/api/users", api.UsersQueryHandler) 
   http.HandleFunc("/login", LogInPageHandler)
   http.HandleFunc("/signup", SignUpPageHandler)
