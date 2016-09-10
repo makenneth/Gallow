@@ -29,7 +29,7 @@ class Main extends Component {
     ws.onmessage = this.handleNewMessage;
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.user && nextProps.user) {
+    if (!this.props.user.id && nextProps.user.id) {
       this.setState({ loading: false })
       ws.send(JSON.stringify({
         type: "USER_CONNECTED",

@@ -3,24 +3,6 @@ import Chat from "./chat/chat"
 import Game from "./game/game"
 import { connect } from "react-redux"
 
-
-//so other than the first time...
-//there will need to be data checking for the chat messages
-//as well as game
-//so probably:
-// SELECT * FROM games AS g
-//  WHERE g.user_id1 == $1 AND g.user_id2 == $1
-//  OR g.user_id2 == $2 g.user_id2 == $1
-// ok now this doesn't make sense already
-// make a join table for game
-// INNER JOIN games_messages AS gm
-// ON gm.game_id == g.id
-// ORDER BY time...
-// CAN LIMIT BY 20...
-
-
-//so props will be passed down to game
-
 class GameContainer extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +18,6 @@ class GameContainer extends Component {
         data: this.props.params.id
       })
     } catch(e) {
-      console.log(e)
       this.props.ws.onopen = this.socketOpened;
       this.setState({ loading: false })
     }
@@ -50,17 +31,16 @@ class GameContainer extends Component {
   }
 
   render() {
-    if (!this.props.user){
-      return <h2>Loading...</h2>;
-    }
+    //idea... 
+    //loading should be abstracted out to a reducer
+    //so when something is loading...we can just call that action
+    //and we can all share one loader
     return (
       <div>
-        <Chat ws={this.props.ws} user={this.props.user} />
+        <Chat ws={this.props.ws} />
       </div>
       )   
   }
 }
-        // <Game ws={this.props.ws} />
 
-
-export default connect(null)(GameContainer)
+export default GameContainer

@@ -63,6 +63,8 @@ func (this *SocketServer) Listen() {
 			break;
 		case msg := <- this.send:
 			for _, username := range msg.Dest {
+				log.Printf("username dest: %s", username)
+				log.Println("current Clients...", this.clients)
 				if cl, ok := this.clients[username]; ok {
 					log.Println("sending message to %s", cl.username)
 					cl.Write() <- msg.Message

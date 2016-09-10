@@ -25,16 +25,15 @@ type Game struct {
   State api.State `json:"state"`
 }
 type ChatMsg struct {
-  author string `json:"author"`
-  body string `json:"body"`
+  Author string `json:"author"`
+  Body string `json:"body"`
 }
 type NewChatMsg struct {
-  game_id int `json:"game_id"`
-  user_id int `json:"user_id"`
-  author string `json:"author"`
-  body string `json:"body"`
-  username1 string `json:"username1"`
-  username2 string `json:"username2"`
+  GameId int `json:"gameId"`
+  UserId int `json:"userId"`
+  Author string `json:"author"`
+  Body string `json:"body"`
+  Recipient string `json:"recipient"`
 }
 const buffSize = 1000
 
@@ -98,35 +97,24 @@ func (this *Client) ListenRead() {
       case "GAME_CONNECTED": 
         var gameId int;
         err := json.Unmarshal(msg.Data, &gameId)
-        log.Println("gameId, ", gameId )
+        //We need to check whether one of the user is part of the game
         if err != nil {
-          log.Println("err: ", err)
-          // this.done <- true
+          this.done <- true
         }
         log.Println("Game %i connected", gameId)
         gameData, err := RetreiveData(gameId)
-        if err != nil {
-          log.Println("err2: ", err)
-          // this.done <- true
+      
+        if err != nil  {
+          this.done <- true
         }
-        log.Println("gameData: ", gameData)
         data, err := json.Marshal(gameData)
         if err != nil {
-          log.Println("err3: ", err)
+          this.done <- true
         }
         message := &Message{"GAME_CONNECTED", data}
         go this.RetreiveChatMessages(gameId)
 
         this.msgCh <- message
-
-        var g Game
-        err = json.Unmarshal(message.Data, &g)
-        if err != nil {
-          log.Println("err4: ", err)
-        }
-
-        log.Println("unmarshalled data..", g)
-
         break;
       case "USER_MOVE":
         break;
@@ -137,12 +125,12 @@ func (this *Client) ListenRead() {
           this.done <- true
         }
 
-        dest := []string{newChatMsg.username1, newChatMsg.username2}
-        newChat := &ChatMsg{newChatMsg.author, newChatMsg.body}
+        dest := []string{newChatMsg.Author, newChatMsg.Recipient}
+        newChat := &ChatMsg{newChatMsg.Author, newChatMsg.Body}
         data, _ := json.Marshal(newChat)
         newMessage := &Message{"NEW_MESSAGE", data}
         broadcastMessage := &InterclientMessage{dest, newMessage}
-        go SaveChatMessage(newChat, newChatMsg.username1, newChatMsg.user_id, newChatMsg.game_id)
+        go SaveChatMessage(newChat, newChatMsg.Author, newChatMsg.UserId, newChatMsg.GameId)
         this.server.Send() <- broadcastMessage
         break;
       default:
@@ -171,9 +159,12 @@ func (this *Client) ListenWrite() {
 }
 
 func SaveChatMessage(chatMsg *ChatMsg, username string, user_id, game_id int){
-  _, _ = database.DBConn.Query(`INSERT INTO messages
+  _, err := database.DBConn.Query(`INSERT INTO messages
     (author, body, user_id, game_id)
-    VALUES ($1, $2, $3, $4)`, chatMsg.author, chatMsg.body, user_id, game_id)
+    VALUES ($1, $2, $3, $4)`, chatMsg.Author, chatMsg.Body, user_id, game_id)
+  //maybe can check err then send back messages letting the user know 
+  //there was issue saving
+  log.Println("save chat message err: ", err)
 }
 func (this *Client) RetreiveChatMessages(gameId int) { 
   chatMsgs := make([]ChatMsg, 0)

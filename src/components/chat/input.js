@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { connect } from "react-redux"
 class Input extends Component {
   constructor(props){
     super(props)
@@ -7,21 +8,30 @@ class Input extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.messages.length !== nextProps.messages.length){
+      this.setState({ body: "" })
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.body !== nextState.body || 
+      this.props.chat.author !== nextProps.chat.author ||
+      this.props.chat.gameId !== nextProps.chat.gameId){
+      return true;
+    }
+
+    return false;
+  }
   handleSubmit = (e) => {
     e.preventDefault();
-    //this should include the opponent's username
-    const data = {
+    const msg = Object.assign({}, this.props.chat);
+    msg.body = this.state.body;
+    debugger;
+    this.props.ws.send(JSON.stringify({
       type: "NEW_MESSAGE",
-      data: {
-        game_id: this.props.params.id,
-        user_id: this.props.user.id,
-        author: this.props.user.username, 
-        body: this.state.body, 
-        username1: this.props.user.username
-      }
-    };
-    this.props.ws.send(JSON.stringify(data));
-    this.setState({body: ""})
+      data: msg
+    }));
   }
 
   handleChange = (e) => {
@@ -40,4 +50,8 @@ class Input extends Component {
       )
   }
 }
-export default Input;
+
+const mapStateToProps = ({ chat }) => {
+  return { chat }
+}
+export default connect(mapStateToProps)(Input);

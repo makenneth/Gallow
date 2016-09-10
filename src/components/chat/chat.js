@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import Messages from "./messages"
 import Input from "./input"
-import { addNewMessage } from "../../actions/chatActions"
 
 
 class Chat extends Component {
@@ -13,8 +12,7 @@ class Chat extends Component {
   render(){
     return <div>
       <Messages messages={this.props.messages} />
-      <Input ws={this.props.ws} 
-             author={this.props.user.username}/>
+      <Input ws={this.props.ws} messages={this.props.messages}/>
     </div>
   }
 }
@@ -24,4 +22,4 @@ const mapStateToProps = ({messages}) => {
   return { messages }
 }
 
-export default connect(mapStateToProps, { addNewMessage })(Chat);
+export default connect(mapStateToProps)(Chat);
