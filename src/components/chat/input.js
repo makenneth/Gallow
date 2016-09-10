@@ -9,6 +9,7 @@ class Input extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    //this should include the opponent's username
     const data = {
       type: "NEW_MESSAGE",
       data: {

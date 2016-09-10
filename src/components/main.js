@@ -97,6 +97,6 @@ const mapStateToProps = ({ user }) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getCurrentUser, logOut, fetchedGameData, moveMade, addNewMessage }, dispatch)
+  return bindActionCreators({ getCurrentUser, logOut, fetchedGameData, moveMade, addNewMessage, fetchedMessages }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

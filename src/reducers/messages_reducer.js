@@ -10,6 +10,7 @@ const messagesReducer = (state = [], action) => {
   let newState;
   switch (action.type) {
     case FETCHED_MESSAGES:
+      debugger;
       return action.payload;
     case NEW_MESSAGE:
       debugger;

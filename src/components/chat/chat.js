@@ -13,7 +13,8 @@ class Chat extends Component {
   render(){
     return <div>
       <Messages messages={this.props.messages} />
-      <Input ws={this.props.ws} author={this.props.user.username}/>
+      <Input ws={this.props.ws} 
+             author={this.props.user.username}/>
     </div>
   }
 }

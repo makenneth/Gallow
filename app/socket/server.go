@@ -26,15 +26,7 @@ func NewServer(path string) *SocketServer {
 	return &SocketServer{path, clients, send, addClient, removeClient}
 }
 
-// func (this *SocketServer) AllClients() []string {
-// 	clients := make([]string, len(this.clients))
-// 	i := 0
-// 	for key, cl := range this.clients {
-// 		clients[i] = cl.username
-// 		i++
-// 	}
-// 	return clients
-// }
+
 func (this *SocketServer) AddClient() chan<- *Client {
 	return (chan<- *Client)(this.addClient)
 }
@@ -46,12 +38,6 @@ func (this *SocketServer) RemoveClient() chan<- *Client {
 func (this *SocketServer) Send() chan<- *InterclientMessage {
 	return (chan<- *InterclientMessage)(this.send)
 }
-
-// func (this *SocketServer) Messages() []*Message {
-// 	messages := make([]*Message, len(this.messages))
-// 	copy(messages, this.messages)
-// 	return messages
-// }
 
 func (this *SocketServer) Listen() {
 	log.Println("Socket Server started...")
@@ -70,14 +56,17 @@ func (this *SocketServer) Listen() {
 		case cl := <- this.addClient:
 			log.Printf("Adding new client %s", cl.username)
 			this.clients[cl.username] = cl
+			break;
 		case cl := <- this.removeClient:
 			log.Printf("Removing Client %s", cl.username)
-
 			delete(this.clients, cl.username)
+			break;
 		case msg := <- this.send:
-			log.Println("msg: ", msg)
 			for _, username := range msg.Dest {
-				this.clients[username].Write() <- msg.Message
+				if cl, ok := this.clients[username]; ok {
+					log.Println("sending message to %s", cl.username)
+					cl.Write() <- msg.Message
+				}
 			}
 		}
 	}

@@ -9,18 +9,18 @@ import (
   "time"
   // "strconv"
 )
-
+type State struct { 
+  Turn int `json:"turn"`
+  CorrectGuesses []string `json:"correctGuesses"`
+  UsedLetters []string `json:"usedLetters"`
+  NumberOfGuesses int `json:"numberOfGuesses"`
+  Guess string `json:"guess"`
+}
 type Game struct {
   Id int `json:"id"`
   UserId1 int `json:"userId1"`
   UserId2 int `json:"userId2"`
-  State struct { 
-    Turn int `json:"turn"`
-    CorrectGuesses []string `json:"correctGuesses"`
-    UsedLetters []string `json:"usedLetters"`
-    NumberOfGuesses int `json:"numberOfGuesses"`
-    Guess string `json:"guess"`
-  } `json:"state"`
+  State State `json:"state"`
 }
 
 

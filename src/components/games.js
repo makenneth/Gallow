@@ -10,6 +10,11 @@ class Games extends Component {
   static contextTypes = {
     router: React.PropTypes.object.isRequired
   }
+  // componentDidMount() {
+  //   //pretty sure this.props.user will fail...
+  //   this.props.fetchGames(this.props.user.id)
+  // }
+
   handleClick = (e) => {
     this.context.router.push(`/games/${e.target.dataset.id}`)
   }

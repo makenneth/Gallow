@@ -36,16 +36,17 @@ class GameContainer extends Component {
         data: this.props.params.id
       })
     } catch(e) {
+      console.log(e)
       this.props.ws.onopen = this.socketOpened;
       this.setState({ loading: false })
     }
   }
 
   socketOpened = () => {
-    this.props.ws.send({
+    this.props.ws.send(JSON.stringify({
       type: "GAME_CONNECTED",
-      data: this.props.params.id
-    })
+      data: +this.props.params.id
+    }))
   }
 
   render() {

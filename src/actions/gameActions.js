@@ -43,19 +43,14 @@ export const createGame = (userId1, username1, userId2, username2) => {
   }
 }
 
-export const fetchGames = () => {
+export const fetchGames = (playerId) => {
+  const req = axios(`/players/${playerId}/games`)
   return {
     type: FETCHED_GAME,
     payload: games
   }
 }
 
-export const setGame = (game) => {
-  return {
-    type: SET_GAME,
-    payload: game
-  }
-}
 export const updatedGame = (game) => {
   return {
     type: UPDATED_GAME,
