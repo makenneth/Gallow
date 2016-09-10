@@ -6,6 +6,7 @@ import (
   "encoding/json"
   "../database"
   "../api"
+  "../game"
 )
 
 type Client struct {
@@ -16,14 +17,7 @@ type Client struct {
   username string
 }
 
-type Game struct {
-  Id int `json:"id"`
-  UserId1 int `json:"userId1"`
-  UserId2 int `json:"userId2"`
-  Username1 string `json:"username1"`
-  Username2 string `json:"username2"`
-  State api.State `json:"state"`
-}
+
 type ChatMsg struct {
   Author string `json:"author"`
   Body string `json:"body"`
@@ -117,6 +111,43 @@ func (this *Client) ListenRead() {
         this.msgCh <- message
         break;
       case "USER_MOVE":
+        var g game.Game;
+        done := make(chan bool)
+        err := json.Unmarshal(msg.Data, &g)
+        if err != nil {
+          log.Println("err1: ", err)
+        }
+        go func(){
+          g.UpdateUsedLetters()
+          done <- true
+        }
+        go func(){
+          g.UpdateCorrectGuesses()
+          done <- true
+        }
+        go func(){
+          g.UpdateStats()
+          done <- true
+        }
+
+        for i := 0; i < 3; i++ {
+          <- done
+        }
+
+        gJson, err := JSON.marshal(g.State)
+        err := database.DBConn.Query(`
+          UPDATE games
+          SET game_state = $1
+          WHERE id = $2, user_id1 = $3, user_id2 = $4
+        `, gJson, g.Id, g.UserId1, g.userId2)
+        if err != nil {
+          panic(err)
+        }
+
+        dest := []string{g.Username1, g.Username2}
+        newMessage := &Message{"USER_MOVE", gJson}
+        broadcastMessage := &InterclientMessage{dest, newMessage}
+        this.server.Send() <- broadcastMessage
         break;
       case "NEW_MESSAGE":
         var newChatMsg NewChatMsg
@@ -191,7 +222,7 @@ func (this *Client) RetreiveChatMessages(gameId int) {
   message := &Message{"FETCHED_MESSAGES", data}
   this.msgCh <- message
 }
-func RetreiveData(gameId int) (*Game, error) {
+func RetreiveData(gameId int) (*Game.Game, error) {
   var (
     username1 string
     username2 string
@@ -212,6 +243,6 @@ func RetreiveData(gameId int) (*Game, error) {
 
   var gameState api.State
   _ = json.Unmarshal(gameJson, &gameState)
-  game := &Game{id, userId1, userId2, username1, username2, gameState}
+  game := &Game.Game{id, userId1, userId2, username1, username2, gameState}
   return game, err
 }

@@ -38,7 +38,7 @@ class Main extends Component {
     }
   }
   handleNewMessage = (res) => {
-    let message = JSON.parse(res.data); //does data need to be parsed?
+    let message = JSON.parse(res.data); 
     debugger;
     switch (message.type) {
       case "GAME_CONNECTED":

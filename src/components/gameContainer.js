@@ -38,6 +38,7 @@ class GameContainer extends Component {
     return (
       <div>
         <Chat ws={this.props.ws} />
+        <Game ws={this.props.ws} user={this.props.user} />
       </div>
       )   
   }

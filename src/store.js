@@ -4,6 +4,7 @@ import userReducer from "./reducers/user_reducer"
 import gameReducer from "./reducers/game_reducer"
 import usersQueryReducer from "./reducers/users_query_reducer"
 import gamesReducer from "./reducers/games_reducer"
+import gameInfoReducer from "./reducers/game_info_reducer"
 import chatReducer from "./reducers/chat_reducer"
 import ReduxPromise from "redux-promise"
 
@@ -16,7 +17,8 @@ const reducers = combineReducers({
   usersQuery: usersQueryReducer,
   games: gamesReducer,
   chat: chatReducer,
-  game: gameReducer
+  game: gameReducer,
+  gameInfo: gameInfoReducer
 })
 
 const store = createStoreWithMiddleware(reducers);

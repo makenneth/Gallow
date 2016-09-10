@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import Letter from "./letter"
-import { userGuess } from "../../actions/gameActions"
 import { connect } from "react-redux"
 const alphabets = ["a", "b", "c", "d", "e", 
                    "f", "g", "h", "i", "j", 
@@ -22,20 +21,21 @@ class Letters extends Component {
     return false;
   }
   handleClick = (e) => {
-    debugger;
-    //make sure the target value is correct
-    this.props.ws.send({
-      type: "USER_MOVE",
-      data: {
-        move: e.target.dataset.letter,
-        username1: this.props.user.username,
-        username2: this.props.opponent.username,
-        userId1: this.props.user.id, //why is this needed?
-        userId2: this.props.opponent.id, //maybe username
-        id: this.props.params.id
-      }
-    })
-    this.props.userGuess(e.target.dataset.letter);
+    if (this.props.turn) {
+      debugger;
+      let gameInfo = this.props.gameInfo;
+      this.props.ws.send({
+        type: "USER_MOVE",
+        data: {
+          move: e.target.dataset.letter,
+          username1: gameInfo.username1,
+          username2: gameInfo.username2,
+          userId1: gameInfo.userId1, 
+          userId2: gameInfo.userId2, 
+          id: gameInfo.id
+        }
+      })
+    }
   }
   render(){
     return (
@@ -51,4 +51,7 @@ class Letters extends Component {
   }
 }
 
-export default connect(null, { userGuess })(Letters)
+const mapStateToProps = (state) => {
+  return { gameInfo: state.gameInfo }
+}
+export default connect(mapStateToProps)(Letters)

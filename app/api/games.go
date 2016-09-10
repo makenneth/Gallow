@@ -11,9 +11,10 @@ import (
 )
 type State struct { 
   Turn int `json:"turn"`
-  CorrectGuesses []string `json:"correctGuesses"`
+  CorrectGuesses []rune `json:"correctGuesses"`
   UsedLetters []string `json:"usedLetters"`
   NumberOfGuesses int `json:"numberOfGuesses"`
+  // NumberOfGuesses2 int `json:"numberOfGuesses2"`
   Guess string `json:"guess"`
 }
 type Game struct {
@@ -41,6 +42,7 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   err := decoder.Decode(&gameState)
   checkErr(err)
   log.Println("gameState: ", gameState)
+  gameState.correctGuesses = make([]rune, len(words[num]))
   state, _ := json.Marshal(gameState.State)
   err = database.DBConn.QueryRow(`INSERT INTO games 
     (user_id1, user_id2, game_state, selected_word) 
