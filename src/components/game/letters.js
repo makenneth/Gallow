@@ -14,6 +14,7 @@ class Letters extends Component {
     super(props);
   }
   shouldComponentUpdate(nextProps, nextState) {
+    debugger;
     if (this.props.usedLetters.length !== nextProps.usedLetters.length || 
       this.props.guesses.length !== nextProps.guesses.length
       || this.props.turn !== nextProps.turn){

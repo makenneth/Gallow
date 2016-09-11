@@ -18,17 +18,6 @@ type Client struct {
   username string
 }
 
-type ChatMsg struct {
-  Author string `json:"author"`
-  Body string `json:"body"`
-}
-type NewChatMsg struct {
-  GameId int `json:"gameId"`
-  UserId int `json:"userId"`
-  Author string `json:"author"`
-  Body string `json:"body"`
-  Recipient string `json:"recipient"`
-}
 const buffSize = 1000
 
 func NewClient(ws *websocket.Conn, server *SocketServer) *Client { 
@@ -91,11 +80,9 @@ func (this *Client) ListenRead() {
       case "GAME_CONNECTED": 
         var gameId int;
         err := json.Unmarshal(msg.Data, &gameId)
-        //We need to check whether one of the user is part of the game
         if err != nil {
           this.done <- true
         }
-        log.Println("Game %i connected", gameId)
         gameData, err := this.RetreiveData(gameId)
       
         if err != nil  {
@@ -172,22 +159,21 @@ func (this *Client) ListenRead() {
         this.server.Send() <- PackMessage("MOVE_MADE", gJson, dest)
         break;
       case "NEW_MESSAGE":
-        var newChatMsg NewChatMsg
-        err := json.Unmarshal(msg.Data, &newChatMsg)
+        var chatMsgData ChatMsgData
+        err := json.Unmarshal(msg.Data, &chatMsgData)
         if err != nil {
           this.done <- true
         }
 
-        dest := []string{newChatMsg.Author, newChatMsg.Recipient}
-        newChat := &ChatMsg{newChatMsg.Author, newChatMsg.Body}
+        dest := []string{chatMsgData.Author, chatMsgData.Recipient}
+        newChat := &ChatMsg{chatMsgData.Author, chatMsgData.Body}
         data, _ := json.Marshal(newChat)
 
-        go SaveChatMessage(newChat, newChatMsg.Author, newChatMsg.UserId, newChatMsg.GameId)
+        go chatMsgData.SaveChatMessage()
         this.server.Send() <- PackMessage("NEW_MESSAGE", data, dest)
         break;
       default:
-        log.Println("Sending Message, ", msg)
-        // this.server.Send() <- &msg
+        log.Println("Message Type unrecognized, ", msg)
         break;
       }
    

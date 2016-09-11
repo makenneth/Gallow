@@ -5,7 +5,6 @@ import (
   "log"
   "encoding/json"
   "time"
-  "io/ioutil"
   "../token"
   "../database"
 )
@@ -13,13 +12,16 @@ import (
 func LogInHandler(w http.ResponseWriter, r *http.Request) {
   switch r.Method {
   case "POST":
-    body, err := ioutil.ReadAll(r.Body)
-    checkErr(err)
-    var u UserData
-    err = json.Unmarshal(body, &u)
+    var (
+      u UserData
+      data []byte
+      )
+    done := make(chan bool)
+    decoder := json.NewDecoder(r.Body)
+    err := decoder.Decode(&u)
     checkErr(err)
 
-    err = u.checkPassword()
+    err = u.CheckPassword()
 
     if err != nil {
       w.Header().Set("Content-Type", "application/json; charset=utf-8");
@@ -30,16 +32,24 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
       return
     }
 
-    id, sessionToken, err := u.resetSessionToken()
     checkErr(err)
-    expiration := time.Now().Add(30 * 24 * time.Hour)
-    cookie := &http.Cookie{Name: "sessiontokenLit", Value: sessionToken, Expires: expiration, Path: "/"}
-    log.Println("setting cookie: ", cookie)
-    http.SetCookie(w, cookie)
+    id, sessionToken, err := u.ResetSessionToken()
+    go func() {
+      expiration := time.Now().Add(30 * 24 * time.Hour)
+      cookie := &http.Cookie{Name: "sessiontokenLit", Value: sessionToken, Expires: expiration, Path: "/"}
+      http.SetCookie(w, cookie)
+      done <- true
+    }()
+    go func(){
+      cu := User{id, u.Username}
+      SetCurrentUser(cu)
+      data, _ = json.Marshal(&cu) 
+      done <- true 
+    }()
+    for i := 0; i < 2; i++ {
+      <-done
+    }
     w.Header().Set("Content-Type", "application/json")
-    cu := User{id, u.Username}
-    SetCurrentUser(cu)
-    data, _ := json.Marshal(&cu)
     w.Write(data)
 
     break;

@@ -56,7 +56,7 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) bool {
   return true
 }
 
-func (u *UserData) checkPassword() error {
+func (u *UserData) CheckPassword() error {
   var (
     passwordDigest string
     sessionToken string
@@ -75,7 +75,7 @@ func (u *UserData) checkPassword() error {
   return err
 }
 
-func (u *UserData) resetSessionToken() (int, string, error) {
+func (u *UserData) ResetSessionToken() (int, string, error) {
   newToken, _ := token.GenerateRandomToken(32)
   var playerId int
   err := database.DBConn.QueryRow(`UPDATE users 

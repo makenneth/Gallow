@@ -27,6 +27,7 @@ class Main extends Component {
     });
 
     ws.onmessage = this.handleNewMessage;
+    ws.onclose = () => { alert("Connection lost, please try again") }
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.user.id && nextProps.user.id) {

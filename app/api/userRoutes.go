@@ -5,7 +5,6 @@ import (
   "log"
   "encoding/json"
   "time"
-  "io/ioutil"
 )
 type Error struct {
   Message string
@@ -33,17 +32,18 @@ func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
-  body, _ := ioutil.ReadAll(r.Body)
+  if r.Method != "POST" {
+    return
+  }
   var u UserData
-  err := json.Unmarshal(body, &u)
+  decoder := json.NewDecoder(r.Body)
+  err := decoder.Decode(&u)
   checkErr(err)
 
   token, newPlayerId, err := u.InsertUser()
-  log.Println("newPlayerId: ", newPlayerId)
 
   expiration := time.Now().Add(30 * 24 * time.Hour)
   cookie := &http.Cookie{Name: "sessiontokenLit", Value: token, Expires: expiration, Path: "/"}
-  log.Println("setting cookie: ", cookie)
   http.SetCookie(w, cookie)
   w.Header().Set("Content-Type", "application/json")
   cu := User{newPlayerId, u.Username}

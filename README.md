@@ -9,7 +9,7 @@ Online two-players Hangman with Golang on the backend and React/Redux.
 - Authentication: OAuth
 
 ## Timeline
-- [ ] Game logic (3 days) 
+- [x] Game logic (3 days) 
 - [x] Set up databases (1 day)
 - [ ] React components (Games) and wire with api fetching
 - [ ] Connect Chat Socket to Game (decide whether to use redis) (1.5 days/3days)
@@ -20,4 +20,4 @@ Online two-players Hangman with Golang on the backend and React/Redux.
 
 ## TODO
 - [ ] CSRF
-- [ ] Game data is not unmarshalling correctly
+- [ ] Add error channel

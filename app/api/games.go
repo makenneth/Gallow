@@ -7,31 +7,9 @@ import (
   "encoding/json"
   "math/rand"
   "time"
-  // "../socket"
-  // "strconv"
 )
-type State struct { 
-  Turn int `json:"turn"`
-  CorrectGuesses []string `json:"correctGuesses"`
-  UsedLetters []string `json:"usedLetters"`
-  NumberOfGuesses1 int `json:"numberOfGuesses1"`
-  NumberOfGuesses2 int `json:"numberOfGuesses2"`
-  Guess string `json:"guess"`
-}
-type Game struct {
-  Id int `json:"id"`
-  UserId1 int `json:"userId1"`
-  UserId2 int `json:"userId2"`
-  State *State `json:"state"`
-}
 
-func newState(word string, turn int) *State {
-  log.Println(word)
-  correctGuesses := make([]string, len(word))
-  log.Println(correctGuesses)
-  usedLetters := make([]string, 0)
-  return &State{turn, correctGuesses, usedLetters, 0, 0, ""}
-}
+
 
 func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method != "POST"{

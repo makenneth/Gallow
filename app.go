@@ -38,7 +38,6 @@ func (handler *RegexHandler) AddRoute(reg string, h func(http.ResponseWriter, *h
 
 func (handler *RegexHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) {
   for _, route := range handler.routes {
-    //need to test whether r.url.path would work..
     matches := route.re.FindStringSubmatch(r.URL.Path)
     if matches != nil {
       route.handler(w, r, matches)

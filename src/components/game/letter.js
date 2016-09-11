@@ -16,7 +16,7 @@ class Letter extends Component {
     let className = "letter-box" + (this.props.used ? " used" : "");
     return (
       <div data-letter={ this.props.letter } className={className}>
-        { this.props.letter }
+        { this.props.letter.toUpperCase() }
       </div>
       )
   }
