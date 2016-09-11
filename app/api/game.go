@@ -10,8 +10,8 @@ type State struct {
   Turn int `json:"turn"`
   CorrectGuesses []string `json:"correctGuesses"`
   UsedLetters []string `json:"usedLetters"`
-  NumberOfGuesses1 int `json:"numberOfGuesses1"`
-  NumberOfGuesses2 int `json:"numberOfGuesses2"`
+  WrongGuesses1 int `json:"wrongGuesses1"`
+  WrongGuesses2 int `json:"wrongGuesses2"`
   Guess string `json:"guess"`
 }
 func newState(word string, turn int) *State {

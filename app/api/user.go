@@ -16,44 +16,49 @@ type User struct {
   Id int `json:"id"`
   Username string `json:"username"`
 }
-var currentUser User;
 
-func SetCurrentUser(u User){
-  currentUser = u
+var Sessions map[string]User
+func InitializeSessions() {
+  Sessions = make(map[string]User)
+}
+
+func SetCurrentUser(token string, u User){
+  Sessions[token] = u
+  log.Println("after setting user", Sessions)
 }
 
 func GetCurrentUser(w http.ResponseWriter, userToken string) User {
-  if currentUser != (User{}){
-    return currentUser
+  if user, ok := Sessions[userToken]; ok {
+    return user
   }
-  bool := FindCurrentUser(w, userToken)
+  newToken, bool := FindCurrentUser(w, userToken)
   if !bool {
     return (User{})
   }
-  return currentUser
+
+  return Sessions[newToken]
 }
-func FindCurrentUser(w http.ResponseWriter, userToken string) bool {
+func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
   var (
     id int
     username string
+    expiration time.Time
     )
   newToken, _ := token.GenerateRandomToken(32)
   err := database.DBConn.QueryRow(`UPDATE users
     SET session_token = $1
     WHERE session_token = $2 
     returning id, username`, newToken, userToken).Scan(&id, &username)
-  log.Println(err)
   if id == 0 || err != nil {
-    return false
+    return "", false
   }
-  expiration := time.Now().Add(30 * 24 * time.Hour)
+
+  expiration = time.Now().Add(30 * 24 * time.Hour)
   cookie := &http.Cookie{Name: "sessiontokenLit", Value: newToken, Expires: expiration, Path: "/"}
   http.SetCookie(w, cookie)
-  if err != nil {
-    return false
-  }
-  SetCurrentUser(User{id, username});
-  return true
+
+  SetCurrentUser(newToken, User{id, username})
+  return newToken, true
 }
 
 func (u *UserData) CheckPassword() error {

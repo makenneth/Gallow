@@ -10,14 +10,16 @@ class Game extends Component {
   }
 
   render() {
+    var game = this.props.game;
+    //should be wrong guesses instead of number of guesses
     return (
-      <div>
-        <h1>Hangman</h1>
-        <Diagram guessCount={this.props.user.id === this.props.userId1 ? this.props.game.numberOfGuesses1 : this.props.game.numberOfGuesses1}/>
-        <GameInput guesses={this.props.game.correctGuesses || []}/>
-        <Letters usedLetters={this.props.game.usedLetters || []} 
-                  guesses={this.props.game.correctGuesses || []}
-                 turn={this.props.game.turn === this.props.user.id}
+      <div className="game-screen">
+        <Diagram guessCount1={game.numberOfGuesses1}
+                 guessCount2={game.numberOfGuesses2}/>
+        <GameInput guesses={game.correctGuesses || []}/>
+        <Letters usedLetters={game.usedLetters || []} 
+                 guesses={game.correctGuesses || []}
+                 turn={game.turn === this.props.user.id}
                  user={this.props.user}
                  ws={this.props.ws}
                 />

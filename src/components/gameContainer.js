@@ -36,9 +36,9 @@ class GameContainer extends Component {
     //so when something is loading...we can just call that action
     //and we can all share one loader
     return (
-      <div>
-        <Chat ws={this.props.ws} />
+      <div className="game-container">
         <Game ws={this.props.ws} user={this.props.user} />
+        <Chat ws={this.props.ws} />
       </div>
       )   
   }

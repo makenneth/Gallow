@@ -42,7 +42,8 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
     }()
     go func(){
       cu := User{id, u.Username}
-      SetCurrentUser(cu)
+      log.Println("cu: ", cu)
+      SetCurrentUser(sessionToken, cu)
       data, _ = json.Marshal(&cu) 
       done <- true 
     }()
@@ -71,7 +72,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
       _, _ = database.DBConn.Query(`UPDATE users
         SET session_token = $1
         WHERE session_token = $2`, newToken, cookie.Value)
-      currentUser = (User{})
+      delete(Sessions, cookie.Value)
       cookie = &http.Cookie{Name: "sessiontokenLit", Value: "", MaxAge: -1, Path: "/" }
       http.SetCookie(w, cookie)
     }

@@ -1,20 +1,18 @@
 import React, { Component } from "react"
 import Letter from "./letter"
 import { connect } from "react-redux"
-const alphabets = ["a", "b", "c", "d", "e", 
-                   "f", "g", "h", "i", "j", 
-                   "k", "l", "m", "n", "o", 
-                   "p", "q", "r", "s", "t", 
-                   "u", "v", "w", "x", "y", "z"];
-
-
 
 class Letters extends Component {
   constructor(props) {
     super(props);
+    this.alphabets = ["a", "b", "c", "d", "e", 
+                      "f", "g", "h", "i", "j", 
+                      "k", "l", "m", "n", "o", 
+                      "p", "q", "r", "s", "t", 
+                      "u", "v", "w", "x", "y", "z"];
   }
+
   shouldComponentUpdate(nextProps, nextState) {
-    debugger;
     if (this.props.usedLetters.length !== nextProps.usedLetters.length || 
       this.props.guesses.length !== nextProps.guesses.length
       || this.props.turn !== nextProps.turn){
@@ -24,7 +22,7 @@ class Letters extends Component {
     return false;
   }
   handleClick = (e) => {
-    if (this.props.turn || alphabets.indexOf(e.target.dataset.letter) > -1) {
+    if (this.props.turn && this.alphabets.indexOf(e.target.dataset.letter) > -1) {
       let gameInfo = this.props.gameInfo,
           move = e.target.dataset.letter
       if (move.length > 1){
@@ -50,7 +48,7 @@ class Letters extends Component {
     return (
       <div className="alphabets-container cf" onClick={this.handleClick}>
         {
-           alphabets.map(alphabet => {
+           this.alphabets.map(alphabet => {
               let bool = this.props.usedLetters.indexOf(alphabet) > -1;
               return <Letter key={alphabet} used={bool} letter={alphabet} />
            }) 

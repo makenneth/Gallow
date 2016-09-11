@@ -2,7 +2,6 @@ package api
 
 import (
   "net/http"
-  "log"
   "encoding/json"
   "time"
 )
@@ -24,9 +23,7 @@ func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(data)
   } else {
     user := GetCurrentUser(w, cookie.Value)  
-    log.Println("token: ", cookie.Value)
     data, _ := json.Marshal(user)
-    log.Println(user)
     w.Write(data)
   }
 
@@ -47,7 +44,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   http.SetCookie(w, cookie)
   w.Header().Set("Content-Type", "application/json")
   cu := User{newPlayerId, u.Username}
-  SetCurrentUser(cu)
+  SetCurrentUser(token, cu)
   data, _ := json.Marshal(&cu)
   w.Write(data)
 }

@@ -7,7 +7,7 @@ import (
   "../database"
   "../api"
   "../game"
-  "errors"
+  // "errors"
 )
 
 type Client struct {
@@ -81,15 +81,18 @@ func (this *Client) ListenRead() {
         var gameId int;
         err := json.Unmarshal(msg.Data, &gameId)
         if err != nil {
+          log.Println("err1: ", err)
           this.done <- true
         }
         gameData, err := this.RetreiveData(gameId)
       
         if err != nil  {
+          log.Println("err2: ", err)
           this.done <- true
         }
         data, err := json.Marshal(gameData)
         if err != nil {
+          log.Println("err3: ", err)
           this.done <- true
         }
         message := &Message{"GAME_CONNECTED", data}
@@ -132,12 +135,8 @@ func (this *Client) ListenRead() {
           g.UpdateCorrectGuesses(guess, word)
           done <- true
         }()
-        go func(){
-          g.UpdateStats()
-          done <- true
-        }()
 
-        for i := 0; i < 3; i++ {
+        for i := 0; i < 2; i++ {
           log.Println("%i tasks done", i)
           <- done
         }
@@ -253,10 +252,11 @@ func (this *Client)RetreiveData(gameId int) (*game.Game, error) {
     WHERE g.id = $1
     LIMIT 1`, gameId).Scan(&username1, &username2, &userId1, &userId2, &id, &gameJson)
 
-  if this.username != username1 || this.username != username2 {
-    err = errors.New("Invalid user access!!")
-    return nil, err
-  }
+  // if this.username != username1 && this.username != username2 {
+  //   err = errors.New("Invalid user access!!")
+
+  //   return nil, err
+  // }
   var gameState api.State
   _ = json.Unmarshal(gameJson, &gameState)
   game := &game.Game{id, userId1, userId2, username1, username2, gameState}

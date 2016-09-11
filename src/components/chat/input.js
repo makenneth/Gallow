@@ -27,7 +27,6 @@ class Input extends Component {
     e.preventDefault();
     const msg = Object.assign({}, this.props.chat);
     msg.body = this.state.body;
-    debugger;
     this.props.ws.send(JSON.stringify({
       type: "NEW_MESSAGE",
       data: msg

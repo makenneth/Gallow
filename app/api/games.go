@@ -9,8 +9,6 @@ import (
   "time"
 )
 
-
-
 func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method != "POST"{
     log.Println("unknown method for /games")

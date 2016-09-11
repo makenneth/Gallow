@@ -30,22 +30,29 @@ func (this *Game) UpdateUsedLetters(guess string){
 }
 
 func (this *Game) UpdateCorrectGuesses(guess, word string){
+  correct := false
   for i, c := range word {
     log.Println(i)
     log.Println(c)
     if string(c) == guess {
       this.State.CorrectGuesses[i] = string(c)
+      correct = true
     }
   }
+  UpdateStats(correct)
   log.Println("state2 ", this.State)
 }
 
-func (this *Game) UpdateStats() {
-  if this.State.Turn == 2 {
-    this.State.NumberOfGuesses2++
-    this.State.Turn = 1
+func (this *Game) UpdateStats(correct bool) {
+  if this.State.Turn == this.PlayerId2 {
+    if !correct {
+      this.State.WrongGuesses2++
+    }
+    this.State.Turn = this.PlayerId1
   } else {
-    this.State.NumberOfGuesses1++
-    this.State.Turn = 2
+    if !correct {
+      this.State.WrongGuesses1++
+    }
+    this.State.Turn = this.PlayerId2
   }
 }

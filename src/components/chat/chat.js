@@ -10,7 +10,7 @@ class Chat extends Component {
   }
 
   render(){
-    return <div>
+    return <div className="chat-screen">
       <Messages messages={this.props.messages} />
       <Input ws={this.props.ws} messages={this.props.messages}/>
     </div>

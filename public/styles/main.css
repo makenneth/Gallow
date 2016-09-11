@@ -1,9 +1,24 @@
-
+.game-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 90%;
+}
+.chat-screen {
+  flex-grow: 2;
+  width: 100%;
+}
+.game-screen {
+  flex-grow: 1;
+  width: 100%;
+  /*width: 35%;*/
+  /*margin-right: 20px;*/
+}
 .message-list, .msg-input-form {
   font-family: 'Raleway', sans-serif;
   border: 1px solid black;
   border-radius: 3px;
-  width: 70%;
+  width: 90%;
   margin: 0 auto;
 }
 .message-list {
@@ -37,15 +52,7 @@
 .message-list li span {
   font-weight: 700;
 }
-/*.overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 99;
 
-}*/
 h3 {
   color: white;
 }
@@ -98,22 +105,22 @@ h3 {
   border-radius: 5px;
   background-color: yellow;
   color: black;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   padding: 10px;
-  width: 40px;
-  height: 40px;
+  width: 15px;
+  height: 25px;
   cursor: pointer;
   text-align: center;
   float: left;
   margin-right: 10px;
   margin-bottom: 10px;
 }
-.letter-box p {
-  transform: translateY(-50%);
+.letter-box div {
+  transform: translateY(10%);
 }
 .alphabets-container {
-  width: 80%;
+  width: 90%;
 }
 .cf:after {
   clear: both;
@@ -126,9 +133,9 @@ h3 {
 
 .guess-letter {
   float: left;
-  width: 40px;
-  height: 40px;
-  border-bottom: none;
+  width: 15px;
+  height: 25px;
+  border-bottom: 2px solid black;
   margin-right: 10px;
 }
 
@@ -139,7 +146,12 @@ h3 {
   width: 80%;
   margin-bottom: 20px;
 }
-
+.diagrams-container {
+  display: flex;
+}
+.diagram:first-child {
+  margin-right: 10%;
+}
 .loader {
   top: 35%;
   color: #ffffff;

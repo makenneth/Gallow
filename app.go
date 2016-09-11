@@ -19,6 +19,7 @@ const (
   DB_PASSWORD = "postgres"
   DB_NAME = "hangman"
 )
+
 type route struct {
   re *regexp.Regexp
   handler func(http.ResponseWriter, *http.Request, []string)
@@ -52,9 +53,8 @@ func templateHandler(w http.ResponseWriter, r *http.Request){
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
-  user := api.GetCurrentUser(w, cookie.Value)
-  log.Println(user)
-  if user == (api.User{})  {
+  if user := api.GetCurrentUser(w, cookie.Value); user == (api.User{})  {
+      log.Println("redirecting to /login from /")
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
@@ -68,7 +68,9 @@ func templateHandler(w http.ResponseWriter, r *http.Request){
 func LogInPageHandler(w http.ResponseWriter, r *http.Request){
   cookie, _ := r.Cookie("sessiontokenLit")
   if cookie.String() != "" {
+    
     if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}) {
+      log.Println("redirecting to / from /login..")
       http.Redirect(w, r, "/", http.StatusSeeOther)
       return
     }
@@ -94,6 +96,7 @@ func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func main() {
+  api.InitializeSessions()
   dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
     DB_USER, DB_PASSWORD, DB_NAME)
   var err error
