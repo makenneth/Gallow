@@ -100,7 +100,6 @@ func main() {
   var err error
   database.DBConn, err = sql.Open("postgres", dbinfo)
   checkErr(err)
-  log.Println("db connected...")
   defer database.DBConn.Close();
 
 	server := socket.NewServer("/chat")
@@ -110,9 +109,9 @@ func main() {
     http.ServeFile(w, r, r.URL.Path[1:])
   })
 
-  regHandler := new(RegexHandler)
-  regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
-  regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
+  // regHandler := new(RegexHandler)
+  // regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
+  // regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
 
   http.HandleFunc("/api/user/games", api.GamesRouteHandler)
   http.HandleFunc("/api/user/new", api.SignUpHandler)
@@ -120,7 +119,9 @@ func main() {
   http.HandleFunc("/api/user/current", api.CurrentUserHandler) 
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
-  http.HandleFunc("/api/games/new", api.NewGameHandler)
+  http.HandleFunc("/api/games/new", func(w http.ResponseWriter, r *http.Request){
+    api.NewGameHandler(w, r);
+  })
   http.HandleFunc("/api/users", api.UsersQueryHandler) 
   http.HandleFunc("/login", LogInPageHandler)
   http.HandleFunc("/signup", SignUpPageHandler)

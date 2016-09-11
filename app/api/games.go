@@ -7,23 +7,31 @@ import (
   "encoding/json"
   "math/rand"
   "time"
+  // "../socket"
   // "strconv"
 )
 type State struct { 
   Turn int `json:"turn"`
-  CorrectGuesses []rune `json:"correctGuesses"`
+  CorrectGuesses []string `json:"correctGuesses"`
   UsedLetters []string `json:"usedLetters"`
-  NumberOfGuesses int `json:"numberOfGuesses"`
-  // NumberOfGuesses2 int `json:"numberOfGuesses2"`
+  NumberOfGuesses1 int `json:"numberOfGuesses1"`
+  NumberOfGuesses2 int `json:"numberOfGuesses2"`
   Guess string `json:"guess"`
 }
 type Game struct {
   Id int `json:"id"`
   UserId1 int `json:"userId1"`
   UserId2 int `json:"userId2"`
-  State State `json:"state"`
+  State *State `json:"state"`
 }
 
+func newState(word string, turn int) *State {
+  log.Println(word)
+  correctGuesses := make([]string, len(word))
+  log.Println(correctGuesses)
+  usedLetters := make([]string, 0)
+  return &State{turn, correctGuesses, usedLetters, 0, 0, ""}
+}
 
 func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method != "POST"{
@@ -42,16 +50,23 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   err := decoder.Decode(&gameState)
   checkErr(err)
   log.Println("gameState: ", gameState)
-  gameState.correctGuesses = make([]rune, len(words[num]))
-  state, _ := json.Marshal(gameState.State)
+  state := newState(words[num], gameState.UserId1)
+
+  stateJSON, _ := json.Marshal(state)
+  gameState.State = state
   err = database.DBConn.QueryRow(`INSERT INTO games 
     (user_id1, user_id2, game_state, selected_word) 
     VALUES ($1, $2, $3, $4)                                    
-    returning id`, gameState.UserId1, gameState.UserId2, state, words[num]).Scan(&(gameState.Id))
+    returning id`, gameState.UserId1, gameState.UserId2, stateJSON, words[num]).Scan(&(gameState.Id))
 
   checkErr(err)
   data, _ := json.Marshal(gameState)
+
   w.Header().Set("Content-Type", "application/json")
+  // go func() {
+  //   msg := s.PackageMessage("GAME_FETCHED", data)
+  //   s.SendToClient(username2, msg) 
+  // }
   w.Write(data)
 }
 

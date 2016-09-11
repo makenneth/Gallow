@@ -18,8 +18,9 @@ export const fetchUsers = (string) => {
   }
 }
 
-export const createGame = (userId1, username1, userId2, username2) => {
-  debugger;
+export const createGame = (userId1, userId2, username2) => {
+  //somehow when a game is created.. it has to notify the other side to update
+  //probably 
   const req = axios({
     url: "/api/games/new", 
     method: "post",
@@ -27,14 +28,7 @@ export const createGame = (userId1, username1, userId2, username2) => {
     data: {
       id: 0,
       userId1: userId1, 
-      userId2: userId2,
-      state: {
-        turn: userId1,
-        correctGuesses: [],
-        usedLetters: [],
-        numberOfGuesses: 0,
-        guess: "" //this is the current guess
-      }
+      userId2: userId2
     }
   })
   return {

@@ -6,17 +6,17 @@ class Letter extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.used !== nextProps.used){
+    if (this.props.letter != nextProps.letter || this.props.used !== nextProps.used){
       return true;
     }
 
     return false
   }
   render(){
-    let className = "letter-box" + (props.used ? " used" : "");
+    let className = "letter-box" + (this.props.used ? " used" : "");
     return (
-      <div data-letter={ props.letter } className={className}>
-        <p>{ props.letter }</p>
+      <div data-letter={ this.props.letter } className={className}>
+        { this.props.letter }
       </div>
       )
   }

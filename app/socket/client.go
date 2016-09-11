@@ -7,6 +7,7 @@ import (
   "../database"
   "../api"
   "../game"
+  "errors"
 )
 
 type Client struct {
@@ -16,7 +17,6 @@ type Client struct {
   msgCh chan *Message
   username string
 }
-
 
 type ChatMsg struct {
   Author string `json:"author"`
@@ -96,7 +96,7 @@ func (this *Client) ListenRead() {
           this.done <- true
         }
         log.Println("Game %i connected", gameId)
-        gameData, err := RetreiveData(gameId)
+        gameData, err := this.RetreiveData(gameId)
       
         if err != nil  {
           this.done <- true
@@ -111,43 +111,65 @@ func (this *Client) ListenRead() {
         this.msgCh <- message
         break;
       case "USER_MOVE":
-        var g game.Game;
+        var (
+          g game.Game
+          jsonG []byte
+          gameState api.State
+          word string
+          )
         done := make(chan bool)
         err := json.Unmarshal(msg.Data, &g)
         if err != nil {
           log.Println("err1: ", err)
         }
-        go func(){
-          g.UpdateUsedLetters()
-          done <- true
+        log.Println("game data received: ", g)
+        
+
+        err = database.DBConn.QueryRow(`
+          SELECT selected_word, game_state
+          FROM games
+          WHERE id = $1 AND user_id1 = $2 AND user_id2 = $3
+          `, g.Id, g.UserId1, g.UserId2).Scan(&word, &jsonG)
+        if err != nil {
+          log.Println("err2: ", err)
         }
+        err = json.Unmarshal(jsonG, &gameState)
+        log.Println("game state: ", gameState)
+        guess := g.State.Guess
+        g.State = gameState
         go func(){
-          g.UpdateCorrectGuesses()
+          g.UpdateUsedLetters(guess)
           done <- true
-        }
+        }()
+        go func(){
+          g.UpdateCorrectGuesses(guess, word)
+          done <- true
+        }()
         go func(){
           g.UpdateStats()
           done <- true
-        }
+        }()
 
         for i := 0; i < 3; i++ {
+          log.Println("%i tasks done", i)
           <- done
         }
 
-        gJson, err := JSON.marshal(g.State)
-        err := database.DBConn.Query(`
+        log.Println("game data updated: ", g)
+        gJson, _ := json.Marshal(g.State)
+
+        _, err = database.DBConn.Query(`
           UPDATE games
           SET game_state = $1
-          WHERE id = $2, user_id1 = $3, user_id2 = $4
-        `, gJson, g.Id, g.UserId1, g.userId2)
+          WHERE id = $2 AND user_id1 = $3 AND user_id2 = $4
+        `, gJson, g.Id, g.UserId1, g.UserId2)
         if err != nil {
           panic(err)
         }
 
         dest := []string{g.Username1, g.Username2}
-        newMessage := &Message{"USER_MOVE", gJson}
-        broadcastMessage := &InterclientMessage{dest, newMessage}
-        this.server.Send() <- broadcastMessage
+
+        this.server.Send() <- PackMessage("MOVE_MADE", gJson, dest)
         break;
       case "NEW_MESSAGE":
         var newChatMsg NewChatMsg
@@ -159,10 +181,9 @@ func (this *Client) ListenRead() {
         dest := []string{newChatMsg.Author, newChatMsg.Recipient}
         newChat := &ChatMsg{newChatMsg.Author, newChatMsg.Body}
         data, _ := json.Marshal(newChat)
-        newMessage := &Message{"NEW_MESSAGE", data}
-        broadcastMessage := &InterclientMessage{dest, newMessage}
+
         go SaveChatMessage(newChat, newChatMsg.Author, newChatMsg.UserId, newChatMsg.GameId)
-        this.server.Send() <- broadcastMessage
+        this.server.Send() <- PackMessage("NEW_MESSAGE", data, dest)
         break;
       default:
         log.Println("Sending Message, ", msg)
@@ -173,12 +194,15 @@ func (this *Client) ListenRead() {
     }    
   }
 }
-
+func PackMessage(msgType string, data json.RawMessage, dest []string) *InterclientMessage {
+  newMessage := &Message{msgType, data}
+  broadcastMessage := &InterclientMessage{dest, newMessage}
+  return broadcastMessage
+}
 func (this *Client) ListenWrite() {
   for {
     select {
     case msg := <- this.msgCh:
-      log.Println("Sending..", msg)
       websocket.JSON.Send(this.ws, msg)
       break;
     case <- this.done:
@@ -203,7 +227,8 @@ func (this *Client) RetreiveChatMessages(gameId int) {
     author string
     body string
   )
-  rows, err := database.DBConn.Query(`SELECT m.author, m.body FROM games AS g
+  rows, err := database.DBConn.Query(`SELECT m.author, m.body
+    FROM games AS g
     INNER JOIN messages AS m
     ON g.id = m.game_id
     WHERE g.id = $1
@@ -222,7 +247,8 @@ func (this *Client) RetreiveChatMessages(gameId int) {
   message := &Message{"FETCHED_MESSAGES", data}
   this.msgCh <- message
 }
-func RetreiveData(gameId int) (*Game.Game, error) {
+func (this *Client)RetreiveData(gameId int) (*game.Game, error) {
+
   var (
     username1 string
     username2 string
@@ -241,8 +267,12 @@ func RetreiveData(gameId int) (*Game.Game, error) {
     WHERE g.id = $1
     LIMIT 1`, gameId).Scan(&username1, &username2, &userId1, &userId2, &id, &gameJson)
 
+  if this.username != username1 || this.username != username2 {
+    err = errors.New("Invalid user access!!")
+    return nil, err
+  }
   var gameState api.State
   _ = json.Unmarshal(gameJson, &gameState)
-  game := &Game.Game{id, userId1, userId2, username1, username2, gameState}
+  game := &game.Game{id, userId1, userId2, username1, username2, gameState}
   return game, err
 }

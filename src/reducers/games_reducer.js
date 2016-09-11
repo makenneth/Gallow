@@ -1,4 +1,4 @@
-import { FETCHED_GAMES, CREATED_GAME } from "../constants/constants"
+import { FETCHED_GAMES, FETCHED_GAME, CREATED_GAME } from "../constants/constants"
 
 export default (state = [], action) => {
   switch (action.type){

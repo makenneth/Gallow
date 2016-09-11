@@ -14,27 +14,35 @@ class Letters extends Component {
     super(props);
   }
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.usedLetters.length !== nextProps.usedLetters.length){
+    if (this.props.usedLetters.length !== nextProps.usedLetters.length || 
+      this.props.guesses.length !== nextProps.guesses.length
+      || this.props.turn !== nextProps.turn){
       return true;
     }
 
     return false;
   }
   handleClick = (e) => {
-    if (this.props.turn) {
-      debugger;
-      let gameInfo = this.props.gameInfo;
-      this.props.ws.send({
+    if (this.props.turn || alphabets.indexOf(e.target.dataset.letter) > -1) {
+      let gameInfo = this.props.gameInfo,
+          move = e.target.dataset.letter
+      if (move.length > 1){
+        console.log("cheater?")
+        return;
+      }
+      this.props.ws.send(JSON.stringify({
         type: "USER_MOVE",
         data: {
-          move: e.target.dataset.letter,
           username1: gameInfo.username1,
           username2: gameInfo.username2,
           userId1: gameInfo.userId1, 
           userId2: gameInfo.userId2, 
-          id: gameInfo.id
+          id: gameInfo.id,
+          state: {
+            guess: move
+          }
         }
-      })
+      }))
     }
   }
   render(){

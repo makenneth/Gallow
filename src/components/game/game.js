@@ -13,11 +13,13 @@ class Game extends Component {
     return (
       <div>
         <h1>Hangman</h1>
-        <Diagram guessCount={this.props.game.numberOfGuesses}/>
-        <GameInput guesses={this.props.game.correctGuesses}/>
-        <Letters usedLetters={this.props.game.usedLetters} 
-                 turn={this.props.turn === this.props.user.id}
+        <Diagram guessCount={this.props.user.id === this.props.userId1 ? this.props.game.numberOfGuesses1 : this.props.game.numberOfGuesses1}/>
+        <GameInput guesses={this.props.game.correctGuesses || []}/>
+        <Letters usedLetters={this.props.game.usedLetters || []} 
+                  guesses={this.props.game.correctGuesses || []}
+                 turn={this.props.game.turn === this.props.user.id}
                  user={this.props.user}
+                 ws={this.props.ws}
                 />
       </div>
       )

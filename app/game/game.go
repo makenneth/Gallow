@@ -3,7 +3,7 @@ package game
 
 import (
   "../api"
-  "../database"
+  "log"
 )
 type Game struct {
   Id int `json:"id"`
@@ -15,40 +15,37 @@ type Game struct {
 }
 
 func (this *Game) UpdateUsedLetters(guess string){
-  bool := true
+  used := false
   for _, ltr := range this.State.UsedLetters {
-    if ltr == guess {
-      bool = false
+    if string(ltr) == guess {
+      used = true
+      break;
     }
   }
 
-  if !bool {
-    append(this.State.UsedLetters, ltr)
+  if !used {
+    this.State.UsedLetters = append(this.State.UsedLetters, guess)
+    log.Println("state1 ", this.State)
   }
 }
 
-func (this *Game) UpdateCorrectGuesses(guess string){
-  var word string
-
-  err := database.DBConn.QueryRow(`
-    SELECT selected_word 
-    FROM games
-    WHERE id = $1, user_id1 = $2, user_id2 = $3
-    `, this.Id, this.UserId1, this.UserId2).Scan(&word)
+func (this *Game) UpdateCorrectGuesses(guess, word string){
   for i, c := range word {
-    if c == guess {
-      this.CorrectGuesses[i] = c
+    log.Println(i)
+    log.Println(c)
+    if string(c) == guess {
+      this.State.CorrectGuesses[i] = string(c)
     }
   }
-  this.Guess = guess
+  log.Println("state2 ", this.State)
 }
 
 func (this *Game) UpdateStats() {
-  if this.Turn == 2 {
-    this.NumberOfGuesses2++
-    this.Turn = 1
+  if this.State.Turn == 2 {
+    this.State.NumberOfGuesses2++
+    this.State.Turn = 1
   } else {
-    this.NumberOfGuesses1++
-    this.Turn = 2
+    this.State.NumberOfGuesses1++
+    this.State.Turn = 2
   }
 }

@@ -39,6 +39,12 @@ func (this *SocketServer) Send() chan<- *InterclientMessage {
 	return (chan<- *InterclientMessage)(this.send)
 }
 
+func (this *SocketServer) SendToClient(username string, message *Message) {
+	if cl, ok := this.clients[username]; ok {
+		cl.Write() <- message
+	}
+}
+
 func (this *SocketServer) Listen() {
 	log.Println("Socket Server started...")
 	
