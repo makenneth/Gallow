@@ -14,8 +14,8 @@ class Game extends Component {
     //should be wrong guesses instead of number of guesses
     return (
       <div className="game-screen">
-        <Diagram guessCount1={game.numberOfGuesses1}
-                 guessCount2={game.numberOfGuesses2}/>
+        <Diagram guessCount1={game.wrongGuesses1}
+                 guessCount2={game.wrongGuesses2}/>
         <GameInput guesses={game.correctGuesses || []}/>
         <Letters usedLetters={game.usedLetters || []} 
                  guesses={game.correctGuesses || []}

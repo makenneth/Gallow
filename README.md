@@ -1,5 +1,6 @@
-## Online hangman
-Online two-players Hangman with Golang on the backend and React/Redux. 
+## Gallow
+Online two-players Hangman with realtime chat functionality.
+Bult with Golang backend and sockets and a React/Redux frontend. 
 
 
 ## Stack
@@ -11,7 +12,7 @@ Online two-players Hangman with Golang on the backend and React/Redux.
 ## Timeline
 - [x] Game logic (3 days) 
 - [x] Set up databases (1 day)
-- [x] React components (Games) and wire with api fetching
+- [x] React components (Games) and wire with api fetching (3 days)
 - [x] Connect Chat Socket to Game (3days)
 - [x] Set Up Regular Auth (1.5days)
 - [ ] Set up OAuth (2 days)
@@ -23,5 +24,4 @@ Online two-players Hangman with Golang on the backend and React/Redux.
 - [ ] Add error channel
 - [ ] Add dictionary
 - [ ] Add "Solve it"
-- [ ] Add Hangman diagram
-- [ ] bug with log in
+- [ ] Add "done" to game state

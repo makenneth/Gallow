@@ -1,11 +1,17 @@
 package api 
 
+//add username1/username2
+//so we can use the same game struct
+//and thus remove circularity
 type Game struct {
   Id int `json:"id"`
   UserId1 int `json:"userId1"`
   UserId2 int `json:"userId2"`
   State *State `json:"state"`
 }
+
+//todo...abstract out state
+//and thus remove circularity
 type State struct { 
   Turn int `json:"turn"`
   CorrectGuesses []string `json:"correctGuesses"`

@@ -39,20 +39,20 @@ func (this *Game) UpdateCorrectGuesses(guess, word string){
       correct = true
     }
   }
-  UpdateStats(correct)
+  this.UpdateStats(correct)
   log.Println("state2 ", this.State)
 }
 
 func (this *Game) UpdateStats(correct bool) {
-  if this.State.Turn == this.PlayerId2 {
+  if this.State.Turn == this.UserId2 {
     if !correct {
       this.State.WrongGuesses2++
     }
-    this.State.Turn = this.PlayerId1
+    this.State.Turn = this.UserId1
   } else {
     if !correct {
       this.State.WrongGuesses1++
     }
-    this.State.Turn = this.PlayerId2
+    this.State.Turn = this.UserId2
   }
 }
