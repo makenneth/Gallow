@@ -18,7 +18,7 @@ export const fetchUsers = (string) => {
   }
 }
 
-export const createGame = (userId1, userId2, username2) => {
+export const createGame = (userId1, username1, userId2, username2) => {
   //somehow when a game is created.. it has to notify the other side to update
   //probably 
   const req = axios({
@@ -27,6 +27,8 @@ export const createGame = (userId1, userId2, username2) => {
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
     data: {
       id: 0,
+      username1: username1,
+      username2: username2,
       userId1: userId1, 
       userId2: userId2
     }

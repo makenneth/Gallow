@@ -8,6 +8,7 @@ import (
     "../token"
   )
 type UserData struct {
+  Nickname string `json:"nickname"`
   Username string `json:"username"`
   Password string `json:"password"`
 }
@@ -15,6 +16,7 @@ type UserData struct {
 type User struct {
   Id int `json:"id"`
   Username string `json:"username"`
+  Nickname string `json:"nickname"`
 }
 
 var Sessions map[string]User
@@ -42,13 +44,14 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
   var (
     id int
     username string
+    nickname string
     expiration time.Time
     )
   newToken, _ := token.GenerateRandomToken(32)
   err := database.DBConn.QueryRow(`UPDATE users
     SET session_token = $1
     WHERE session_token = $2 
-    returning id, username`, newToken, userToken).Scan(&id, &username)
+    returning id, username, nickname`, newToken, userToken).Scan(&id, &username, &nickname)
   if id == 0 || err != nil {
     return "", false
   }
@@ -57,7 +60,7 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
   cookie := &http.Cookie{Name: "sessiontokenLit", Value: newToken, Expires: expiration, Path: "/"}
   http.SetCookie(w, cookie)
 
-  SetCurrentUser(newToken, User{id, username})
+  SetCurrentUser(newToken, User{id, username, nickname})
   return newToken, true
 }
 
@@ -105,8 +108,8 @@ func (u *UserData) InsertUser() (string, int, error) {
 
   var newPlayerId int
   err = database.DBConn.QueryRow(`INSERT INTO 
-    users (session_token, username, password_digest) 
-    VALUES ($1, $2, $3) returning id`, token, u.Username, digest).Scan(&newPlayerId)
+    users (session_token, username, nickname, password_digest) 
+    VALUES ($1, $2, $3, $4) returning id`, token, u.Username, u.Nickname, digest).Scan(&newPlayerId)
 
   return token, newPlayerId, err
 }  

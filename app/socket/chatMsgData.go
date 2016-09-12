@@ -4,6 +4,9 @@ import (
   "../database"
   "log"
   )
+
+//author is nickname
+//recipient is username
 type ChatMsgData struct {
   GameId int `json:"gameId"`
   UserId int `json:"userId"`

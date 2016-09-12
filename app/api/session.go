@@ -41,7 +41,7 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
       done <- true
     }()
     go func(){
-      cu := User{id, u.Username}
+      cu := User{id, u.Username, u.Nickname}
       log.Println("cu: ", cu)
       SetCurrentUser(sessionToken, cu)
       data, _ = json.Marshal(&cu) 

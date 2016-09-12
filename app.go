@@ -111,18 +111,18 @@ func main() {
     http.ServeFile(w, r, r.URL.Path[1:])
   })
 
-  // regHandler := new(RegexHandler)
-  // regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
-  // regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
+  regHandler := new(RegexHandler)
+  regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
+  regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
+  regHandler.AddRoute("/api/user/([0-9]+)/games$", api.GamesRouteHandler)
 
-  http.HandleFunc("/api/user/games", api.GamesRouteHandler)
   http.HandleFunc("/api/user/new", api.SignUpHandler)
   http.HandleFunc("/api/user", api.UserHandler) 
   http.HandleFunc("/api/user/current", api.CurrentUserHandler) 
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
   http.HandleFunc("/api/games/new", func(w http.ResponseWriter, r *http.Request){
-    api.NewGameHandler(w, r);
+    api.NewGameHandler(w, r, server);
   })
   http.HandleFunc("/api/users", api.UsersQueryHandler) 
   http.HandleFunc("/login", LogInPageHandler)

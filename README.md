@@ -1,6 +1,6 @@
 ## Gallow
 Online two-players Hangman with realtime chat functionality.
-Bult with Golang backend and sockets and a React/Redux frontend. 
+Bult with Golang backend and socket and a React/Redux frontend. 
 
 
 ## Stack
@@ -17,11 +17,11 @@ Bult with Golang backend and sockets and a React/Redux frontend.
 - [x] Set Up Regular Auth (1.5days)
 - [ ] Set up OAuth (2 days)
 - [ ] CSRF (0.5 days)
-- [ ] ElasticSearch for players searching...
+- [ ] ElasticSearch for players searching...?
 
 ## TODO
 - [ ] CSRF
 - [ ] Add error channel
 - [ ] Add dictionary
 - [ ] Add "Solve it"
-- [ ] Add "done" to game state
+- [x] Add "done" to game state

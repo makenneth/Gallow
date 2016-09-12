@@ -4,10 +4,10 @@ export default (state = {}, action) => {
 
   switch (action.type){
     case LOGGED_IN:
-      let { id, username } = action.payload.data,
+      let { id, nickname } = action.payload.data,
           newState = {};
       newState.userId = id;
-      newState.author = username;
+      newState.author = nickname;
 
       return newState;
     case FETCHED_GAME:

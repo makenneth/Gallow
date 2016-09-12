@@ -2,7 +2,7 @@ package game
 
 
 import (
-  "../api"
+  "../state"
   "log"
 )
 type Game struct {
@@ -11,7 +11,9 @@ type Game struct {
   UserId2 int `json:"userId2"`
   Username1 string `json:"username1"`
   Username2 string `json:"username2"`
-  State api.State `json:"state"`
+  Nickname1 string `json:"nickname1"`
+  Nickname2 string `json:"nickname2"`
+  State state.State `json:"state"`
 }
 
 func (this *Game) UpdateUsedLetters(guess string){

@@ -20,6 +20,7 @@ class NewGame extends Component {
       alert("You have to select a player first!")
     } else {
       this.props.createGame(this.props.user.id, 
+        this.prop.user.username,
         this.state.selectedOpponent.id,
         this.state.selectedOpponent.username)
         .then(res => {
@@ -55,7 +56,7 @@ class NewGame extends Component {
         <ul onClick={this.handleSelect}>
           { 
             this.props.usersQuery.map( (user) => {
-              return <li data-user={JSON.stringify(user)} key={user.id}>{ user.username }</li>;
+              return <li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>;
             }) 
           }
         </ul>

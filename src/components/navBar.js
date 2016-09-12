@@ -21,7 +21,7 @@ class NavBar extends Component {
       <div className="navbar">
         <ul>
           <li><Link to="/">Home</Link></li>
-          <li>{ "Welcome, " + this.props.user.username }</li>
+          <li>{ "Welcome, " + this.props.user.nickname }</li>
           <li><Link to="/games/new">Start a new Game</Link></li>
           <li><a onClick={this.props.logOut}>Log Out</a></li>
         </ul>

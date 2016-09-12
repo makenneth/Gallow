@@ -7,9 +7,12 @@ import (
   "encoding/json"
   "math/rand"
   "time"
+  "../game"
+  "../state"
+  "../socket"
 )
 
-func NewGameHandler(w http.ResponseWriter, r *http.Request) {
+func NewGameHandler(w http.ResponseWriter, r *http.Request, s *socket.SocketServer) {
   if r.Method != "POST"{
     log.Println("unknown method for /games")
     return;
@@ -20,16 +23,17 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
 
   num := rand.Intn(len(words))
 
-  var gameState Game
+  var gameState game.Game
 
   decoder := json.NewDecoder(r.Body)
   err := decoder.Decode(&gameState)
   checkErr(err)
   log.Println("gameState: ", gameState)
-  state := newState(words[num], gameState.UserId1)
+  st := state.NewState(words[num], gameState.UserId1)
 
-  stateJSON, _ := json.Marshal(state)
-  gameState.State = state
+  stateJSON, _ := json.Marshal(st)
+  gameState.State = *st
+
   err = database.DBConn.QueryRow(`INSERT INTO games 
     (user_id1, user_id2, game_state, selected_word) 
     VALUES ($1, $2, $3, $4)                                    
@@ -38,29 +42,14 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   checkErr(err)
   data, _ := json.Marshal(gameState)
 
+  go func() {
+    msg := &socket.Message{"GAME_FETCHED", data}
+    s.SendToClient(gameState.Username2, msg) 
+  }()
   w.Header().Set("Content-Type", "application/json")
-  // go func() {
-  //   msg := s.PackageMessage("GAME_FETCHED", data)
-  //   s.SendToClient(username2, msg) 
-  // }
   w.Write(data)
 }
 
-func GameRoutesHandler(w http.ResponseWriter, r *http.Request, matches []string) {
-  gameId := matches[1]
-
-  switch r.Method {
-  case "GET":
-      rows, _ := database.DBConn.Query("SELECT * FROM games WHERE id = $1", gameId)
-      log.Println(rows)
-  case "PATCH":
-      log.Println("get/post/patch: /games/:id - ", gameId)
-      break;
-  default:
-      log.Println("unknown route");
-      break;
-  }
-}
 
 func MessageRoutesHandler(w http.ResponseWriter, r *http.Request, matches []string) {
   switch r.Method {

@@ -5,8 +5,8 @@ import (
   "golang.org/x/net/websocket"
   "encoding/json"
   "../database"
-  "../api"
   "../game"
+  "../state"
   // "errors"
 )
 
@@ -104,8 +104,9 @@ func (this *Client) ListenRead() {
         var (
           g game.Game
           jsonG []byte
-          gameState api.State
+          gameState state.State
           word string
+          opponent string
           )
         done := make(chan bool)
         err := json.Unmarshal(msg.Data, &g)
@@ -127,6 +128,7 @@ func (this *Client) ListenRead() {
         log.Println("game state: ", gameState)
         guess := g.State.Guess
         g.State = gameState
+
         go func(){
           g.UpdateUsedLetters(guess)
           done <- true
@@ -153,9 +155,12 @@ func (this *Client) ListenRead() {
           panic(err)
         }
 
-        dest := []string{g.Username1, g.Username2}
-
-        this.server.Send() <- PackMessage("MOVE_MADE", gJson, dest)
+        if opponent = g.Username1; this.username == opponent {
+          opponent = g.Username2
+        }
+        msg := &Message{"MOVE_MADE", gJson}
+        this.msgCh <- msg
+        this.server.SendToClient(opponent, msg)
         break;
       case "NEW_MESSAGE":
         var chatMsgData ChatMsgData
@@ -164,12 +169,13 @@ func (this *Client) ListenRead() {
           this.done <- true
         }
 
-        dest := []string{chatMsgData.Author, chatMsgData.Recipient}
         newChat := &ChatMsg{chatMsgData.Author, chatMsgData.Body}
         data, _ := json.Marshal(newChat)
 
+        msg := &Message{"NEW_MESSAGE", data}
         go chatMsgData.SaveChatMessage()
-        this.server.Send() <- PackMessage("NEW_MESSAGE", data, dest)
+        this.msgCh <- msg
+        this.server.SendToClient(chatMsgData.Recipient, msg)
         break;
       default:
         log.Println("Message Type unrecognized, ", msg)
@@ -179,11 +185,7 @@ func (this *Client) ListenRead() {
     }    
   }
 }
-func PackMessage(msgType string, data json.RawMessage, dest []string) *InterclientMessage {
-  newMessage := &Message{msgType, data}
-  broadcastMessage := &InterclientMessage{dest, newMessage}
-  return broadcastMessage
-}
+
 func (this *Client) ListenWrite() {
   for {
     select {
@@ -257,7 +259,7 @@ func (this *Client)RetreiveData(gameId int) (*game.Game, error) {
 
   //   return nil, err
   // }
-  var gameState api.State
+  var gameState state.State
   _ = json.Unmarshal(gameJson, &gameState)
   game := &game.Game{id, userId1, userId2, username1, username2, gameState}
   return game, err

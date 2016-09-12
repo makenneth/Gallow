@@ -16,6 +16,11 @@
     </div>
     <input
       type="text"
+      id="nickname"
+      placeholder="Nickname"
+      />
+    <input
+      type="text"
       id="username"
       placeholder="Username"
       />
@@ -36,6 +41,7 @@
       e.preventDefault();
       let data = {
         username: $("#username").val(),
+        nickname: $("#nickname").val(),
         password: $("#password").val()
       }
       $.ajax({
