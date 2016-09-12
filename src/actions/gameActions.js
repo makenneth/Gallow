@@ -1,5 +1,4 @@
 import { FETCHED_GAME, 
-         USER_GUESS, 
          NEW_GAME, 
          SET_ANSWER,
          FETCHED_USERS,
@@ -39,13 +38,6 @@ export const createGame = (userId1, username1, userId2, username2) => {
   }
 }
 
-export const fetchGames = (playerId) => {
-  const req = axios(`/players/${playerId}/games`)
-  return {
-    type: FETCHED_GAME,
-    payload: games
-  }
-}
 
 export const updatedGame = (game) => {
   return {
@@ -54,12 +46,7 @@ export const updatedGame = (game) => {
   }
 }
 
-export const userGuess = (guess) => {
-  return {
-    type: USER_GUESS,
-    guess
-  }
-} 
+
 export const fetchedGameData = (game) => {
   return {
     type: FETCHED_GAME,

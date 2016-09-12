@@ -10,27 +10,43 @@ import (
 type Error struct {
   Message string
 }
+type UserGamesData struct {
+  Finished []GameApi `json:"finished"`
+  Unfinished []GameApi `json:"unfinished"`
+}
 
+type GameApi struct {
+  Id int `json:"id"`
+  Finished bool `json:"finished"`
+}
 func GamesRouteHandler(w http.ResponseWriter, r *http.Request, matches []string) {
   if r.Method == "GET" {
+    var (
+      id int
+      finished bool
+      )
     playerId := matches[1]
-    finished := make([]game, 0)
-    unfinished := make([]game, 0)
+    data := &UserGamesData{make([]GameApi, 0), make([]GameApi, 0)}
     rows, err := database.DBConn.Query(`
-      SELECT g.*, u1.username, u1.nickname, u2.username, u2.nickname
+      SELECT g.id, g.finished
       FROM games AS g
-      INNER JOIN users AS u1
-      ON user_id1 = u1.id
-      INNER JOIN users AS u2
-      ON user_id2 = u2.id
       WHERE user_id1 = $1 OR user_id2 = $1 
     `, playerId)
-    
+    //maybe if finished..fetch from api routes?
     for rows.Next() {
-      
+      rows.Scan(&id, &finished)
+      if finished {
+        data.finished = append(data.finished, &{id, finished})
+      } else {
+        data.unfinished = append(data.unfinished, &{id, finished})
+      }
     }
+    w.Header().Set("Content-Type", "application/json");
+    json.NewEncoder(w).Encode(data)
+
+  } else {
+    log.Println("unmatch routes")
   }
-  log.Println("unmatch routes")
 }
 
 

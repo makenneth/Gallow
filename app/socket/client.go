@@ -137,7 +137,7 @@ func (this *Client) ListenRead() {
           g.UpdateCorrectGuesses(guess, word)
           done <- true
         }()
-
+        //somehow check the state to see if the game has ended
         for i := 0; i < 2; i++ {
           log.Println("%i tasks done", i)
           <- done
@@ -161,7 +161,7 @@ func (this *Client) ListenRead() {
         msg := &Message{"MOVE_MADE", gJson}
         this.msgCh <- msg
         this.server.SendToClient(opponent, msg)
-        break;
+        break
       case "NEW_MESSAGE":
         var chatMsgData ChatMsgData
         err := json.Unmarshal(msg.Data, &chatMsgData)

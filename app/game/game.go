@@ -5,6 +5,7 @@ import (
   "../state"
   "log"
 )
+//not sure where to place finished
 type Game struct {
   Id int `json:"id"`
   UserId1 int `json:"userId1"`
@@ -13,6 +14,7 @@ type Game struct {
   Username2 string `json:"username2"`
   Nickname1 string `json:"nickname1"`
   Nickname2 string `json:"nickname2"`
+  Finished bool `json:"finished"`
   State state.State `json:"state"`
 }
 

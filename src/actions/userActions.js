@@ -19,3 +19,10 @@ export const logOut = () => {
     payload: req
   }
 }
+export const fetchGames = (playerId) => {
+  const req = axios(`/api/user/${playerId}/games`)
+  return {
+    type: FETCHED_GAME,
+    payload: games
+  }
+}

@@ -75,11 +75,22 @@ class Main extends Component {
       </div>
     }
   }
+  children() {
+    if (this.props.user){
+      return  React.Children.map(this.props.children, (child) => {
+            return React.cloneElement(child, {
+              user: this.props.user,
+              ws: ws
+            })
+          }) 
+    }
+  }
   render() {
     return (
       <div>
         <h2>Gallows</h2>
         <NavBar user={this.props.user} logOut={this.logOut}/>
+
         { 
           React.Children.map(this.props.children, (child) => {
             return React.cloneElement(child, {
