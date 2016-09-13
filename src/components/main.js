@@ -3,7 +3,7 @@ import NavBar from "./navBar"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import { getCurrentUser, logOut } from "../actions/userActions"
-import { fetchedGameData, updatedGame } from "../actions/gameActions"
+import { fetchedGameData, updatedGame, createdGame } from "../actions/gameActions"
 import { addNewMessage, fetchedMessages } from "../actions/chatActions"
 
 const url = "ws://localhost:8080/chat"
@@ -40,7 +40,6 @@ class Main extends Component {
   }
   handleNewMessage = (res) => {
     let message = JSON.parse(res.data); 
-    debugger;
     switch (message.type) {
       case "GAME_CONNECTED":
         this.props.fetchedGameData(message.data)
@@ -53,6 +52,9 @@ class Main extends Component {
         break;
       case "FETCHED_MESSAGES":
         this.props.fetchedMessages(message.data);
+        break;
+      case "CREATED_GAME":
+        this.props.createdGame(message.data)
         break;
     }
   }
@@ -109,6 +111,6 @@ const mapStateToProps = ({ user }) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getCurrentUser, logOut, fetchedGameData, updatedGame, addNewMessage, fetchedMessages }, dispatch)
+  return bindActionCreators({ getCurrentUser, logOut, fetchedGameData, updatedGame, addNewMessage, fetchedMessages, createdGame }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

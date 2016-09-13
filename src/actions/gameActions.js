@@ -4,7 +4,8 @@ import {NEW_GAME,
          FETCHED_USERS,
          CREATED_GAME,
          SET_GAME,
-         UPDATED_GAME } from "../constants/constants"
+         UPDATED_GAME,
+         OTHER_CREATED_GAME } from "../constants/constants"
 
 import axios from "axios"
 
@@ -37,7 +38,12 @@ export const createGame = (user1, user2) => {
     payload: req
   }
 }
-
+export const createdGame = (game) => {
+  return {
+    type: OTHER_CREATED_GAME,
+    payload: game
+  }
+}
 
 export const updatedGame = (game) => {
   return {

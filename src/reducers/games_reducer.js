@@ -1,4 +1,4 @@
-import { FETCHED_GAMES, CREATED_GAME } from "../constants/constants"
+import { FETCHED_GAMES, CREATED_GAME, OTHER_CREATED_GAME } from "../constants/constants"
 
 export default (state = {
   unfinished: [], 
@@ -7,9 +7,14 @@ export default (state = {
   switch (action.type){
     case FETCHED_GAMES:
       return action.payload.data;
+      //add something for game won
     case CREATED_GAME:
-      let newState = Object.assign({}, state)
-      newState.finished = [...state.finished, action.payload.data]
+      var newState = Object.assign({}, state)
+      newState.unfinished = [...state.unfinished, action.payload.data]
+      return newState;
+    case OTHER_CREATED_GAME:
+      var newState = Object.assign({}, state)
+      newState.unfinished = [...state.unfinished, action.payload]
       return newState;
   }
 

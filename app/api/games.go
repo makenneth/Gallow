@@ -40,10 +40,10 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request, s *socket.SocketServ
     returning id`, gameState.UserId1, gameState.UserId2, stateJSON, words[num]).Scan(&(gameState.Id))
 
   checkErr(err)
-  data, _ := json.Marshal(&GameApi{gameState.Id, false, gameState.Nickname1, gameState.Nickname2})
+  data, _ := json.Marshal(&GameApi{gameState.Id, false, 0, gameState.Nickname1, gameState.Nickname2})
 
   go func() {
-    msg := &socket.Message{"GAME_FETCHED", data}
+    msg := &socket.Message{"CREATED_GAME", data}
     s.SendToClient(gameState.Username2, msg) 
   }();
   w.Header().Set("Content-Type", "application/json")

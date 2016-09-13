@@ -17,7 +17,6 @@ class Diagram extends Component {
   }
 
   constructDiagram(count, name) {
-    //name has to be nickname...
     if (!name){
       return <div className="diagram"></div>
     }

@@ -4,8 +4,9 @@ package game
 import (
   "../state"
   "log"
+  "../database"
 )
-//not sure where to place finished
+
 type Game struct {
   Id int `json:"id"`
   UserId1 int `json:"userId1"`
@@ -19,6 +20,34 @@ type Game struct {
   State state.State `json:"state"`
 }
 
+func (this *Game) Update(guess, word string){
+  var correct bool
+  done := make(chan bool)
+  go func(){
+    this.UpdateUsedLetters(guess)
+    done <- true
+  }()
+  go func(){
+    correct = this.UpdateCorrectGuesses(guess, word)
+    done <- true
+  }()
+  for i := 0; i < 2; i++ {
+    <- done
+  }
+  go func(){
+    if (this.State.Solving && !correct) || !this.State.Solving {
+      this.UpdateStats(correct)
+    }
+    done <- true
+  }()
+  go func(){
+    this.CheckGameEnded()
+    done <- true
+  }()
+  for i := 0; i < 2; i++ {
+    <- done
+  }
+}
 func (this *Game) UpdateUsedLetters(guess string){
   used := false
   for _, ltr := range this.State.UsedLetters {
@@ -34,8 +63,7 @@ func (this *Game) UpdateUsedLetters(guess string){
   }
 }
 
-func (this *Game) UpdateCorrectGuesses(guess, word string){
-  done := make(chan bool)
+func (this *Game) UpdateCorrectGuesses(guess, word string) bool{
   correct := false
   for i, c := range word {
     if string(c) == guess {
@@ -44,19 +72,7 @@ func (this *Game) UpdateCorrectGuesses(guess, word string){
     }
   }
 
-  go func(){
-    this.UpdateStats(correct)
-    done <- true
-  }()
-  go func(){
-    this.CheckGameEnded()
-    done <- true
-  }()
-
-  for i = 0; i < 2; i++ {
-    <- done
-  }
-  log.Println("state2 ", this.State)
+  return correct
 }
 func (this *Game) CheckGameEnded() {
   ended := true
@@ -67,10 +83,11 @@ func (this *Game) CheckGameEnded() {
   }
 
   if ended {
+    this.Finished = true
     if this.State.Turn == this.UserId2 {
-      this.State.Winner = this.UserId2
+      this.Winner = this.UserId2
     } else if this.State.Turn == this.UserId1 {
-      this.State.Winner = this.UserId2
+      this.Winner = this.UserId2
     }
   }
 }
@@ -81,8 +98,8 @@ func (this *Game) UpdateStats(correct bool) {
       this.State.WrongGuesses2++
     }
     if this.State.WrongGuesses2 == 6 {
-      this.State.Winner = this.UserId1 
-      this.State.Finished = true
+      this.Winner = this.UserId1 
+      this.Finished = true
     } else {
       this.State.Turn = this.UserId1
     }
@@ -91,8 +108,8 @@ func (this *Game) UpdateStats(correct bool) {
       this.State.WrongGuesses1++
     }
     if this.State.WrongGuesses1 == 6 {
-      this.State.Winner = this.UserId2 
-      this.State.Finished = true
+      this.Winner = this.UserId2 
+      this.Finished = true
     } else {
       this.State.Turn = this.UserId2
     }
@@ -104,20 +121,24 @@ func (this *Game) UpdateDatabase(gJson []byte) (string, error){
     err error
     msgType string
     )
-  if this.Finished {
+  if this.Finished && this.Winner != 0 {
     _, err = database.DBConn.Query(`
       UPDATE games
       SET game_state = $1,
           winner = $2,
           finished = true
-      WHERE id = $4 AND user_id1 = $5 AND user_id2 = $6
+      WHERE id = $3 AND user_id1 = $4 AND user_id2 = $5
     `, gJson, this.Winner, this.Id, this.UserId1, this.UserId2)
+    msgType = "GAME_FINISHED"
+    //logic now causing the last letter not to show up
   } else {
     _, err = database.DBConn.Query(`
       UPDATE games
       SET game_state = $1
       WHERE id = $2 AND user_id1 = $3 AND user_id2 = $4
     `, gJson, this.Id, this.UserId1, this.UserId2)
+
+    msgType = "MOVE_MADE"
   }
 
   return msgType, err

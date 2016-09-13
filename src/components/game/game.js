@@ -11,7 +11,6 @@ class Game extends Component {
 
   render() {
     var game = this.props.game;
-    //should be wrong guesses instead of number of guesses
     return (
       <div className="game-screen">
         <Diagram guessCount1={game.wrongGuesses1}

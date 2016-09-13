@@ -22,7 +22,9 @@ class Letters extends Component {
     return false;
   }
   handleClick = (e) => {
-    if (this.props.turn && this.alphabets.indexOf(e.target.dataset.letter) > -1) {
+    if (this.props.turn && 
+          this.alphabets.indexOf(e.target.dataset.letter) > -1 && 
+          !this.props.gameInfo.finished) {
       let gameInfo = this.props.gameInfo,
           move = e.target.dataset.letter
       if (move.length > 1){
@@ -34,6 +36,8 @@ class Letters extends Component {
         data: {
           username1: gameInfo.username1,
           username2: gameInfo.username2,
+          nickname1: gameInfo.nickname1,
+          nickname2: gameInfo.nickname2,
           userId1: gameInfo.userId1, 
           userId2: gameInfo.userId2, 
           id: gameInfo.id,

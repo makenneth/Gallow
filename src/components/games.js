@@ -25,6 +25,9 @@ class Games extends Component {
   handleClick = (e) => {
     this.context.router.push(`/games/${e.target.dataset.id}`)
   }
+  winningBlurp() {
+
+  }
   render() {
     return (
       <div className="games-container">
@@ -44,6 +47,8 @@ class Games extends Component {
             this.props.games.finished.map( game => {
               return <li key={game.id} data-id={game.id}>
                 {game.nickname1}&nbsp;vs.&nbsp;{game.nickname2}
+                <br/>
+                { `Result: ${game.winner === this.props.user.id ? "Won" : "Lost"}` }
               </li>
             })
           }

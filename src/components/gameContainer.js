@@ -31,10 +31,6 @@ class GameContainer extends Component {
   }
 
   render() {
-    //idea... 
-    //loading should be abstracted out to a reducer
-    //so when something is loading...we can just call that action
-    //and we can all share one loader
     return (
       <div className="game-container">
         <Game ws={this.props.ws} user={this.props.user} />

@@ -43,8 +43,7 @@ func GetCurrentUser(w http.ResponseWriter, userToken string) User {
 func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
   var (
     id int
-    username string
-    nickname string
+    username, nickname string
     expiration time.Time
     )
   newToken, _ := token.GenerateRandomToken(32)
@@ -65,10 +64,7 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
 }
 
 func (u *UserData) CheckPassword() error {
-  var (
-    passwordDigest string
-    sessionToken string
-  )
+  var passwordDigest, sessionToken string
   err := database.DBConn.QueryRow(`SELECT password_digest, session_token 
     FROM users 
     WHERE username = $1`, u.Username).Scan(&passwordDigest, &sessionToken)
