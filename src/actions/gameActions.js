@@ -1,6 +1,6 @@
-import { FETCHED_GAME, 
-         NEW_GAME, 
+import {NEW_GAME,
          SET_ANSWER,
+         FETCHED_GAME,
          FETCHED_USERS,
          CREATED_GAME,
          SET_GAME,
@@ -17,19 +17,19 @@ export const fetchUsers = (string) => {
   }
 }
 
-export const createGame = (userId1, username1, userId2, username2) => {
-  //somehow when a game is created.. it has to notify the other side to update
-  //probably 
+export const createGame = (user1, user2) => {
   const req = axios({
     url: "/api/games/new", 
     method: "post",
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
     data: {
       id: 0,
-      username1: username1,
-      username2: username2,
-      userId1: userId1, 
-      userId2: userId2
+      username1: user1.username,
+      username2: user2.username,
+      nickname1: user1.nickname,
+      nickname2: user2.nickname,
+      userId1: user1.id, 
+      userId2: user2.id
     }
   })
   return {

@@ -19,10 +19,8 @@ class NewGame extends Component {
     if (!this.state.selectedOpponent){
       alert("You have to select a player first!")
     } else {
-      this.props.createGame(this.props.user.id, 
-        this.prop.user.username,
-        this.state.selectedOpponent.id,
-        this.state.selectedOpponent.username)
+      this.props.createGame(this.props.user,
+        this.state.selectedOpponent)
         .then(res => {
           debugger;
           this.context.router.push(`/games/${res.payload.data.id}`)

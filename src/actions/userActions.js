@@ -1,4 +1,4 @@
-import { LOGGED_IN, LOGGED_OUT } from "../constants/constants"
+import { LOGGED_IN, LOGGED_OUT, FETCHED_GAMES } from "../constants/constants"
 import axios from "axios"
 
 
@@ -19,10 +19,10 @@ export const logOut = () => {
     payload: req
   }
 }
-export const fetchGames = (playerId) => {
-  const req = axios(`/api/user/${playerId}/games`)
+export const fetchGames = () => {
+  const req = axios.get(`/api/user/games`)
   return {
-    type: FETCHED_GAME,
-    payload: games
+    type: FETCHED_GAMES,
+    payload: req
   }
 }

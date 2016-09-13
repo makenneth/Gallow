@@ -234,33 +234,36 @@ func (this *Client) RetreiveChatMessages(gameId int) {
   message := &Message{"FETCHED_MESSAGES", data}
   this.msgCh <- message
 }
-func (this *Client)RetreiveData(gameId int) (*game.Game, error) {
+func (this *Client) RetreiveData(gameId int) (*game.Game, error) {
 
   var (
     username1 string
-    username2 string
+    username2 string 
+    nickname1 string
+    nickname2 string
     userId1 int
     userId2 int
     id int
+    finished bool
     gameJson []byte
    )
-  err := database.DBConn.QueryRow(`SELECT u1.username, u2.username, g.user_id1, g.user_id2,  
-    g.id, g.game_state
+  err := database.DBConn.QueryRow(`SELECT 
+    g.id, g.user_id1, g.user_id2,
+    u1.username, u2.username, 
+    u1.nickname, u2.nickname,
+    g.finished, g.game_state
     FROM games AS g
     INNER JOIN users AS u1
     ON u1.id = g.user_id1
     INNER JOIN users AS u2
     ON u2.id = g.user_id2
     WHERE g.id = $1
-    LIMIT 1`, gameId).Scan(&username1, &username2, &userId1, &userId2, &id, &gameJson)
+    LIMIT 1`, gameId).Scan(&id, &userId1, &userId2, &username1, &username2, 
+      &nickname1, &nickname2, &finished, &gameJson)
 
-  // if this.username != username1 && this.username != username2 {
-  //   err = errors.New("Invalid user access!!")
-
-  //   return nil, err
-  // }
   var gameState state.State
   _ = json.Unmarshal(gameJson, &gameState)
-  game := &game.Game{id, userId1, userId2, username1, username2, gameState}
+  game := &game.Game{id, userId1, userId2, username1, username2, 
+    nickname1, nickname2, finished, gameState}
   return game, err
 }

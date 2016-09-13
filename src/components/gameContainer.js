@@ -13,10 +13,10 @@ class GameContainer extends Component {
 
   componentWillMount() {
     try {
-      this.props.ws.send({
+      this.props.ws.send(JSON.stringify({
         type: "GAME_CONNECTED",
-        data: this.props.params.id
-      })
+        data: +this.props.params.id
+      }))
     } catch(e) {
       this.props.ws.onopen = this.socketOpened;
       this.setState({ loading: false })

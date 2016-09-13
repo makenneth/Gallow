@@ -37,7 +37,7 @@ func (handler *RegexHandler) AddRoute(reg string, h func(http.ResponseWriter, *h
   handler.routes = append(handler.routes, route)
 }
 
-func (handler *RegexHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) {
+func (handler *RegexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
   for _, route := range handler.routes {
     matches := route.re.FindStringSubmatch(r.URL.Path)
     if matches != nil {
@@ -111,11 +111,10 @@ func main() {
     http.ServeFile(w, r, r.URL.Path[1:])
   })
 
-  regHandler := new(RegexHandler)
-  regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
-  regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
-  regHandler.AddRoute("/api/user/([0-9]+)/games$", api.GamesRouteHandler)
-
+  // regHandler := new(RegexHandler)
+  // regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
+  // regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
+  http.HandleFunc("/api/user/games", api.GamesRouteHandler)
   http.HandleFunc("/api/user/new", api.SignUpHandler)
   http.HandleFunc("/api/user", api.UserHandler) 
   http.HandleFunc("/api/user/current", api.CurrentUserHandler) 

@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { fetchGames } from "../actions/gameActions"
+import { fetchGames } from "../actions/userActions"
 
 class Games extends Component {
   constructor(props, context) {
@@ -11,17 +11,15 @@ class Games extends Component {
     router: React.PropTypes.object.isRequired
   }
   componentDidMount() {
-    try {
-      this.props.fetchGames(this.props.user.id)
-    } catch (e) {
-      console.log("waiting for user...")
+    if (this.props.user.id){
+      this.props.fetchGames()
     }
   }
 
   componentWillReceiveProps(nextProps) {
      if ((!this.props.user && nextProps.user) || 
-          (this.props.user && nextProps.user.id !== this.props.user)){
-        this.props.fetchGames(nextProps.user.id)
+          (this.props.user && nextProps.user.id !== this.props.user.id)){
+        this.props.fetchGames()
      }
   }
   handleClick = (e) => {
@@ -29,14 +27,23 @@ class Games extends Component {
   }
   render() {
     return (
-      <div>
-        <h1>Previous Game</h1>
+      <div className="games-container">
+        <h1>Ongoing Games</h1>
         <ul onClick={this.handleClick}>
           { 
-            this.props.games.map( game => {
+            this.props.games.unfinished.map( game => {
               return <li key={game.id} data-id={game.id}>
-                Self:&nbsp;{game.userId1}<br />
-                Opponent:&nbsp;{game.userId2}
+                {game.nickname1}&nbsp;vs.&nbsp;{game.nickname2}
+              </li>
+            })
+          }
+        </ul>
+        <h1>Finished Games</h1>
+        <ul onClick={this.handleClick}>
+          { 
+            this.props.games.finished.map( game => {
+              return <li key={game.id} data-id={game.id}>
+                {game.nickname1}&nbsp;vs.&nbsp;{game.nickname2}
               </li>
             })
           }
