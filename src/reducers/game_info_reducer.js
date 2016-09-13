@@ -9,7 +9,9 @@ export default (state = {}, action) => {
         userId1: action.payload.userId1,
         userId2: action.payload.userId2,
         username1: action.payload.username1,
-        username2: action.payload.username2
+        username2: action.payload.username2,
+        nickname1: action.payload.nickname1,
+        nickname2: action.payload.nickname2
       };
 
       return newState;

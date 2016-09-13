@@ -60,6 +60,7 @@ func (this *SocketServer) Listen() {
 		case cl := <- this.addClient:
 			log.Printf("Adding new client %s", cl.username)
 			this.clients[cl.username] = cl
+			log.Println("current Clients...", this.clients)
 			break;
 		case cl := <- this.removeClient:
 			log.Printf("Removing Client %s", cl.username)
@@ -67,8 +68,6 @@ func (this *SocketServer) Listen() {
 			break;
 		case msg := <- this.send:
 			for _, username := range msg.Dest {
-				log.Printf("username dest: %s", username)
-				log.Println("current Clients...", this.clients)
 				if cl, ok := this.clients[username]; ok {
 					log.Println("sending message to %s", cl.username)
 					cl.Write() <- msg.Message

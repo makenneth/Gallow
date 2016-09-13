@@ -56,7 +56,7 @@ func (this *Client) ListenRead() {
     case <- this.done:
       this.server.RemoveClient() <- this;
       this.done <- true
-      return
+      break
     default:
       var msg Message
       err := websocket.JSON.Receive(this.ws, &msg)
@@ -84,21 +84,34 @@ func (this *Client) ListenRead() {
           log.Println("err1: ", err)
           this.done <- true
         }
-        gameData, err := this.RetreiveData(gameId)
+        go func(){
+          chatMsgs, err := this.RetreiveChatMessages(gameId)
+          if err != nil  {
+            log.Println("err2: ", err)
+            this.done <- true
+          }
+          data, _ := json.Marshal(chatMsgs)
+          message1 := &Message{"FETCHED_MESSAGES", data}
+          this.msgCh <- message1
+          
+          }()
+          
+        go func(){
+          gameData, err := this.RetreiveData(gameId)
       
-        if err != nil  {
-          log.Println("err2: ", err)
-          this.done <- true
-        }
-        data, err := json.Marshal(gameData)
-        if err != nil {
-          log.Println("err3: ", err)
-          this.done <- true
-        }
-        message := &Message{"GAME_CONNECTED", data}
-        go this.RetreiveChatMessages(gameId)
+          if err != nil  {
+            log.Println("err2: ", err)
+            this.done <- true
+          }
+          data, err := json.Marshal(gameData)
+          if err != nil {
+            log.Println("err3: ", err)
+            this.done <- true
+          }
+          message2 := &Message{"GAME_CONNECTED", data}
+          this.msgCh <- message2
+        }()
 
-        this.msgCh <- message
         break;
       case "USER_MOVE":
         var (
@@ -107,6 +120,7 @@ func (this *Client) ListenRead() {
           gameState state.State
           word string
           opponent string
+          finished bool
           )
         done := make(chan bool)
         err := json.Unmarshal(msg.Data, &g)
@@ -117,15 +131,18 @@ func (this *Client) ListenRead() {
         
 
         err = database.DBConn.QueryRow(`
-          SELECT selected_word, game_state
+          SELECT selected_word, game_state, finished
           FROM games
           WHERE id = $1 AND user_id1 = $2 AND user_id2 = $3
-          `, g.Id, g.UserId1, g.UserId2).Scan(&word, &jsonG)
+          `, g.Id, g.UserId1, g.UserId2).Scan(&word, &jsonG, &finished)
         if err != nil {
           log.Println("err2: ", err)
         }
+        if finished {
+          return
+        }
+
         err = json.Unmarshal(jsonG, &gameState)
-        log.Println("game state: ", gameState)
         guess := g.State.Guess
         g.State = gameState
 
@@ -139,26 +156,19 @@ func (this *Client) ListenRead() {
         }()
         //somehow check the state to see if the game has ended
         for i := 0; i < 2; i++ {
-          log.Println("%i tasks done", i)
           <- done
         }
 
+        if err != nil {
+          log.Println("error in updating database");
+        }
         log.Println("game data updated: ", g)
         gJson, _ := json.Marshal(g.State)
-
-        _, err = database.DBConn.Query(`
-          UPDATE games
-          SET game_state = $1
-          WHERE id = $2 AND user_id1 = $3 AND user_id2 = $4
-        `, gJson, g.Id, g.UserId1, g.UserId2)
-        if err != nil {
-          panic(err)
-        }
-
+        msgType, err = g.UpdateDatabase(gJson)
         if opponent = g.Username1; this.username == opponent {
           opponent = g.Username2
         }
-        msg := &Message{"MOVE_MADE", gJson}
+        msg := &Message{msgType, gJson}
         this.msgCh <- msg
         this.server.SendToClient(opponent, msg)
         break
@@ -208,7 +218,7 @@ func SaveChatMessage(chatMsg *ChatMsg, username string, user_id, game_id int){
   //there was issue saving
   log.Println("save chat message err: ", err)
 }
-func (this *Client) RetreiveChatMessages(gameId int) { 
+func (this *Client) RetreiveChatMessages(gameId int) ([]ChatMsg, error) { 
   chatMsgs := make([]ChatMsg, 0)
   var (
     author string
@@ -219,20 +229,15 @@ func (this *Client) RetreiveChatMessages(gameId int) {
     INNER JOIN messages AS m
     ON g.id = m.game_id
     WHERE g.id = $1
-    ORDER BY created_at DESC
+    ORDER BY created_at ASC
     LIMIT 20`, gameId)
 
-  if err != nil {
-    log.Println(err)
-    this.done <- true
-  }
   for rows.Next() {
     _ = rows.Scan(&author, &body)
     chatMsgs = append(chatMsgs, ChatMsg{author, body})
   }
-  data, _ := json.Marshal(chatMsgs)
-  message := &Message{"FETCHED_MESSAGES", data}
-  this.msgCh <- message
+  return chatMsgs, err
+
 }
 func (this *Client) RetreiveData(gameId int) (*game.Game, error) {
 

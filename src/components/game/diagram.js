@@ -34,8 +34,8 @@ class Diagram extends Component {
   render(){
     var props = this.props;
     return (<div className="diagrams-container">
-        { this.constructDiagram(props.guessCount1, props.gameInfo.username1) }
-        { this.constructDiagram(props.guessCount2, props.gameInfo.username2) }
+        { this.constructDiagram(props.guessCount1, props.gameInfo.nickname1) }
+        { this.constructDiagram(props.guessCount2, props.gameInfo.nickname2) }
       </div>)
   }
 }

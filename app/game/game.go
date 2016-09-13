@@ -15,6 +15,7 @@ type Game struct {
   Nickname1 string `json:"nickname1"`
   Nickname2 string `json:"nickname2"`
   Finished bool `json:"finished"`
+  Winner int `json:"winner"`
   State state.State `json:"state"`
 }
 
@@ -34,17 +35,44 @@ func (this *Game) UpdateUsedLetters(guess string){
 }
 
 func (this *Game) UpdateCorrectGuesses(guess, word string){
+  done := make(chan bool)
   correct := false
   for i, c := range word {
-    log.Println(i)
-    log.Println(c)
     if string(c) == guess {
       this.State.CorrectGuesses[i] = string(c)
       correct = true
     }
   }
-  this.UpdateStats(correct)
+
+  go func(){
+    this.UpdateStats(correct)
+    done <- true
+  }()
+  go func(){
+    this.CheckGameEnded()
+    done <- true
+  }()
+
+  for i = 0; i < 2; i++ {
+    <- done
+  }
   log.Println("state2 ", this.State)
+}
+func (this *Game) CheckGameEnded() {
+  ended := true
+  for _, c := range this.State.CorrectGuesses {
+    if c == "" {
+      ended = false
+    }
+  }
+
+  if ended {
+    if this.State.Turn == this.UserId2 {
+      this.State.Winner = this.UserId2
+    } else if this.State.Turn == this.UserId1 {
+      this.State.Winner = this.UserId2
+    }
+  }
 }
 
 func (this *Game) UpdateStats(correct bool) {
@@ -52,11 +80,45 @@ func (this *Game) UpdateStats(correct bool) {
     if !correct {
       this.State.WrongGuesses2++
     }
-    this.State.Turn = this.UserId1
+    if this.State.WrongGuesses2 == 6 {
+      this.State.Winner = this.UserId1 
+      this.State.Finished = true
+    } else {
+      this.State.Turn = this.UserId1
+    }
   } else {
     if !correct {
       this.State.WrongGuesses1++
     }
-    this.State.Turn = this.UserId2
+    if this.State.WrongGuesses1 == 6 {
+      this.State.Winner = this.UserId2 
+      this.State.Finished = true
+    } else {
+      this.State.Turn = this.UserId2
+    }
   }
+}
+
+func (this *Game) UpdateDatabase(gJson []byte) (string, error){
+  var (
+    err error
+    msgType string
+    )
+  if this.Finished {
+    _, err = database.DBConn.Query(`
+      UPDATE games
+      SET game_state = $1,
+          winner = $2,
+          finished = true
+      WHERE id = $4 AND user_id1 = $5 AND user_id2 = $6
+    `, gJson, this.Winner, this.Id, this.UserId1, this.UserId2)
+  } else {
+    _, err = database.DBConn.Query(`
+      UPDATE games
+      SET game_state = $1
+      WHERE id = $2 AND user_id1 = $3 AND user_id2 = $4
+    `, gJson, this.Id, this.UserId1, this.UserId2)
+  }
+
+  return msgType, err
 }
