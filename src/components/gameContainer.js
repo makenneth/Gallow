@@ -29,7 +29,7 @@ class GameContainer extends Component {
       data: +this.props.params.id
     }))
   }
-
+  
   render() {
     return (
       <div className="game-container">

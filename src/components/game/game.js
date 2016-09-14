@@ -3,13 +3,13 @@ import { connect } from "react-redux"
 import Diagram from "./diagram"
 import GameInput from "./gameInput"
 import Letters from "./letters"
+import { toggleChat } from "../../actions/chatActions"
 
 class Game extends Component {
   constructor(props) {
     super(props);
   }
   handleClick = () => {
-    debugger;
     if (this.props.game.turn === this.props.user.id){
       this.props.ws.send(JSON.stringify({
         type: "SOLVE_GAME",
@@ -20,9 +20,7 @@ class Game extends Component {
       }));
     }
   }
-  openChat = () => {
-    debugger;
-  }
+
   render() {
     var game = this.props.game;
     return (
@@ -32,7 +30,7 @@ class Game extends Component {
         <GameInput guesses={game.correctGuesses || []}/>
         <div className="button-div">
           <button className="solve-it" onClick={this.handleClick}>Solve it</button>
-          <button className="open-chat" onClick={this.openChat}>Chat</button>
+          <button className="open-chat" onClick={() => this.props.toggleChat()}>Chat</button>
         </div>
         <Letters usedLetters={game.usedLetters || []} 
                  guesses={game.correctGuesses || []}
@@ -49,4 +47,4 @@ const mapStateToProps = ({ game, gameInfo }) => {
   return { game, gameInfo };
 }
 
-export default connect(mapStateToProps)(Game);
+export default connect(mapStateToProps, { toggleChat })(Game);

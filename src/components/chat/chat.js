@@ -10,7 +10,7 @@ class Chat extends Component {
   }
 
   render(){
-    return <div className="chat-screen">
+    return <div className={"chat-screen" + (this.props.chatScreen ? " chat-open" : "")}>
       <Messages messages={this.props.messages} />
       <Input ws={this.props.ws} messages={this.props.messages}/>
     </div>
@@ -18,8 +18,8 @@ class Chat extends Component {
 }
 
 
-const mapStateToProps = ({messages}) => {
-  return { messages }
+const mapStateToProps = ({messages, chatScreen }) => {
+  return { messages, chatScreen }
 }
 
 export default connect(mapStateToProps)(Chat);

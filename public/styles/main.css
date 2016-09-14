@@ -171,29 +171,35 @@
   margin: 0 auto;
 }
 .message-list {
-  padding: 10px;
-  height: 80%;
+  overflow-y: scroll;
+  padding: 15px;
+  height: 70%;
   min-height: 300px;
   max-height: 800px;
 }
-
+.message-list li {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
 .msg-input-form {
-  margin-top: 10px;
+  margin-top: 5px;
   padding: 10px;
   display: flex;
   justify-content: space-between;
 }
 .msg-input-form > input[type="text"] {
   padding: 5px;
+  font-size: 16px;
   width: 80%;
   border-radius: 2px;
   border: 1px solid black;
 }
 .msg-input-form > input[type="submit"] {
+  font-size: 16px;
   border-radius: 2px;
   padding: 5px;
-  color: black;
-  background-color: white;
+  color: white;
+  background-color: #EF6C00;
   box-shadow: none;
   border: 1px solid black;
   cursor: pointer;
@@ -337,16 +343,18 @@ h3 {
 @media screen and (max-width: 760px) {
   .chat-screen {
     display: none;
+    background-color: white;
+    position: fixed;
+    height: 80%;
+    width: 250px;
+    right: 0;
+    animation: slide 1s ease;
+    -webkit-animation: slide 1s ease;
   }
 
-  .game-container {
-
+  .chat-open {
+    display: block;
   }
-
-  .user-input {
-
-  }
-
   .guess-letter {
     width: 20px;
     height: 30px;
@@ -364,8 +372,17 @@ h3 {
   .open-chat {
     visibility: visible;
   }
-}
 
+}
+@-webkit-keyframes slide {
+  0% { transform: translateX(250px); }
+  100% { transform: translateX(0px); } 
+}
+@keyframes slide {
+  0% {    transform: translateX(250px); }
+  100% { transform: translateX(0px); }
+
+}
 @-webkit-keyframes load {
   0%,
   100% {

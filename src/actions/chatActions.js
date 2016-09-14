@@ -1,4 +1,4 @@
-import { NEW_MESSAGE, FETCHED_MESSAGES } from "../constants/constants"
+import { NEW_MESSAGE, FETCHED_MESSAGES, TOGGLE_CHAT } from "../constants/constants"
 
 export const addNewMessage = (message) => {
   return {
@@ -11,5 +11,11 @@ export const fetchedMessages = (messages) => {
   return {
     type: FETCHED_MESSAGES,
     payload: messages
+  }
+}
+
+export const toggleChat = () => {
+  return {
+    type: TOGGLE_CHAT
   }
 }
