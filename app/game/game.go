@@ -37,6 +37,7 @@ func (this *Game) Update(guess, word string){
   go func(){
     if (this.State.Solving && !correct) || !this.State.Solving {
       this.UpdateStats(correct)
+      this.State.Solving = false
     }
     done <- true
   }()

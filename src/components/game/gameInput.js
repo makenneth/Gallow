@@ -29,7 +29,7 @@ class GameInput extends Component {
           this.props.guesses.map((letter, i) => {
             let style = "guess-letter" + ( letter ? "" : " empty");
             return (<div key={letter + " " + i} className={style}>
-                { letter }
+                { letter.toUpperCase() }
               </div>)
           })
         }

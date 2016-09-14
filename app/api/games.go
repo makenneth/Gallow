@@ -23,7 +23,10 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request, s *socket.SocketServ
 
   num := rand.Intn(len(words))
 
-  var gameState game.Game
+  var (
+    gameState game.Game
+    updatedAt time.Time
+  )
 
   decoder := json.NewDecoder(r.Body)
   err := decoder.Decode(&gameState)
@@ -37,10 +40,10 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request, s *socket.SocketServ
   err = database.DBConn.QueryRow(`INSERT INTO games 
     (user_id1, user_id2, game_state, selected_word) 
     VALUES ($1, $2, $3, $4)                                    
-    returning id`, gameState.UserId1, gameState.UserId2, stateJSON, words[num]).Scan(&(gameState.Id))
+    returning id, updated_at`, gameState.UserId1, gameState.UserId2, stateJSON, words[num]).Scan(&(gameState.Id), &updatedAt)
 
   checkErr(err)
-  data, _ := json.Marshal(&GameApi{gameState.Id, false, 0, gameState.Nickname1, gameState.Nickname2})
+  data, _ := json.Marshal(&GameApi{gameState.Id, false, 0, gameState.Nickname1, gameState.Nickname2, updatedAt})
 
   go func() {
     msg := &socket.Message{"CREATED_GAME", data}

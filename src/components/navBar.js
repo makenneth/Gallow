@@ -17,16 +17,16 @@ class NavBar extends Component {
     if (!this.props.user){
       return (<div></div>)
     }
-    return (
+    return (<div className="navbar-container">
       <div className="navbar">
+        <div className="logo">Gallow</div>
         <ul>
           <li><Link to="/">Home</Link></li>
-          <li>{ "Welcome, " + this.props.user.nickname }</li>
           <li><Link to="/games/new">Start a new Game</Link></li>
           <li><a onClick={this.props.logOut}>Log Out</a></li>
         </ul>
       </div>
-      )
+     </div>)
   }
 }
 

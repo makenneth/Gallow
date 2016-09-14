@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { fetchGames } from "../actions/userActions"
-
+import moment from "moment"
 class Games extends Component {
   constructor(props, context) {
     super(props);
@@ -25,34 +25,38 @@ class Games extends Component {
   handleClick = (e) => {
     this.context.router.push(`/games/${e.target.dataset.id}`)
   }
-  winningBlurp() {
 
-  }
   render() {
     return (
       <div className="games-container">
-        <h1>Ongoing Games</h1>
-        <ul onClick={this.handleClick}>
-          { 
-            this.props.games.unfinished.map( game => {
-              return <li key={game.id} data-id={game.id}>
-                {game.nickname1}&nbsp;vs.&nbsp;{game.nickname2}
-              </li>
-            })
-          }
-        </ul>
-        <h1>Finished Games</h1>
-        <ul onClick={this.handleClick}>
-          { 
-            this.props.games.finished.map( game => {
-              return <li key={game.id} data-id={game.id}>
-                {game.nickname1}&nbsp;vs.&nbsp;{game.nickname2}
-                <br/>
-                { `Result: ${game.winner === this.props.user.id ? "Won" : "Lost"}` }
-              </li>
-            })
-          }
-        </ul>
+        <div>
+          <h1>Ongoing Games</h1>
+          <ul onClick={this.handleClick}>
+            { 
+              this.props.games.unfinished.map( game => {
+                return <li key={game.id} data-id={game.id}>
+                  {game.nickname1}<span>vs.</span>{game.nickname2}
+                  <br />
+                  Last Moved: {moment(game.updatedAt).fromNow()}
+                </li>
+              })
+            }
+          </ul>
+        </div>
+        <div>
+          <h1>Finished Games</h1>
+          <ul onClick={this.handleClick}>
+            { 
+              this.props.games.finished.map( game => {
+                return <li key={game.id} data-id={game.id}>
+                  {game.nickname1}<span>vs.</span>{game.nickname2}
+                  <br/>
+                  { `Result: ${game.winner === this.props.user.id ? "Won" : "Lost"}` }
+                </li>
+              })
+            }
+          </ul>
+        </div>
       </div>
       )
   }

@@ -8,7 +8,21 @@ class Game extends Component {
   constructor(props) {
     super(props);
   }
-
+  handleClick = () => {
+    debugger;
+    if (this.props.game.turn === this.props.user.id){
+      this.props.ws.send(JSON.stringify({
+        type: "SOLVE_GAME",
+        data: {
+          id: this.props.gameInfo.id, 
+          userId: this.props.user.id
+        }
+      }));
+    }
+  }
+  openChat = () => {
+    debugger;
+  }
   render() {
     var game = this.props.game;
     return (
@@ -16,6 +30,10 @@ class Game extends Component {
         <Diagram guessCount1={game.wrongGuesses1}
                  guessCount2={game.wrongGuesses2}/>
         <GameInput guesses={game.correctGuesses || []}/>
+        <div className="button-div">
+          <button className="solve-it" onClick={this.handleClick}>Solve it</button>
+          <button className="open-chat" onClick={this.openChat}>Chat</button>
+        </div>
         <Letters usedLetters={game.usedLetters || []} 
                  guesses={game.correctGuesses || []}
                  turn={game.turn === this.props.user.id}
@@ -27,8 +45,8 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = ({ game }) => {
-  return { game };
+const mapStateToProps = ({ game, gameInfo }) => {
+  return { game, gameInfo };
 }
 
 export default connect(mapStateToProps)(Game);

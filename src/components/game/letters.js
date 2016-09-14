@@ -50,7 +50,7 @@ class Letters extends Component {
   }
   render(){
     return (
-      <div className="alphabets-container cf" onClick={this.handleClick}>
+      <div className="alphabets-container" onClick={this.handleClick}>
         {
            this.alphabets.map(alphabet => {
               let bool = this.props.usedLetters.indexOf(alphabet) > -1;

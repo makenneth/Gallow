@@ -1,9 +1,14 @@
-ul {
+ul, li{
   list-style-type: none;
+  list-style-position: inside;
+  margin: 0;
+  padding: 0;
 }
 * {
   font-family: 'Raleway', sans-serif;
 }
-/*body {
-  background-color: black;
-}*/
+body {
+  margin: 0;
+  padding: 0;
+}
+

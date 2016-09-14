@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 
 const mapMessages = (messages = []) => {
-  return messages.map(msg => (
-    <li key={msg.author + msg.body}><span>{msg.author}:&nbsp;</span>{msg.body}</li> 
+  return messages.map((msg, i) => (
+    <li key={msg.author + msg.body + i}><span>{msg.author}:&nbsp;</span>{msg.body}</li> 
   ))  
 }
 

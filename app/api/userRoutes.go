@@ -21,6 +21,7 @@ type GameApi struct {
   Winner int `json:"winner"`
   Nickname1 string `json:"nickname1"`
   Nickname2 string `json:"nickname2"`
+  UpdatedAt time.Time `json:"updatedAt"`
 }
 func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method == "GET" {
@@ -31,33 +32,34 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
     }
     playerId := Sessions[cookie.Value].Id
     var (
-      id int
+      id, winner int
       finished bool
-      nickname1 string
-      nickname2 string
-      winner int
+      nickname1, nickname2 string
+      updatedAt time.Time
       )
     log.Println("fetched games for user...", playerId)
     data := &UserGamesData{make([]GameApi, 0), make([]GameApi, 0)}
     rows, err := database.DBConn.Query(`
-      SELECT g.id, g.finished, g.winner, u1.nickname, u2.nickname
+      SELECT g.id, g.finished, g.winner, g.updated_at, u1.nickname, u2.nickname
       FROM games AS g
       INNER JOIN users AS u1
       ON u1.id = g.user_id1
       INNER JOIN users AS u2
       ON u2.id = g.user_id2
       WHERE g.user_id1 = $1 OR g.user_id2 = $1 
+      ORDER BY g.updated_at
+      LIMIT 10
     `, playerId)
     if err != nil {
       log.Println(err)
     }
     //maybe if finished..fetch from api routes?
     for rows.Next() {
-      rows.Scan(&id, &finished, &winner, &nickname1, &nickname2)
+      rows.Scan(&id, &finished, &winner, &updatedAt, &nickname1, &nickname2)
       if finished {
-        data.Finished = append(data.Finished, GameApi{id, finished, winner, nickname1, nickname2})
+        data.Finished = append(data.Finished, GameApi{id, finished, winner, nickname1, nickname2, updatedAt})
       } else {
-        data.Unfinished = append(data.Unfinished, GameApi{id, finished, winner, nickname1, nickname2})
+        data.Unfinished = append(data.Unfinished, GameApi{id, finished, winner, nickname1, nickname2, updatedAt})
       }
     }
 

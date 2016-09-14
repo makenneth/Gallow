@@ -8,7 +8,8 @@ class NewGame extends Component {
     super(props);
     this.state = {
       name: "",
-      selectedOpponent: null
+      selectedOpponent: null,
+      selected: false
     }
   }
   static contextTypes = {
@@ -30,37 +31,65 @@ class NewGame extends Component {
         }); 
     }
   }
+  handleClear = (e) => {
+    this.setState({ 
+      name: "",
+      selectedOpponent: null
+    })
+  }
   handleSelect = (e) => {
-    this.setState({ selectedOpponent: JSON.parse(e.target.dataset.user) })
+    let user = JSON.parse(e.target.dataset.user);
+    this.setState({ 
+      name: user.username,
+      selectedOpponent: user,
+      selected: true
+    })
   }
   handleChange = (e) => {
     let __timer;
-    this.setState({ name: e.target.value })
+    this.setState({ 
+      name: e.target.value,
+      selected: false  
+    })
     clearTimeout(__timer);
     __timer = setTimeout(() => {
         this.props.fetchUsers(this.state.name)
     }, 700)
   }
   render(){
-    return (
-    <div>
-      New Game
-      <div type="select-opponent">
-        <input type="text" 
-               placeholder="Enter the user name"
-               onChange={this.handleChange} 
-               value={this.state.name}
-               />
-        <ul onClick={this.handleSelect}>
+    return (<div className="new-game-container">
+      <h1>New Game</h1>
+      <div>
+        <div className="user-input">
+          <input type="text" 
+                 placeholder="Enter the user name"
+                 onChange={this.handleChange} 
+                 value={this.state.name}
+                 />
+          <div onClick={this.handleClear}>&times;</div>
+       </div>
+        <ul onClick={this.handleSelect} style={{
+          display: this.props.usersQuery.length && !this.state.selected ? "block" : "none" 
+        }}>
           { 
-            this.props.usersQuery.map( (user) => {
-              return <li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>;
-            }) 
+            function(){
+              let users = [],
+                usersQuery = this.props.usersQuery;
+              for (let i = 0; i < usersQuery.length; i++){
+                let user = usersQuery[i]
+                if (user.id === 1 || user.id === this.props.user.id) continue;
+                users.push(<li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>);
+              }
+              return users;
+            }.call(this)
           }
         </ul>
       </div>
 
-      <input type="submit" value="Start Game" onClick={this.startGame}/>
+      <input type="submit" 
+             value="Start Game" 
+             onClick={this.startGame}
+             disabled={!this.state.selectedOpponent}/>
     </div>
     )
   }

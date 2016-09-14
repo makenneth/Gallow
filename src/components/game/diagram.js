@@ -25,8 +25,8 @@ class Diagram extends Component {
       <div style={{
         backgroundImage: `url("/public/images/0${count}.png")`, 
         backgroundSize: "cover",
-        width: "70px",
-        height: "50px"}}
+        width: "140px",
+        height: "100px"}}
         ></div>
       </div>
   }

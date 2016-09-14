@@ -16,6 +16,7 @@ type Client struct {
   done chan bool
   msgCh chan *Message
   username string
+  nickname string
 }
 
 const buffSize = 1000
@@ -30,7 +31,7 @@ func NewClient(ws *websocket.Conn, server *SocketServer) *Client {
   done := make(chan bool)
   msgCh := make(chan *Message, buffSize)
 
-  return &Client{ws, server, done, msgCh, ""}
+  return &Client{ws, server, done, msgCh, "", ""}
 }
 
 func (this *Client) Conn() *websocket.Conn {
@@ -66,15 +67,16 @@ func (this *Client) ListenRead() {
       log.Println("message-received, type: ", msg.Type)
       switch msg.Type {
       case "USER_CONNECTED": 
-        var username string
-        err := json.Unmarshal(msg.Data, &username)
-        log.Println("New User: ", username)
+        data := make(map[string]string)
+        err := json.Unmarshal(msg.Data, &data)
+        log.Println("New User: ", data["username"])
         
         if err != nil {
           this.done <- true
         }
 
-        this.username = username
+        this.username = data["username"]
+        this.nickname = data["nickname"]
         this.server.AddClient() <- this
         break;
       case "GAME_CONNECTED": 
@@ -118,15 +120,13 @@ func (this *Client) ListenRead() {
           g game.Game
           jsonG []byte
           gameState state.State
-          word, opponent, nickname, msgType, winner string
+          word, opponent, msgType, winner string
           finished bool
           )
         err := json.Unmarshal(msg.Data, &g)
         if err != nil {
           log.Println("err1: ", err)
         }
-        log.Println("game data received: ", g)
-
         err = database.DBConn.QueryRow(`
           SELECT selected_word, game_state, finished
           FROM games
@@ -143,19 +143,16 @@ func (this *Client) ListenRead() {
         guess := g.State.Guess
         g.State = gameState
         g.Update(guess, word)
-        log.Println("game data updated: ", g)
 
-        nickname = g.Nickname2
         if opponent = g.Username1; this.username == opponent {
           opponent = g.Username2
-          nickname = g.Nickname1
         }
 
-        if winner = g.Nickname2; g.Winner == 1 {
+        if winner = g.Nickname2; g.Winner == g.UserId1 {
           winner = g.Nickname1
         }
         go func(){
-          newChatMsg := &ChatMsg{"System", nickname + " played " + guess}
+          newChatMsg := &ChatMsg{"System", this.nickname + " played " + guess}
           cJson, _ := json.Marshal(newChatMsg)
           msg := &Message{"NEW_MESSAGE", cJson}
           this.msgCh <- msg
@@ -166,6 +163,7 @@ func (this *Client) ListenRead() {
         gJson, _ := json.Marshal(g.State)
         msgType, err = g.UpdateDatabase(gJson)
         if msgType == "GAME_FINISHED" {
+          log.Println("game finished")
           go func() {
             newChatMsg := &ChatMsg{"System", winner + " won."}
             cJson, _ := json.Marshal(newChatMsg)
@@ -175,12 +173,70 @@ func (this *Client) ListenRead() {
             SaveChatMessage(newChatMsg, "System", 1, g.Id)
           }()
         }
+
         if err != nil {
           log.Println("error in updating database");
         }
         msg := &Message{msgType, gJson}
         this.msgCh <- msg
         this.server.SendToClient(opponent, msg)
+        break
+      case "SOLVE_GAME":
+        var (
+          stateJson []byte
+          state state.State
+          username1, username2, opponent string
+          )
+        dataRec := make(map[string]int)
+
+        err := json.Unmarshal(msg.Data, &dataRec)
+        if err != nil {
+          log.Println("unknown data receive")
+        }
+        err = database.DBConn.QueryRow(`
+          SELECT g.game_state, u1.username, u2.username 
+          FROM games AS g
+          INNER JOIN users AS u1
+          ON g.user_id1 = u1.id
+          INNER JOIN users AS u2
+          ON g.user_id2 = u2.id
+          WHERE g.id = $1
+          `, dataRec["id"]).Scan(&stateJson, &username1, &username2)
+        if err != nil {
+          log.Println("database error1", err)
+        }
+        _ = json.Unmarshal(stateJson, &state)
+        //should be safe
+
+        if state.Turn == dataRec["userId"] {
+          if opponent = username1; this.username == opponent {
+            opponent = username2
+          } 
+          go func() {
+            newChatMsg := &ChatMsg{"System", this.nickname + " is solving..."}
+            data, _ := json.Marshal(newChatMsg)
+            msg := &Message{"NEW_MESSAGE", data}
+            this.msgCh <- msg
+            this.server.SendToClient(opponent, msg)
+            SaveChatMessage(newChatMsg, "System", 1, dataRec["id"])
+          }()
+
+          state.Solving = true
+          updatedState, _ := json.Marshal(state)
+          _, err = database.DBConn.Query(`
+            UPDATE games
+            SET game_state = $1
+            WHERE id = $2
+            `, updatedState, dataRec["id"])
+
+          if err != nil {
+            log.Println("database error2", err)
+          }
+          msg := &Message{"MOVE_MADE", updatedState}
+          this.msgCh <- msg
+          this.server.SendToClient(opponent, msg)
+        }
+
         break
       case "NEW_MESSAGE":
         var chatMsgData ChatMsgData

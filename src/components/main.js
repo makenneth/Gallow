@@ -34,7 +34,10 @@ class Main extends Component {
       this.setState({ loading: false })
       ws.send(JSON.stringify({
         type: "USER_CONNECTED",
-        data: nextProps.user.username
+        data: {
+          username: nextProps.user.username,
+          nickname: nextProps.user.nickname
+        }
       }))
     }
   }
@@ -45,6 +48,7 @@ class Main extends Component {
         this.props.fetchedGameData(message.data)
         break;
       case "MOVE_MADE":
+      case "GAME_FINISHED":
         this.props.updatedGame(message.data);
         break;
       case "NEW_MESSAGE":
@@ -90,7 +94,6 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <h2>Gallows</h2>
         <NavBar user={this.props.user} logOut={this.logOut}/>
 
         { 
