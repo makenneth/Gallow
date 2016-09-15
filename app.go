@@ -63,7 +63,6 @@ func templateHandler(w http.ResponseWriter, r *http.Request){
 func LogInPageHandler(w http.ResponseWriter, r *http.Request){
   cookie, _ := r.Cookie("sessiontokenLit")
   if cookie.String() != "" {
-    
     if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}) {
       log.Println("redirecting to / from /login..")
       http.Redirect(w, r, "/", http.StatusSeeOther)

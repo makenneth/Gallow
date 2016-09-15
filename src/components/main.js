@@ -20,13 +20,15 @@ class Main extends Component {
   }
   componentWillMount() {
     this.setState({ loading: true })
-    this.props.getCurrentUser().catch(err => {
-      debugger;
-      window.location.replace("/login")
-    });
+    this.props.getCurrentUser().catch(this.catchError);
 
     ws.onmessage = this.handleNewMessage;
     ws.onclose = () => { alert("Connection lost, please try again") }
+  }
+  catchError = () => {
+    if (!this.props.user){
+      window.location.replace("/login")
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.user.id && nextProps.user.id) {
