@@ -5,8 +5,7 @@ import { bindActionCreators } from "redux"
 import { getCurrentUser, logOut } from "../actions/userActions"
 import { fetchedGameData, updatedGame, createdGame } from "../actions/gameActions"
 import { addNewMessage, fetchedMessages } from "../actions/chatActions"
-
-const url = "ws://localhost:8080/chat"
+const url = process.env.WS_URL + "/chat"
 const ws = new WebSocket(url);
 
 class Main extends Component {

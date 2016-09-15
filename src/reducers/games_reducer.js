@@ -7,7 +7,6 @@ export default (state = {
   switch (action.type){
     case FETCHED_GAMES:
       return action.payload.data;
-      //add something for game won
     case CREATED_GAME:
       var newState = Object.assign({}, state)
       newState.unfinished = [...state.unfinished, action.payload.data]

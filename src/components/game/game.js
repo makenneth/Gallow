@@ -10,7 +10,7 @@ class Game extends Component {
     super(props);
   }
   handleClick = () => {
-    if (this.props.game.turn === this.props.user.id){
+    if (this.props.game.turn === this.props.user.id && !this.props.game.solving){
       this.props.ws.send(JSON.stringify({
         type: "SOLVE_GAME",
         data: {
@@ -29,8 +29,13 @@ class Game extends Component {
                  guessCount2={game.wrongGuesses2}/>
         <GameInput guesses={game.correctGuesses || []}/>
         <div className="button-div">
-          <button className="solve-it" onClick={this.handleClick}>Solve it</button>
-          <button className="open-chat" onClick={() => this.props.toggleChat()}>Chat</button>
+          <button className="solve-it" 
+                  onClick={this.handleClick} 
+                  disabled={game.solving}
+                >Solve it</button>
+          <button className="open-chat" 
+                  onClick={() => this.props.toggleChat()}
+                >Chat</button>
         </div>
         <Letters usedLetters={game.usedLetters || []} 
                  guesses={game.correctGuesses || []}

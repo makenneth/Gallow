@@ -12,12 +12,7 @@ import (
   "./app/database"
   "./app/token"
   "html/template"
-)
-
-const (
-  DB_USER = "postgres"
-  DB_PASSWORD = "postgres"
-  DB_NAME = "hangman"
+  "github.com/namsral/flag"
 )
 
 type route struct {
@@ -95,10 +90,14 @@ func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
   t.Execute(w, d)
 }
 
-func main() {
+
+func main() {  
+  port_num := 8080
+  flag.IntVar(&port_num, "P", port_num, "SERVER PORT")
+  dbinfo := DBInfo()
+  port := fmt.Sprintf(":%d", port_num)
+
   api.InitializeSessions()
-  dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-    DB_USER, DB_PASSWORD, DB_NAME)
   var err error
   database.DBConn, err = sql.Open("postgres", dbinfo)
   checkErr(err)
@@ -127,11 +126,24 @@ func main() {
   http.HandleFunc("/login", LogInPageHandler)
   http.HandleFunc("/signup", SignUpPageHandler)
   http.HandleFunc("/", templateHandler)
-  log.Println("Server listening at port 8080")
-  log.Fatal(http.ListenAndServe(":8080", nil))
+  log.Printf("Server listening at port %d", port_num)
+  log.Fatal(http.ListenAndServe(port, nil))
 }
 
+func DBInfo() string {
+  host, port := "localhost", 5432
+  db_user, db_password, db_name := "postgres", "postgres", "hangman"
 
+  flag.IntVar(&port, "p", port, "PORT NUMBER")
+  flag.StringVar(&host, "h", host, "HOST")
+  flag.StringVar(&db_name, "d", db_name, "DB NAME")
+  flag.StringVar(&db_user, "U", db_user, "DB USER")
+  flag.StringVar(&db_password, "w", db_password, "DB PASSWORD")
+  flag.Parse()
+
+  return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+    host, port, db_user, db_password, db_name)
+}
 func checkErr(err error) {
   if err != nil {
     panic(err);
