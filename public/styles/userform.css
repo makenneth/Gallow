@@ -1,9 +1,14 @@
+body {
+  background-color: #424242;
+}
 form {
+  background-color: rgba(255, 255, 255, 0.8);
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  padding: 40px;
+  -moz-transform: translate(-50%, -50%);
+  padding: 100px 40px 40px 40px;
   border: 1px solid #E0E0E0;
   display: flex;
   flex-direction: column;
@@ -14,6 +19,7 @@ input {
   padding: 5px;
   font-size: 16px;
   margin-bottom: 10px;
+  border: 1px solid #E0E0E0;
   width: 230px;
   height: 25px;
 }
@@ -81,10 +87,10 @@ input[type="submit"] {
 
 .nav {
   width: 100%;
+  left: 0;
   display: flex;
-  justify-content: space-around;
   position: absolute;
-  top: -35px;
+  top: 0;
   color: white;
 }
 #login {
@@ -93,12 +99,24 @@ input[type="submit"] {
 #signup {
   background-color: #BF360C;
 }
+#error {
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  top: 50px;
+  color: red;
+  white-space: nowrap;
+  font-weight: 700;
+}
 .active, .link {
   width: 100%;
   padding-top: 15px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   text-align: center;
+  font-weight: 400;
+  font-size: 16px;
 }
+
 .active {
   background-color: #607D8B;
 
@@ -109,3 +127,9 @@ input[type="submit"] {
 .link a {
   color: black;
 }
+.error-input {
+  box-shadow: 0px 0px 10px 3px #B71C1C; 
+  -moz-box-shadow: 0px 0px 10px 3px #B71C1C;
+  -webkit-box-shadow: 0px 0px 10px 3px #B71C1C;  
+}
+

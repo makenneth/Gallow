@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux"
 import { getCurrentUser, logOut, clearError, setError } from "../actions/userActions"
 import { fetchedGameData, updatedGame, createdGame } from "../actions/gameActions"
 import { addNewMessage, fetchedMessages } from "../actions/chatActions"
-const url = process.env.WS_URL + "/chat"
+const url = process.env.WS_URL + "/ws"
 const ws = new WebSocket(url);
 
 class Main extends Component {
@@ -23,7 +23,7 @@ class Main extends Component {
     this.props.getCurrentUser().catch(this.catchError);
 
     ws.onmessage = this.handleNewMessage;
-    ws.onclose = () => this.props.setError("Connection lost, please try again")
+    ws.onclose = () => this.props.setError("Connection lost, please try again later...")
   }
   catchError = () => {
     if (!this.props.user){
@@ -84,7 +84,7 @@ class Main extends Component {
   }
   flashError() {
     if (this.props.error.message){
-      setTimeout(this.props.clearError, 2000)
+      setTimeout(this.props.clearError, 5000)
       return <div className="flash-error">
           { this.props.error.message }
         </div>

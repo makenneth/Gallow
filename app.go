@@ -102,7 +102,7 @@ func main() {
   checkErr(err)
   defer database.DBConn.Close();
 
-	server := socket.NewServer("/chat")
+	server := socket.NewServer("/ws")
 	go server.Listen()
 
   http.HandleFunc("/public/", func(w http.ResponseWriter, r *http.Request) {

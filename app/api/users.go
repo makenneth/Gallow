@@ -25,7 +25,7 @@ func UsersQueryHandler(w http.ResponseWriter, r *http.Request) {
       rows, err := database.DBConn.Query(`
         SELECT id, username, nickname 
         FROM users
-        WHERE nickname LIKE '%' || $1 || '%'`, searchQuery) 
+        WHERE LOWER(nickname) LIKE '%' || $1 || '%'`, searchQuery) 
       if err != nil {
         log.Println(err)
         break;

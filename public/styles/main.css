@@ -111,6 +111,7 @@
   -moz-transition: color 0.5s ease-in-out;
 }
 .navbar a {
+  cursor: pointer;
   text-decoration: none;
   color: white;
 }
@@ -132,8 +133,6 @@
   flex-direction: column;
   align-items: center;
 
-  /*width: 35%;*/
-  /*margin-right: 20px;*/
 }
 .button-div {
   width: 100%;
@@ -277,7 +276,6 @@ h3 {
   transform: translateY(10%);
 }
 .alphabets-container {
-  /*width: 90%;*/
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -346,7 +344,7 @@ h3 {
   justify-content: center;
   align-items: center;
   position: absolute;
-  background-color: #757575;
+  background-color: #FDD835;
   top: 0;
   left: 50%;
   max-width: 500px;

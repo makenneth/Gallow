@@ -1,4 +1,4 @@
-import { FETCHED_GAME } from "../constants/constants"
+import { FETCHED_GAME, CLEAR_GAME } from "../constants/constants"
 
 export default (state = {}, action) => {
 
@@ -17,6 +17,8 @@ export default (state = {}, action) => {
       };
 
       return newState;
+    case CLEAR_GAME:
+      return {};
   }
 
   return state;

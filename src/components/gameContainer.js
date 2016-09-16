@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import Chat from "./chat/chat"
 import Game from "./game/game"
 import { connect } from "react-redux"
+import { clearGame } from "../actions/gameActions"
 
 class GameContainer extends Component {
   constructor(props) {
@@ -29,7 +30,9 @@ class GameContainer extends Component {
       data: +this.props.params.id
     }))
   }
-  
+  componentWillUnmount() {
+    this.props.clearGame();
+  }
   render() {
     return (
       <div className="game-container">
@@ -40,4 +43,4 @@ class GameContainer extends Component {
   }
 }
 
-export default GameContainer
+export default connect(null, { clearGame })(GameContainer)

@@ -8,12 +8,6 @@ class Input extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.messages.length !== nextProps.messages.length){
-      this.setState({ body: "" })
-    }
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.body !== nextState.body || 
       this.props.chat.author !== nextProps.chat.author ||
@@ -31,6 +25,7 @@ class Input extends Component {
       type: "NEW_MESSAGE",
       data: msg
     }));
+    this.setState({body: ""})
   }
 
   handleChange = (e) => {

@@ -23,5 +23,4 @@ Bult with Golang backend and socket and a React/Redux frontend.
 - [ ] CSRF
 - [ ] Add error channel
 - [ ] Add dictionary
-- [x] Add "Solve it"
-- [x] Add "done" to game state
+- [ ] Another game button

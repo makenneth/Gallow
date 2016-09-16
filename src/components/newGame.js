@@ -23,10 +23,8 @@ class NewGame extends Component {
       this.props.createGame(this.props.user,
         this.state.selectedOpponent)
         .then(res => {
-          debugger;
           this.context.router.push(`/games/${res.payload.data.id}`)
         }).catch(err => {
-          debugger;
           console.log(err)
         }); 
     }

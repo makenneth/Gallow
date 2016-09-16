@@ -14,6 +14,7 @@
       <div class="link"><a href="/signup">Sign Up</a></div>
       <div class="active">Log In</div>
     </div>
+    <div id="error"></div>
     <input
       type="text"
       id="username"
@@ -25,7 +26,6 @@
       placeholder="Password"
       />
     <input type="submit" value="Log In" id="login"/>
-    <!-- <div class="redirect">Already have an account? <a href="/signup">Sign Up</a></div> -->
 
     <div class="or">OR</div>
     <div class="facebook-icon"><div class="__facebook-logo"></div><span>Log in with Facebook</span></div>
@@ -33,8 +33,17 @@
   </form>
 
   <script>
+    var showError = function(err){
+      $("#error").html("<p>" + err + "</p>");
+
+      setTimeout(function(){
+        $("#error").html("");
+      }, 4000)
+    }
+
     $("#log-in-form").on("submit", function(e) {
       e.preventDefault();
+
       var data = {
         username: $("#username").val(),
         password: $("#password").val()
@@ -47,8 +56,8 @@
         success: function(data){
           window.location.replace("/");
         },
-        err: function(err) {
-          console.log(err);
+        error: function(err) {
+          showError("Password or username error");
         }
       })
     })

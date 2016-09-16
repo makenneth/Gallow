@@ -45,6 +45,7 @@
         nickname: $("#nickname").val(),
         password: $("#password").val()
       }
+      if (!checkError(data)) return;
       $.ajax({
         method: "POST",
         url: "/api/user/new",
@@ -57,10 +58,41 @@
           $("#error").html("<p>Username has been taken</p>");
           setTimeout(function(){
             $("#error").html("");
-          }, 2000)
+          }, 4000)
         }
       })
     })
+
+    var showError = function(err, id){
+      $("#error").html("<p>" + err + "</p>");
+      if (id) $("#" + id).addClass("error-input")
+
+      setTimeout(function(){
+        $("#error").html("");
+        if (id) $("#" + id).removeClass("error-input")
+      }, 2000)
+     }
+
+    var checkError = function(data) {
+      var regex = /^.{8,}$/,
+        passwordTest = regex.test(data.password),
+        nicknameTest = regex.test(data.nickname),
+        usernameTest = regex.test(data.username);
+
+      if (!nicknameTest) {
+        showError("Nickname must be 8 characters long", "nickname");
+        return false;
+      }
+      if (!usernameTest) {
+        showError("Username must be 8 characters long", "username");
+        return false;
+      }
+      if (!passwordTest){
+        showError("Password must be 8 characters long", "password");
+        return false;
+      }
+      return true;
+    }
   </script>
 </body>
 </html>
