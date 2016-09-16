@@ -19,10 +19,9 @@ class NavBar extends Component {
     }
     return (<div className="navbar-container">
       <div className="navbar">
-        <div className="logo">Gallow</div>
+        <div className="logo"><Link to="/">Gallow</Link></div>
         <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/games/new">Start a new Game</Link></li>
+          <li><Link to="/games/new">New Game</Link></li>
           <li><a onClick={this.props.logOut}>Log Out</a></li>
         </ul>
       </div>

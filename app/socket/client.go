@@ -7,21 +7,23 @@ import (
   "../database"
   "../game"
   "../state"
-  // "errors"
 )
 
 type Client struct {
   ws *websocket.Conn
-  server *SocketServer
+  server *Server
   done chan bool
   msgCh chan *Message
   username string
   nickname string
+  currentGame int
 }
-
+type Err struct {
+  message string
+}
 const buffSize = 1000
 
-func NewClient(ws *websocket.Conn, server *SocketServer) *Client { 
+func NewClient(ws *websocket.Conn, server *Server) *Client { 
   if ws == nil {
     panic("Websocket can't be nil!!")
   } else if server == nil {
@@ -31,7 +33,7 @@ func NewClient(ws *websocket.Conn, server *SocketServer) *Client {
   done := make(chan bool)
   msgCh := make(chan *Message, buffSize)
 
-  return &Client{ws, server, done, msgCh, "", ""}
+  return &Client{ws, server, done, msgCh, "", "", 0}
 }
 
 func (this *Client) Conn() *websocket.Conn {
@@ -70,7 +72,8 @@ func (this *Client) ListenRead() {
         err := json.Unmarshal(msg.Data, &data)
         
         if err != nil {
-          this.done <- true
+          this.SendErrorMsg("Data is corrupted.")
+          return
         }
 
         this.username = data["username"]
@@ -81,14 +84,14 @@ func (this *Client) ListenRead() {
         var gameId int;
         err := json.Unmarshal(msg.Data, &gameId)
         if err != nil {
-          log.Println("err1: ", err)
-          this.done <- true
+          return
         }
+        this.currentGame = gameId
         go func(){
           chatMsgs, err := this.RetreiveChatMessages(gameId)
           if err != nil  {
             log.Println("err2: ", err)
-            this.done <- true
+            // this.done <- true
           }
           data, _ := json.Marshal(chatMsgs)
           message1 := &Message{"FETCHED_MESSAGES", data}
@@ -100,14 +103,10 @@ func (this *Client) ListenRead() {
           gameData, err := this.RetreiveData(gameId)
       
           if err != nil  {
-            log.Println("err2: ", err)
-            this.done <- true
+            this.SendErrorMsg("Data not found...")
+            return
           }
-          data, err := json.Marshal(gameData)
-          if err != nil {
-            log.Println("err3: ", err)
-            this.done <- true
-          }
+          data, _ := json.Marshal(gameData)
           message2 := &Message{"GAME_CONNECTED", data}
           this.msgCh <- message2
         }()
@@ -123,7 +122,8 @@ func (this *Client) ListenRead() {
           )
         err := json.Unmarshal(msg.Data, &g)
         if err != nil {
-          log.Println("err1: ", err)
+          this.SendErrorMsg("An error has occured...")
+          return
         }
         err = database.DBConn.QueryRow(`
           SELECT selected_word, game_state, finished
@@ -131,7 +131,8 @@ func (this *Client) ListenRead() {
           WHERE id = $1 AND user_id1 = $2 AND user_id2 = $3
           `, g.Id, g.UserId1, g.UserId2).Scan(&word, &jsonG, &finished)
         if err != nil {
-          log.Println("err2: ", err)
+          this.SendErrorMsg("An error has occured...")
+          return
         }
         if finished {
           return
@@ -149,35 +150,22 @@ func (this *Client) ListenRead() {
         if winner = g.Nickname2; g.Winner == g.UserId1 {
           winner = g.Nickname1
         }
-        go func(){
-          newChatMsg := &ChatMsg{"System", this.nickname + " played " + guess}
-          cJson, _ := json.Marshal(newChatMsg)
-          msg := &Message{"NEW_MESSAGE", cJson}
-          this.msgCh <- msg
-          this.server.SendToClient(opponent, msg)
-          SaveChatMessage(newChatMsg, "System", 1, g.Id)
-        }()
+
+        go this.SendSystemMessage(opponent, this.nickname + " played " + guess, g.Id)
 
         gJson, _ := json.Marshal(g.State)
         msgType, err = g.UpdateDatabase(gJson)
         if msgType == "GAME_FINISHED" {
-          log.Println("game finished")
-          go func() {
-            newChatMsg := &ChatMsg{"System", winner + " won."}
-            cJson, _ := json.Marshal(newChatMsg)
-            msg := &Message{"NEW_MESSAGE", cJson}
-            this.msgCh <- msg
-            this.server.SendToClient(opponent, msg)
-            SaveChatMessage(newChatMsg, "System", 1, g.Id)
-          }()
+          go this.SendSystemMessage(opponent, winner + " won.", g.Id)
         }
 
         if err != nil {
-          log.Println("error in updating database");
+          this.SendErrorMsg("An error has occured at saving the result...")
+          return
         }
         msg := &Message{msgType, gJson}
         this.msgCh <- msg
-        this.server.SendToClient(opponent, msg)
+        this.server.SendToClientConn(opponent, msg, g.Id)
         break
       case "SOLVE_GAME":
         var (
@@ -189,7 +177,8 @@ func (this *Client) ListenRead() {
 
         err := json.Unmarshal(msg.Data, &dataRec)
         if err != nil {
-          log.Println("unknown data receive")
+          this.SendErrorMsg("An error has occured...")
+          return
         }
         err = database.DBConn.QueryRow(`
           SELECT g.game_state, u1.username, u2.username 
@@ -201,23 +190,16 @@ func (this *Client) ListenRead() {
           WHERE g.id = $1
           `, dataRec["id"]).Scan(&stateJson, &username1, &username2)
         if err != nil {
-          log.Println("database error1", err)
+          this.SendErrorMsg("An error has occured...")
+          return
         }
         _ = json.Unmarshal(stateJson, &state)
-        //should be safe
 
         if state.Turn == dataRec["userId"] {
           if opponent = username1; this.username == opponent {
             opponent = username2
           } 
-          go func() {
-            newChatMsg := &ChatMsg{"System", this.nickname + " is solving..."}
-            data, _ := json.Marshal(newChatMsg)
-            msg := &Message{"NEW_MESSAGE", data}
-            this.msgCh <- msg
-            this.server.SendToClient(opponent, msg)
-            SaveChatMessage(newChatMsg, "System", 1, dataRec["id"])
-          }()
+          go this.SendSystemMessage(opponent, this.nickname + " is solving...", dataRec["id"])
 
           state.Solving = true
           updatedState, _ := json.Marshal(state)
@@ -228,11 +210,12 @@ func (this *Client) ListenRead() {
             `, updatedState, dataRec["id"])
 
           if err != nil {
-            log.Println("database error2", err)
+            this.SendErrorMsg("An error has occured...")
+            return
           }
           msg := &Message{"MOVE_MADE", updatedState}
           this.msgCh <- msg
-          this.server.SendToClient(opponent, msg)
+          this.server.SendToClientConn(opponent, msg, dataRec["id"])
         }
 
         break
@@ -249,7 +232,7 @@ func (this *Client) ListenRead() {
         msg := &Message{"NEW_MESSAGE", data}
         go chatMsgData.SaveChatMessage()
         this.msgCh <- msg
-        this.server.SendToClient(chatMsgData.Recipient, msg)
+        this.server.SendToClientConn(chatMsgData.Recipient, msg, chatMsgData.GameId)
         break;
       default:
         log.Println("Message Type unrecognized, ", msg)
@@ -274,13 +257,12 @@ func (this *Client) ListenWrite() {
   }
 }
 
-func SaveChatMessage(chatMsg *ChatMsg, username string, user_id, game_id int){
+func SaveChatMessage(chatMsg *ChatMsg, username string, user_id, game_id int) error {
   _, err := database.DBConn.Query(`INSERT INTO messages
     (author, body, user_id, game_id)
     VALUES ($1, $2, $3, $4)`, chatMsg.Author, chatMsg.Body, user_id, game_id)
-  //maybe can check err then send back messages letting the user know 
-  //there was issue saving
-  log.Println("save chat message err: ", err)
+  
+  return err
 }
 func (this *Client) RetreiveChatMessages(gameId int) ([]ChatMsg, error) { 
   chatMsgs := make([]ChatMsg, 0)
@@ -299,6 +281,26 @@ func (this *Client) RetreiveChatMessages(gameId int) ([]ChatMsg, error) {
   }
   return chatMsgs, err
 
+}
+func (this *Client) SendSystemMessage(opponent, sysMsg string, gameId int) {
+  newChatMsg := &ChatMsg{"System", sysMsg}
+  cJson, _ := json.Marshal(newChatMsg)
+  msg := &Message{"NEW_MESSAGE", cJson}
+  this.msgCh <- msg
+  this.server.SendToClientConn(opponent, msg, gameId)
+  err := SaveChatMessage(newChatMsg, "System", 1, gameId)
+  if err != nil {
+    this.SendErrorMsg("An error occured while saving the message...")
+    return
+  }
+}
+
+func (this *Client) SendErrorMsg(err string) {
+  errMsg := &Err{err}
+
+  data, _ := json.Marshal(errMsg)
+  msg := &Message{"ERROR_OCCURED", data}
+  this.msgCh <- msg
 }
 func (this *Client) RetreiveData(gameId int) (*game.Game, error) {
 

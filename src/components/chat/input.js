@@ -7,7 +7,11 @@ class Input extends Component {
       body: ""
     }
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (this.props.chatOpen === false && nextProps.chatOpen === true){
+      document.getElementById("body").focus();
+    }
+  }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.body !== nextState.body || 
       this.props.chat.author !== nextProps.chat.author ||
@@ -38,7 +42,7 @@ class Input extends Component {
                onChange={this.handleChange} 
                value={this.state.body}  
                placeholder="Enter your message..."
-               autoFocus/>
+          />
         <input type="submit" value="Submit"  />
       </form>
       )

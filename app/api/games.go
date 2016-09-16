@@ -5,34 +5,33 @@ import (
   "log"
   "../database"
   "encoding/json"
-  "math/rand"
   "time"
   "../game"
   "../state"
   "../socket"
 )
 
-func NewGameHandler(w http.ResponseWriter, r *http.Request, s *socket.SocketServer) {
+func NewGameHandler(w http.ResponseWriter, r *http.Request, s *socket.Server) {
   if r.Method != "POST"{
     log.Println("unknown method for /games")
     return;
   }
-  log.Println("creating game...")
-  rand.Seed(time.Now().UTC().UnixNano())
-  words := [3]string{"human", "world", "hello"}
-
-  num := rand.Intn(len(words))
 
   var (
+    word string
     gameState game.Game
     updatedAt time.Time
   )
-
-  decoder := json.NewDecoder(r.Body)
-  err := decoder.Decode(&gameState)
+  err := database.DBConn.QueryRow(`
+    SELECT word FROM words
+    OFFSET floor(random() * 187388)
+    LIMIT 1;
+    `).Scan(&word)
   checkErr(err)
-  log.Println("gameState: ", gameState)
-  st := state.NewState(words[num], gameState.UserId1)
+  decoder := json.NewDecoder(r.Body)
+  err = decoder.Decode(&gameState)
+  checkErr(err)
+  st := state.NewState(word, gameState.UserId1)
 
   stateJSON, _ := json.Marshal(st)
   gameState.State = *st
@@ -40,7 +39,7 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request, s *socket.SocketServ
   err = database.DBConn.QueryRow(`INSERT INTO games 
     (user_id1, user_id2, game_state, selected_word) 
     VALUES ($1, $2, $3, $4)                                    
-    returning id, updated_at`, gameState.UserId1, gameState.UserId2, stateJSON, words[num]).Scan(&(gameState.Id), &updatedAt)
+    returning id, updated_at`, gameState.UserId1, gameState.UserId2, stateJSON, word).Scan(&(gameState.Id), &updatedAt)
 
   checkErr(err)
   data, _ := json.Marshal(&GameApi{gameState.Id, false, 0, gameState.Nickname1, gameState.Nickname2, updatedAt})

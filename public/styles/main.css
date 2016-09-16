@@ -17,6 +17,7 @@
 .games-container {
   flex-direction: column;
   align-items: center;
+  padding-top: 20px;
 }
 .games-container h1 {
   text-align: center;
@@ -37,9 +38,9 @@
 .new-game-container {
   width: 50%;
   min-width: 400px;
-  height: 220px;
-  justify-content: space-around;
-  margin-top: 5%;
+  justify-content: space-between;
+  margin-top: 10%;
+  padding: 30px;
   flex-direction: column;
   align-items: center;
   border-radius: 3px;
@@ -66,7 +67,7 @@
 }
 .new-game-container input[type="submit"] {
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 5%;
   padding: 10px 20px;
   border: 1px solid #E0E0E0;
   font-size: 20px;
@@ -98,8 +99,8 @@
 }
 .navbar ul {
   font-size: 20px;
-  max-width: 350px;
-  width: 60%;
+  width: 200px;
+  /*width: 60%;*/
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -125,6 +126,9 @@
 .chat-screen {
   flex-grow: 2;
   width: 100%;
+}
+.chat-screen div:first-child {
+  display: none;
 }
 .game-screen {
   flex-grow: 1;
@@ -172,6 +176,7 @@
 .message-list {
   overflow-y: scroll;
   padding: 15px;
+  padding-top: 30px;
   height: 70%;
   min-height: 300px;
   max-height: 800px;
@@ -358,7 +363,7 @@ h3 {
   -webkit-animation: slide-down 1s ease-in-out;
   color: white;
 }
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 768px){
   .chat-screen {
     display: none;
     background-color: white;
@@ -369,7 +374,14 @@ h3 {
     animation: slide 1s ease;
     -webkit-animation: slide 1s ease;
   }
-
+  .chat-screen div:first-child {
+    display: block;
+    cursor: pointer;
+    position: absolute;
+    top: -5px;
+    left: 5px;
+    font-size: 36px;
+  }
   .chat-open {
     display: block;
   }
@@ -389,6 +401,128 @@ h3 {
   }
   .open-chat {
     visibility: visible;
+  }
+
+}
+@media (max-device-width: 768px) {
+  .navbar-container, .navbar-container > div {
+    height: 120px;
+    font-size: 30px;
+  }
+  .games-container, .navbar-container > div, .new-game-container, .game-container {
+    width: 90%;
+  }
+
+  .navbar ul {
+    font-size: 38px;
+    max-width: 400px;
+
+  }
+  .logo {
+    font-size: 42px;
+  }
+
+  .games-container h1 {
+    font-size: 60px;
+  }
+  .games-container li {
+    padding: 40px 80px;
+    font-size: 36px;
+    border: 3px solid #E0E0E0;
+  }
+
+  .new-game-container {
+    width: 70%;
+    padding: 50px;
+    border: 3px solid #E0E0E0;
+  }
+  .new-game-container > h1 {
+    font-size: 50px;
+  }
+  .user-input > input {
+    width: 400px;
+    padding: 10px 20px;
+    font-size: 36px;
+    border-radius: 3px;
+    border: 1px solid #E0E0E0;
+  }
+  .user-input div {
+    font-size: 50px;
+  }
+  .new-game-container input[type="submit"] {
+    margin-top: 5%;
+    padding: 15px 25px;
+    font-size: 36px;
+  }
+  .new-game-container ul {
+    top: 70px;
+    font-size: 36px;
+    width: 440px;
+  }
+  .new-game-container li{
+    padding: 5px 0px;
+    padding-left: 10px;
+  }
+
+
+}
+@media (max-device-width: 414px) {
+  .navbar-container, .navbar-container > div {
+    height: 180px;
+  }
+  .games-container, .navbar-container > div, .new-game-container, .game-container {
+    width: 90%;
+  }
+
+  .games-container {
+    padding-top: 30px;
+  }
+  .navbar ul {
+    font-size: 46px;
+    width: 400px;
+
+  }
+  .logo {
+    font-size: 60px;
+  }
+
+  .games-container h1 {
+    font-size: 75px;
+  }
+  .games-container li {
+    padding: 60px 80px;
+    font-size: 50px;
+  }
+
+  .new-game-container {
+    width: 80%;
+    padding: 50px;
+  }
+  .new-game-container > h1 {
+    font-size: 65px;
+  }
+  .user-input > input {
+    width: 600px;
+    padding: 15px 25px;
+    font-size: 46px;
+    border-radius: 3px;
+    border: 1px solid #E0E0E0;
+  }
+  .user-input div {
+    font-size: 70px;
+  }
+  .new-game-container input[type="submit"] {
+    padding: 25px 40px;
+    font-size: 46px;
+  }
+  .new-game-container ul {
+    top: 90px;
+    font-size: 46px;
+    width: 550px;
+  }
+  .new-game-container li{
+    padding: 15px 0px;
+    padding-left: 15px;
   }
 
 }
@@ -464,3 +598,4 @@ h3 {
     box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
   }
 }
+

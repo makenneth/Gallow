@@ -54,6 +54,24 @@ class NewGame extends Component {
         this.props.fetchUsers(this.state.name)
     }, 700)
   }
+  listFoundUsers = () => {
+    return <ul onClick={this.handleSelect} style={{
+        display: this.props.usersQuery.length && !this.state.selected ? "block" : "none" 
+      }}>
+        { 
+          function(){
+            let users = [],
+              usersQuery = this.props.usersQuery;
+            for (let i = 0; i < usersQuery.length; i++){
+              let user = usersQuery[i]
+              if (user.id === 1 || user.id === this.props.user.id) continue;
+              users.push(<li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>);
+            }
+            return users;
+          }.call(this)
+        }
+      </ul>
+  }
   render(){
     return (<div className="new-game-container">
       <h1>New Game</h1>
@@ -66,22 +84,7 @@ class NewGame extends Component {
                  />
           <div onClick={this.handleClear}>&times;</div>
        </div>
-        <ul onClick={this.handleSelect} style={{
-          display: this.props.usersQuery.length && !this.state.selected ? "block" : "none" 
-        }}>
-          { 
-            function(){
-              let users = [],
-                usersQuery = this.props.usersQuery;
-              for (let i = 0; i < usersQuery.length; i++){
-                let user = usersQuery[i]
-                if (user.id === 1 || user.id === this.props.user.id) continue;
-                users.push(<li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>);
-              }
-              return users;
-            }.call(this)
-          }
-        </ul>
+       { this.listFoundUsers() }
       </div>
 
       <input type="submit" 

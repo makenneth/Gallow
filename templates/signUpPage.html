@@ -19,6 +19,7 @@
       type="text"
       id="nickname"
       placeholder="Nickname"
+      autoFocus
       />
     <input
       type="text"
@@ -41,8 +42,8 @@
     $("#sign-up-form").on("submit", function(e) {
       e.preventDefault();
       var data = {
-        username: $("#username").val(),
-        nickname: $("#nickname").val(),
+        username: $("#username").val().toLowerCase(),
+        nickname: $("#nickname").val().toLowerCase(),
         password: $("#password").val()
       }
       if (!checkError(data)) return;
@@ -80,15 +81,15 @@
         usernameTest = regex.test(data.username);
 
       if (!nicknameTest) {
-        showError("Nickname must be 8 characters long", "nickname");
+        showError("Nickname must be at least 8 chars long.", "nickname");
         return false;
       }
       if (!usernameTest) {
-        showError("Username must be 8 characters long", "username");
+        showError("Username must be at least 8 chars long.", "username");
         return false;
       }
       if (!passwordTest){
-        showError("Password must be 8 characters long", "password");
+        showError("Password must be at least 8 chars long.", "password");
         return false;
       }
       return true;

@@ -19,6 +19,7 @@
       type="text"
       id="username"
       placeholder="Username"
+      autoFocus
       />
     <input
       type="password"
@@ -45,7 +46,7 @@
       e.preventDefault();
 
       var data = {
-        username: $("#username").val(),
+        username: $("#username").val().toLowerCase(),
         password: $("#password").val()
       }
       $.ajax({

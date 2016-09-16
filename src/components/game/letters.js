@@ -28,7 +28,6 @@ class Letters extends Component {
       let gameInfo = this.props.gameInfo,
           move = e.target.dataset.letter
       if (move.length > 1){
-        console.log("cheater?")
         return;
       }
       this.props.ws.send(JSON.stringify({

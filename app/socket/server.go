@@ -7,7 +7,7 @@ import (
 	// "encoding/json"
 )
 
-type SocketServer struct {
+type Server struct {
 	path string
 	clients map[string]*Client
 	send chan *InterclientMessage
@@ -15,35 +15,42 @@ type SocketServer struct {
 	removeClient chan *Client
 }
 
-func NewServer(path string) *SocketServer {
+func NewServer(path string) *Server {
 	clients := make(map[string]*Client, 0)
 	addClient := make(chan *Client)
 	removeClient := make(chan *Client)
 	send := make(chan *InterclientMessage)
 
-	return &SocketServer{path, clients, send, addClient, removeClient}
+	return &Server{path, clients, send, addClient, removeClient}
 }
 
 
-func (this *SocketServer) AddClient() chan<- *Client {
+func (this *Server) AddClient() chan<- *Client {
 	return (chan<- *Client)(this.addClient)
 }
 
-func (this *SocketServer) RemoveClient() chan<- *Client {
+func (this *Server) RemoveClient() chan<- *Client {
 	return (chan<- *Client)(this.removeClient)
 }
 
-func (this *SocketServer) Send() chan<- *InterclientMessage {
+func (this *Server) Send() chan<- *InterclientMessage {
 	return (chan<- *InterclientMessage)(this.send)
 }
 
-func (this *SocketServer) SendToClient(username string, message *Message) {
+func (this *Server) SendToClient(username string, message *Message) {
 	if cl, ok := this.clients[username]; ok {
 		cl.Write() <- message
 	}
 }
+func (this *Server) SendToClientConn(username string, message *Message, id int) {
+	if cl, ok := this.clients[username]; ok {
+		if cl.currentGame == id {
+			cl.Write() <- message
+		}
+	}
+}
 
-func (this *SocketServer) Listen() {
+func (this *Server) Listen() {
 	log.Println("Socket Server started...")
 	
 	onConnect := func(ws *websocket.Conn){

@@ -94,7 +94,14 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   decoder := json.NewDecoder(r.Body)
   err := decoder.Decode(&u)
   checkErr(err)
-
+  b, str := VerifyUser(u)
+  if !b {
+    w.Header().Set("Content-Type", "application/json; charset=utf-8");
+    w.WriteHeader(http.StatusUnprocessableEntity)
+    resText, _ := json.Marshal(str)
+    w.Write(resText)
+    return
+  }
   token, newPlayerId, err := u.InsertUser()
 
   expiration := time.Now().Add(30 * 24 * time.Hour)
@@ -106,7 +113,21 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   data, _ := json.Marshal(&cu)
   w.Write(data)
 }
+func VerifyUser(u UserData) (bool, string) {
+  b, e := true, ""
+  if len(u.Nickname) < 8 {
+    b, e = false, "Nickname"
+  }
+  if len(u.Username) < 8 {
+    b, e = false, "Username"
+  }
+  if len(u.Password) < 8 {
+    b, e = false, "Password"
+  }
 
+  str := e + " must be at least 8 chars long."
+  return b, str
+}
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 }
