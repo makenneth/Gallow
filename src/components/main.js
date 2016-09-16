@@ -105,14 +105,7 @@ class Main extends Component {
       <div>
         <NavBar user={this.props.user} logOut={this.logOut}/>
         { this.flashError() }
-        { 
-          React.Children.map(this.props.children, (child) => {
-            return React.cloneElement(child, {
-              user: this.props.user,
-              ws: ws
-            })
-          }) 
-        }
+        { this.children() }
         { this.loadingScreen() }
       </div>
       )

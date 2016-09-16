@@ -11,7 +11,7 @@ class Chat extends Component {
 
   render(){
     return <div className={"chat-screen" + (this.props.chatScreen ? " chat-open" : "")}>
-      <div className="" onClick={this.props.toggleChat}>&times;</div>
+      <div onClick={this.props.toggleChat}>&times;</div>
       <Messages messages={this.props.messages} />
       <Input ws={this.props.ws} 
              messages={this.props.messages}
