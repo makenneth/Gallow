@@ -1,4 +1,4 @@
-## Gallow
+## Gallow [Live Link(very bugg-y)](http://52.52.107.149)
 Online two-players Hangman with realtime chat functionality.
 Bult with Golang backend and socket and a React/Redux frontend. 
 
