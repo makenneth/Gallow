@@ -14,6 +14,7 @@
       <div class="active">Sign Up</div>
       <div class="link"><a href="/login">Log In</a></div>
     </div>
+    <div id="error"></div>
     <input
       type="text"
       id="nickname"
@@ -39,7 +40,7 @@
   <script>
     $("#sign-up-form").on("submit", function(e) {
       e.preventDefault();
-      let data = {
+      var data = {
         username: $("#username").val(),
         nickname: $("#nickname").val(),
         password: $("#password").val()
@@ -50,11 +51,13 @@
         data: JSON.stringify(data),
         contentType: "application/json",
         success: function(data){
-          console.log(data);
           window.location.replace("/");
         },
-        err: function(err) {
-          console.log(err);
+        err: function() {
+          $("#error").html("<p>Username has been taken</p>");
+          setTimeout(function(){
+            $("#error").html("");
+          }, 2000)
         }
       })
     })
