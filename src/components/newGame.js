@@ -40,7 +40,7 @@ class NewGame extends Component {
   handleSelect = (e) => {
     let user = JSON.parse(e.target.dataset.user);
     this.setState({ 
-      name: user.username,
+      name: user.nickname,
       selectedOpponent: user,
       selected: true
     })
