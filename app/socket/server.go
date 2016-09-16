@@ -52,24 +52,22 @@ func (this *SocketServer) Listen() {
 		defer ws.Close()
 	}
 
-	http.Handle(this.path, websocket.Handler(onConnect))
-	log.Println("Created handler")
+	http.HandleFunc(this.path, func(w http.ResponseWriter, r *http.Request){
+		s := websocket.Server{Handler: websocket.Handler(onConnect)}
+		s.ServeHTTP(w, r)
+	})
 
 	for {
 		select {
 		case cl := <- this.addClient:
-			log.Printf("Adding new client %s", cl.username)
 			this.clients[cl.username] = cl
-			log.Println("current Clients...", this.clients)
 			break;
 		case cl := <- this.removeClient:
-			log.Printf("Removing Client %s", cl.username)
 			delete(this.clients, cl.username)
 			break;
 		case msg := <- this.send:
 			for _, username := range msg.Dest {
 				if cl, ok := this.clients[username]; ok {
-					log.Println("sending message to %s", cl.username)
 					cl.Write() <- msg.Message
 				}
 			}

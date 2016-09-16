@@ -64,12 +64,10 @@ func (this *Client) ListenRead() {
       if err != nil {
         this.done <- true
       }
-      log.Println("message-received, type: ", msg.Type)
       switch msg.Type {
       case "USER_CONNECTED": 
         data := make(map[string]string)
         err := json.Unmarshal(msg.Data, &data)
-        log.Println("New User: ", data["username"])
         
         if err != nil {
           this.done <- true

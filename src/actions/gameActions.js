@@ -11,7 +11,6 @@ import axios from "axios"
 
 export const fetchUsers = (string) => {
   const req = axios.get(`/api/users?name=${string}`)
-  //this function should be implemented with elasticsearch
   return {
     type: FETCHED_USERS,
     payload: req

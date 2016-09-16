@@ -1,4 +1,6 @@
-import { LOGGED_IN, LOGGED_OUT, FETCHED_GAMES } from "../constants/constants"
+import { LOGGED_IN, LOGGED_OUT, 
+         FETCHED_GAMES, CLEAR_ERROR,
+         SET_ERROR } from "../constants/constants"
 import axios from "axios"
 
 
@@ -24,5 +26,18 @@ export const fetchGames = () => {
   return {
     type: FETCHED_GAMES,
     payload: req
+  }
+}
+
+export const setError = (message) => {
+  return {
+    type: SET_ERROR,
+    payload: message
+  }
+}
+
+export const clearError = () => {
+  return {
+    type: CLEAR_ERROR
   }
 }

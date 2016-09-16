@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import NavBar from "./navBar"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
-import { getCurrentUser, logOut } from "../actions/userActions"
+import { getCurrentUser, logOut, clearError, setError } from "../actions/userActions"
 import { fetchedGameData, updatedGame, createdGame } from "../actions/gameActions"
 import { addNewMessage, fetchedMessages } from "../actions/chatActions"
 const url = process.env.WS_URL + "/chat"
@@ -23,7 +23,7 @@ class Main extends Component {
     this.props.getCurrentUser().catch(this.catchError);
 
     ws.onmessage = this.handleNewMessage;
-    ws.onclose = () => { alert("Connection lost, please try again") }
+    ws.onclose = () => this.props.setError("Connection lost, please try again")
   }
   catchError = () => {
     if (!this.props.user){
@@ -82,6 +82,14 @@ class Main extends Component {
       </div>
     }
   }
+  flashError() {
+    if (this.props.error.message){
+      setTimeout(this.props.clearError, 2000)
+      return <div className="flash-error">
+          { this.props.error.message }
+        </div>
+    }
+  }
   children() {
     if (this.props.user){
       return  React.Children.map(this.props.children, (child) => {
@@ -96,7 +104,7 @@ class Main extends Component {
     return (
       <div>
         <NavBar user={this.props.user} logOut={this.logOut}/>
-
+        { this.flashError() }
         { 
           React.Children.map(this.props.children, (child) => {
             return React.cloneElement(child, {
@@ -110,11 +118,20 @@ class Main extends Component {
       )
   }
 }
-const mapStateToProps = ({ user }) => {
-  return { user }
+const mapStateToProps = ({ user, error }) => {
+  return { user, error }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getCurrentUser, logOut, fetchedGameData, updatedGame, addNewMessage, fetchedMessages, createdGame }, dispatch)
+  return bindActionCreators({ 
+    getCurrentUser, 
+    logOut, 
+    fetchedGameData, 
+    updatedGame, 
+    addNewMessage, 
+    fetchedMessages, 
+    createdGame,
+    clearError,
+    setError }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

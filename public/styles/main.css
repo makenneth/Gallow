@@ -340,6 +340,26 @@ h3 {
   -ms-transform: translateZ(0);
   transform: translateZ(0);
 }
+
+.flash-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background-color: #757575;
+  top: 0;
+  left: 50%;
+  max-width: 500px;
+  width: 50%;
+  min-width: 300px;
+  height: 40px;
+  font-size: 18px;
+  transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  animation: slide-down 1s ease-in-out;
+  -webkit-animation: slide-down 1s ease-in-out;
+  color: white;
+}
 @media screen and (max-width: 760px) {
   .chat-screen {
     display: none;
@@ -381,6 +401,15 @@ h3 {
 @keyframes slide {
   0% {    transform: translateX(250px); }
   100% { transform: translateX(0px); }
+
+}
+@-webkit-keyframes slide-down {
+  0% { opacity: 0; }
+  100% { opacity: 1;} 
+}
+@keyframes slide-down {
+  0% { opacity: 0;}
+  100% { opacity: 1;}
 
 }
 @-webkit-keyframes load {
