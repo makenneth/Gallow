@@ -121,13 +121,12 @@
   margin: 0 auto;
   margin-top: 5%;
   flex-direction: row;
-  /*align-items: center;*/
 }
 .chat-screen {
   flex-grow: 2;
   width: 100%;
 }
-.chat-screen div:first-child {
+.message-list div:first-child {
   display: none;
 }
 .game-screen {
@@ -136,8 +135,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
 }
+
 .button-div {
   width: 100%;
   display: flex;
@@ -174,20 +173,21 @@
   margin: 0 auto;
 }
 .message-list {
+  background-color: white;
   overflow-y: scroll;
   padding: 15px;
   padding-top: 30px;
-  height: 70%;
-  min-height: 300px;
-  max-height: 800px;
+  height: 80%;
+
 }
 .message-list li {
   padding-top: 3px;
   padding-bottom: 3px;
 }
 .msg-input-form {
-  margin-top: 5px;
-  padding: 10px;
+  background-color: #1A237E;
+  margin-top: 3px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
 }
@@ -203,7 +203,7 @@
   border-radius: 2px;
   padding: 5px;
   color: white;
-  background-color: #EF6C00;
+  background-color: #009688;
   box-shadow: none;
   border: 1px solid black;
   cursor: pointer;
@@ -260,6 +260,9 @@ h3 {
 
 
 .letter-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 2px solid black;
   border-radius: 5px;
   background-color: #388E3C;
@@ -270,16 +273,13 @@ h3 {
   width: 15px;
   height: 25px;
   cursor: pointer;
-  text-align: center;
   margin-right: 10px;
   margin-bottom: 10px;
 }
 .letter-box:hover {
   background-color: #4CAF50;
 }
-.letter-box div {
-  transform: translateY(10%);
-}
+
 .alphabets-container {
   display: flex;
   justify-content: center;
@@ -306,7 +306,6 @@ h3 {
   padding: 10px;
   font-size: 20px;
   border-bottom: 2px solid black;
-  margin-right: 10px;
   font-weight: 700;
 }
 
@@ -316,6 +315,9 @@ h3 {
 .correct-container {
   padding-top: 5%;
   padding-bottom: 5%;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
 }
 .diagrams-container {
   display: flex;
@@ -326,6 +328,10 @@ h3 {
 }
 .diagram:first-child {
   margin-right: 10%;
+}
+.diagram > div {
+  width: 140px;
+  height: 100px;
 }
 .loader {
   top: 35%;
@@ -369,12 +375,12 @@ h3 {
     background-color: white;
     position: fixed;
     height: 80%;
-    width: 250px;
+    width: 300px;
     right: 0;
     animation: slide 1s ease;
     -webkit-animation: slide 1s ease;
   }
-  .chat-screen div:first-child {
+  .message-list div:first-child {
     display: block;
     cursor: pointer;
     position: absolute;
@@ -384,6 +390,10 @@ h3 {
   }
   .chat-open {
     display: block;
+  }
+  .message-list {
+    border: 2px solid black;
+    font-size: 20px;
   }
   .guess-letter {
     width: 20px;
@@ -416,7 +426,6 @@ h3 {
   .navbar ul {
     font-size: 38px;
     max-width: 400px;
-
   }
   .logo {
     font-size: 42px;
@@ -463,8 +472,100 @@ h3 {
     padding: 5px 0px;
     padding-left: 10px;
   }
+/*working on */
+  .chat-screen {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    height: 80%;
+    width: 100%;
+    flex-direction: column;
+    right: 0;
+/*    animation: slide 1s ease;
+    -webkit-animation: slide 1s ease;*/
+  }
+  .message-list div:first-child {
+    display: block;
+    cursor: pointer;
+    position: absolute;
+    top: -20px;
+    right: 130px;
+    font-size: 106px;
+  }
+  .chat-open {
+    display: flex;
+  }
+  .correct-container {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .guess-letter {
+    width: 30px;
+    height: 40px;
+    padding: 10px;
+    font-size: 46px;
+  }
 
+  .letter-box {
+    width: 60px;
+    height: 80px;
+    font-size: 34px;
+    padding: 10px;
+    margin: 10px 10px;
+  }
+  .open-chat {
+    visibility: visible;
+  }
+  .solve-it, .open-chat {
+    padding: 20px 15px;
+    width: 200px;
+    font-size: 36px;
+  }
 
+  .diagram h2 {
+    font-size: 40px;
+  }
+  .button-div {
+    padding-top: 2%;
+    padding-bottom: 2%;
+  }
+
+  .message-list, .msg-input-form {
+    border: 5px solid black;
+    border-radius: 5px;
+    width: 70%;
+  }
+  .message-list {
+    overflow-y: scroll;
+    padding: 30px;
+    padding-top: 50px;
+    max-height: none;
+    min-height: none;
+    height: 100%;
+  }
+  .message-list li {
+    font-size: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .msg-input-form {
+    padding: 30px;
+  }
+
+  .msg-input-form > input[type="text"] {
+    padding: 15px;
+    font-size: 30px;
+    width: 80%;
+  }
+  .msg-input-form > input[type="submit"] {
+    font-size: 30px;
+    padding: 15px;
+  }
+  .diagram > div {
+    width: 210px;
+    height: 150px;
+  }
 }
 @media (max-device-width: 414px) {
   .navbar-container, .navbar-container > div {
@@ -478,8 +579,8 @@ h3 {
     padding-top: 30px;
   }
   .navbar ul {
-    font-size: 46px;
-    width: 400px;
+    font-size: 40px;
+    width: 500px;
 
   }
   .logo {
@@ -525,6 +626,43 @@ h3 {
     padding-left: 15px;
   }
 
+    .button-div {
+    padding-top: 5%;
+    padding-bottom: 5%;
+  }
+    .msg-input-form > input[type="text"], .msg-input-form > input[type="submit"], .message-list li  {
+    font-size: 46px;
+  }
+
+  .guess-letter {
+    width: 40px;
+    height: 55px;
+    padding: 10px;
+    font-size: 56px;
+  }
+
+  .letter-box {
+    width: 80px;
+    height: 100px;
+    font-size: 46px;
+    padding: 10px;
+    margin: 10px 10px;
+  }
+  .open-chat {
+    visibility: visible;
+  }
+  .solve-it, .open-chat {
+    padding: 25px 18px;
+    width: 250px;
+    font-size: 46px;
+  }
+  .diagram h2 {
+    font-size: 56px;
+  }
+  .diagram div {
+    width: 280px;
+    height: 200px;
+  }
 }
 @-webkit-keyframes slide {
   0% { transform: translateX(250px); }

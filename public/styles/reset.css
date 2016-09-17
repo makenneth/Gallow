@@ -12,3 +12,7 @@ body {
   padding: 0;
 }
 
+div, form {
+  margin: 0;
+  padding: 0;
+}

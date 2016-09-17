@@ -2,17 +2,23 @@
 ## Reducers
 - Messages
 - User
-- Users
+- Users Search
+- Game Info
+- Game
 - Games
-- Guess
+- Chat
+- Error
 
 ## Components
-- App
-  * Game 
-    * Letters
-      * Letter
-    * Diagram
-  * Chat
-    * Messages
-    * Input
-  * LogIn/SignUp
+- Main 
+  - NavBar
+  - Games
+  - Game container
+    * Game 
+      * Letters
+        * Letter
+      * Diagram
+    * Chat
+      * Messages
+      * Input
+- LogIn/SignUp
