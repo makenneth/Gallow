@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import NavBar from "./navBar"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
-import { getCurrentUser, logOut, clearError, setError } from "../actions/userActions"
+import { getCurrentUser, logOut, clearError, setError, stopLoading } from "../actions/userActions"
 import { fetchedGameData, updatedGame, createdGame } from "../actions/gameActions"
 import { addNewMessage, fetchedMessages } from "../actions/chatActions"
 const url = process.env.WS_URL + "/ws"
@@ -11,16 +11,14 @@ const ws = new WebSocket(url);
 class Main extends Component {
   constructor(props, context){
     super(props);
-    this.state = {
-      loading: false
-    }
   }
   static contextTypes = {
     router: React.PropTypes.object.isRequired
   }
   componentWillMount() {
-    this.setState({ loading: true })
-    this.props.getCurrentUser().catch(this.catchError);
+    if (!this.props.user.id){
+      this.props.getCurrentUser().catch(this.catchError);
+    }
 
     ws.onmessage = this.handleNewMessage;
     ws.onclose = () => this.props.setError("Connection lost, please try again later...")
@@ -32,7 +30,7 @@ class Main extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.user.id && nextProps.user.id) {
-      this.setState({ loading: false })
+      this.props.stopLoading();
       ws.send(JSON.stringify({
         type: "USER_CONNECTED",
         data: {
@@ -63,9 +61,6 @@ class Main extends Component {
         break;
     }
   }
-  toggleLoading = () => {
-    this.setState({ loading: !this.state.loading })
-  }
 
   logOut = () => {
     this.setState({ loading: true })
@@ -76,7 +71,7 @@ class Main extends Component {
     })
   }
   loadingScreen() {
-    if (this.state.loading) {
+    if (this.props.loading) {
       return <div className="overlay">
         <div className="loader"></div>
       </div>
@@ -84,7 +79,6 @@ class Main extends Component {
   }
   flashError() {
     if (this.props.error.message){
-      setTimeout(this.props.clearError, 5000)
       return <div className="flash-error">
           { this.props.error.message }
         </div>
@@ -111,8 +105,8 @@ class Main extends Component {
       )
   }
 }
-const mapStateToProps = ({ user, error }) => {
-  return { user, error }
+const mapStateToProps = ({ user, error, loading }) => {
+  return { user, error, loading }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -125,6 +119,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchedMessages, 
     createdGame,
     clearError,
-    setError }, dispatch)
+    setError,
+    stopLoading }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

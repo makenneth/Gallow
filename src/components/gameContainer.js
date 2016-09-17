@@ -7,9 +7,6 @@ import { clearGame } from "../actions/gameActions"
 class GameContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loading: true
-    }
   }
 
   componentWillMount() {
@@ -20,7 +17,6 @@ class GameContainer extends Component {
       }))
     } catch(e) {
       this.props.ws.onopen = this.socketOpened;
-      this.setState({ loading: false })
     }
   }
 

@@ -8,6 +8,7 @@ import gamesReducer from "./reducers/games_reducer"
 import gameInfoReducer from "./reducers/game_info_reducer"
 import chatReducer from "./reducers/chat_reducer"
 import errorReducer from "./reducers/error_reducer"
+import loadingReducer from "./reducers/loading_reducer"
 import ReduxPromise from "redux-promise"
 
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
@@ -22,7 +23,8 @@ const reducers = combineReducers({
   game: gameReducer,
   gameInfo: gameInfoReducer,
   chatScreen: chatScreenReducer,
-  error: errorReducer
+  error: errorReducer,
+  loading: loadingReducer
 })
 
 const store = createStoreWithMiddleware(reducers);

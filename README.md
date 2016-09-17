@@ -15,12 +15,14 @@ Bult with Golang backend and socket and a React/Redux frontend.
 - [x] React components (Games) and wire with api fetching (3 days)
 - [x] Connect Chat Socket to Game (3days)
 - [x] Set Up Regular Auth (1.5days)
-- [ ] Set up OAuth (2 days)
 - [ ] CSRF (0.5 days)
+- [ ] Friend feature (2 days)
+- [ ] Set up OAuth (2 days)
 - [ ] ElasticSearch for players searching...?
 
 ## TODO
 - [ ] CSRF
-- [ ] Add error channel
+- [x] Add error channel
 - [x] Add dictionary
+- [ ] Friend Feature
 - [ ] Another game button

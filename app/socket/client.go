@@ -235,7 +235,8 @@ func (this *Client) ListenRead() {
         this.server.SendToClientConn(chatMsgData.Recipient, msg, chatMsgData.GameId)
         break;
       default:
-        log.Println("Message Type unrecognized, ", msg)
+        this.server.RemoveClient() <- this
+        this.done <- true
         break;
       }
    

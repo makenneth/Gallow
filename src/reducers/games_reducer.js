@@ -2,7 +2,8 @@ import { FETCHED_GAMES, CREATED_GAME, OTHER_CREATED_GAME } from "../constants/co
 
 export default (state = {
   unfinished: [], 
-  finished: []
+  finished: [],
+  fetched: false
 }, action) => {
   switch (action.type){
     case FETCHED_GAMES:

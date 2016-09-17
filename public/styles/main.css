@@ -351,6 +351,7 @@ h3 {
 }
 
 .flash-error {
+  z-index: 999;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -365,8 +366,8 @@ h3 {
   font-size: 18px;
   transform: translateX(-50%);
   -webkit-transform: translateX(-50%);
-  animation: slide-down 1s ease-in-out;
-  -webkit-animation: slide-down 1s ease-in-out;
+  animation: flash 5s infinite;
+  -webkit-animation: flash 5s infinite;
   color: white;
 }
 @media screen and (max-width: 768px){
@@ -673,13 +674,20 @@ h3 {
   100% { transform: translateX(0px); }
 
 }
-@-webkit-keyframes slide-down {
+@-webkit-keyframes flash {
   0% { opacity: 0; }
-  100% { opacity: 1;} 
+  45% { opacity: 1;} 
+  50% { opacity: 0;} 
+  95% { opacity: 1;} 
+  100% { opacity: 0.5;} 
+
 }
-@keyframes slide-down {
-  0% { opacity: 0;}
-  100% { opacity: 1;}
+@keyframes flash {
+  0% { opacity: 0; }
+  35% { opacity: 1;} 
+  50% { opacity: 0;} 
+  85% { opacity: 1;} 
+  100% { opacity: 0;} 
 
 }
 @-webkit-keyframes load {

@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { fetchGames } from "../actions/userActions"
+import { fetchGames, startLoading, stopLoading, setError } from "../actions/userActions"
 import moment from "moment"
 class Games extends Component {
   constructor(props, context) {
@@ -11,16 +11,21 @@ class Games extends Component {
     router: React.PropTypes.object.isRequired
   }
   componentDidMount() {
-    if (this.props.user.id){
+    if (this.props.user.id && !this.props.games.fetched){
       this.props.fetchGames()
+      this.props.startLoading(this.props.setError);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-     if ((!this.props.user && nextProps.user) || 
+    if (!this.props.games.fetched && nextProps.games.fetched){
+      this.props.stopLoading();
+    }
+    if ((!this.props.user && nextProps.user) || 
           (this.props.user && nextProps.user.id !== this.props.user.id)){
-        this.props.fetchGames()
-     }
+        this.props.fetchGames();
+        this.props.startLoading(this.props.setError);
+    }
   }
   handleClick = (e) => {
     this.context.router.push(`/games/${e.target.dataset.id}`)
@@ -65,4 +70,4 @@ class Games extends Component {
 const mapStateToProps = ({ games }) => {
   return { games }
 }
-export default connect(mapStateToProps, { fetchGames })(Games);
+export default connect(mapStateToProps, { fetchGames, startLoading, stopLoading, setError })(Games);

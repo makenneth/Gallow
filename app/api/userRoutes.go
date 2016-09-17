@@ -13,6 +13,7 @@ type Error struct {
 type UserGamesData struct {
   Finished []GameApi `json:"finished"`
   Unfinished []GameApi `json:"unfinished"`
+  Fetched bool `json:"fetched"`
 }
 
 type GameApi struct {
@@ -37,8 +38,7 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
       nickname1, nickname2 string
       updatedAt time.Time
       )
-    log.Println("fetched games for user...", playerId)
-    data := &UserGamesData{make([]GameApi, 0), make([]GameApi, 0)}
+    data := &UserGamesData{make([]GameApi, 0), make([]GameApi, 0), true}
     rows, err := database.DBConn.Query(`
       SELECT g.id, g.finished, g.winner, g.updated_at, u1.nickname, u2.nickname
       FROM games AS g
