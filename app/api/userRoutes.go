@@ -7,7 +7,6 @@ import (
   "../database"
   "log"
   "../csrf"
-  "fmt"
 )
 type Error struct {
   Message string
@@ -91,25 +90,47 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method != "POST" {
     return
   }
-  validRequest := csrf.CheckCSRF(r)
-  if !validRequest {
-    w.WriteHeader(http.StatusForbidden)
-    fmt.Fprintf(w, "<html><head></head><body><h1>403 - Forbidden Access</h1><p>Access to this resource is denied!</p></body></html>")
-    return
+  var (
+    token string
+    u UserData
+    newPlayerId int
+    )
+
+  errorCh := make(chan *ResultError) 
+  go func(){
+    validRequest := csrf.CheckCSRF(r)
+    if !validRequest {
+      errorCh <- &ResultError{403, "Forbidden Access"}
+    } else {
+      errorCh <- &ResultError{0, ""}
+    }
+  }()
+
+  go func(){
+    decoder := json.NewDecoder(r.Body)
+    err := decoder.Decode(&u)
+    b, str := VerifyUser(u)
+    if !b || err != nil {
+      errorCh <- &ResultError{422, str} 
+    }
+    token, newPlayerId, err = u.InsertUser()
+    if err != nil {
+      errorCh <- &ResultError{422, "Username already taken"} 
+    } else {
+      errorCh <- &ResultError{0, ""}
+    }
+  }()
+
+  for i := 0; i < 2; i++ {
+    e := <- errorCh
+    if e.code != 0 {
+      w.Header().Set("Content-Type", "application/json; charset=utf-8");
+      w.WriteHeader(e.code)
+      resText, _ := json.Marshal(e.message)
+      w.Write(resText)
+      return
+    }
   }
-  var u UserData
-  decoder := json.NewDecoder(r.Body)
-  err := decoder.Decode(&u)
-  checkErr(err)
-  b, str := VerifyUser(u)
-  if !b {
-    w.Header().Set("Content-Type", "application/json; charset=utf-8");
-    w.WriteHeader(http.StatusUnprocessableEntity)
-    resText, _ := json.Marshal(str)
-    w.Write(resText)
-    return
-  }
-  token, newPlayerId, err := u.InsertUser()
 
   expiration := time.Now().Add(30 * 24 * time.Hour)
   cookie := &http.Cookie{Name: "session-token", Value: token, Expires: expiration, Path: "/"}
@@ -120,6 +141,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   data, _ := json.Marshal(&cu)
   w.Write(data)
 }
+
 func VerifyUser(u UserData) (bool, string) {
   b, e := true, ""
   if len(u.Nickname) < 8 {

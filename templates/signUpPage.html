@@ -57,7 +57,7 @@
       $.ajax({
         method: "POST",
         headers: {
-          'X_CSRF_TOKEN': token
+          'X-CSRF-TOKEN': token
         },
         url: "/api/user/new",
         data: JSON.stringify(data),
@@ -65,8 +65,8 @@
         success: function(data){
           window.location.replace("/");
         },
-        err: function() {
-          $("#error").html("<p>Username has been taken</p>");
+        error: function(err) {
+          $("#error").html("<p>"+ err.responseJSON + "</p>");
           setTimeout(function(){
             $("#error").html("");
           }, 4000)

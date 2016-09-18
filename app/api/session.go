@@ -3,14 +3,17 @@ package api
 import (
   "net/http"
   "log"
-  "fmt"
+  // "fmt"
   "encoding/json"
   "time"
   "../token"
   "../csrf"
   "../database"
 )
-
+type ResultError struct {
+  code int
+  message string
+}
 func LogInHandler(w http.ResponseWriter, r *http.Request) {
   switch r.Method {
   case "POST":
@@ -18,32 +21,40 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
       u UserData
       data []byte
       )
-
-    validRequest := csrf.CheckCSRF(r)
-    if !validRequest {
-      w.WriteHeader(http.StatusForbidden);
-      fmt.Fprintf(w, "<html><head></head><body><h1>403 - Forbidden Access</h1><p>Access to this resource is denied!</p></body></html>")
-      return
-    }
-
+    error := make(chan *ResultError)
     done := make(chan bool)
-    decoder := json.NewDecoder(r.Body)
-    err := decoder.Decode(&u)
-    checkErr(err)
+    go func(){
+      validRequest := csrf.CheckCSRF(r)
+      if !validRequest {
+        error <- &ResultError{403, "Forbidden Access"}
+      } else {
+        error <- &ResultError{0, ""}
+      }
+    }()
+    go func() {
+      decoder := json.NewDecoder(r.Body)
+      err1 := decoder.Decode(&u)
+      err2 := u.CheckPassword()
+      if err1 != nil || err2 != nil {
+        error <- &ResultError{404, "Invalid username or password"}
+      } else {
+        error <- &ResultError{0, ""}
+      } 
+    }()
 
-    err = u.CheckPassword()
+    for i := 0; i < 2; i++ {
+      e := <- error
+      if e.code != 0 {
+        w.Header().Set("Content-Type", "application/json; charset=utf-8");
+        w.WriteHeader(e.code)
+        resText, _ := json.Marshal(e.message)
+        w.Write(resText)
 
-    if err != nil {
-      w.Header().Set("Content-Type", "application/json; charset=utf-8");
-      w.WriteHeader(http.StatusNotFound)
-      resText, _ := json.Marshal("Username/password not correct.")
-      w.Write(resText)
-
-      return
+        return
+      }
     }
-
-    checkErr(err)
     id, sessionToken, err := u.ResetSessionToken()
+    checkErr(err)
     go func() {
       expiration := time.Now().Add(30 * 24 * time.Hour)
       cookie := &http.Cookie{Name: "session-token", Value: sessionToken, Expires: expiration, Path: "/"}
@@ -86,8 +97,6 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
       cookie = &http.Cookie{Name: "session-token", Value: "", MaxAge: -1, Path: "/" }
       http.SetCookie(w, cookie)
     }
-    // log.Println("logout redirecting...")
-    // http.Redirect(w, r, "/login", http.StatusSeeOther)
     return;
   default: 
     log.Println("does not match any routes");

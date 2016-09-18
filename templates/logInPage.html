@@ -59,7 +59,7 @@
       $.ajax({
         method: "POST",
         headers: {
-          'X_CSRF_TOKEN': token
+          'X-CSRF-TOKEN': token
         },
         url: "/api/session/new",
         data: JSON.stringify(data),

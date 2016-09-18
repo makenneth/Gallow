@@ -4,6 +4,7 @@ import (
   "net/http"
   "../token"
   "time"
+  "log"
 )
 
 var csrfs map[string]string;
@@ -38,7 +39,7 @@ func CheckCSRF(r *http.Request) bool {
 
   if pId.String() != "" {
     if c, ok := csrfs[pId.Value]; ok {
-      t := r.Header.Get("X_CSRF_TOKEN")
+      t := r.Header.Get("X-CSRF-TOKEN")
       return t == c
     }
   }
