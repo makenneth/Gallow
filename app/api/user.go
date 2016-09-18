@@ -1,6 +1,6 @@
 package api 
 import (
-  "log"
+  // "log"
   "net/http"
   "time"
   "../database"
@@ -26,7 +26,6 @@ func InitializeSessions() {
 
 func SetCurrentUser(token string, u User){
   Sessions[token] = u
-  log.Println("after setting user", Sessions)
 }
 
 func GetCurrentUser(w http.ResponseWriter, userToken string) User {
@@ -56,7 +55,7 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
   }
 
   expiration = time.Now().Add(30 * 24 * time.Hour)
-  cookie := &http.Cookie{Name: "sessiontokenLit", Value: newToken, Expires: expiration, Path: "/"}
+  cookie := &http.Cookie{Name: "session-token", Value: newToken, Expires: expiration, Path: "/"}
   http.SetCookie(w, cookie)
 
   SetCurrentUser(newToken, User{id, username, nickname})

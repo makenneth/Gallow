@@ -3,9 +3,11 @@ package api
 import (
   "net/http"
   "log"
+  "fmt"
   "encoding/json"
   "time"
   "../token"
+  "../csrf"
   "../database"
 )
 
@@ -16,6 +18,14 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
       u UserData
       data []byte
       )
+
+    validRequest := csrf.CheckCSRF(r)
+    if !validRequest {
+      w.WriteHeader(http.StatusForbidden);
+      fmt.Fprintf(w, "<html><head></head><body><h1>403 - Forbidden Access</h1><p>Access to this resource is denied!</p></body></html>")
+      return
+    }
+
     done := make(chan bool)
     decoder := json.NewDecoder(r.Body)
     err := decoder.Decode(&u)
@@ -36,7 +46,7 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
     id, sessionToken, err := u.ResetSessionToken()
     go func() {
       expiration := time.Now().Add(30 * 24 * time.Hour)
-      cookie := &http.Cookie{Name: "sessiontokenLit", Value: sessionToken, Expires: expiration, Path: "/"}
+      cookie := &http.Cookie{Name: "session-token", Value: sessionToken, Expires: expiration, Path: "/"}
       http.SetCookie(w, cookie)
       done <- true
     }()
@@ -65,7 +75,7 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
 func LogOutHandler(w http.ResponseWriter, r *http.Request) {
   switch r.Method {
   case "DELETE":
-    cookie, _ := r.Cookie("sessiontokenLit")    
+    cookie, _ := r.Cookie("session-token")    
     
     if cookie.String() != "" {
       newToken, _ := token.GenerateRandomToken(32)  
@@ -73,7 +83,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
         SET session_token = $1
         WHERE session_token = $2`, newToken, cookie.Value)
       delete(Sessions, cookie.Value)
-      cookie = &http.Cookie{Name: "sessiontokenLit", Value: "", MaxAge: -1, Path: "/" }
+      cookie = &http.Cookie{Name: "session-token", Value: "", MaxAge: -1, Path: "/" }
       http.SetCookie(w, cookie)
     }
     // log.Println("logout redirecting...")

@@ -12,7 +12,7 @@ class Games extends Component {
   }
   componentDidMount() {
     if (this.props.user.id && !this.props.games.fetched){
-      this.props.fetchGames()
+      this.props.fetchGames();
       this.props.startLoading(this.props.setError);
     }
   }

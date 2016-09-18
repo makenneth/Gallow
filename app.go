@@ -10,7 +10,7 @@ import (
   _ "github.com/lib/pq"
   "regexp"
   "./app/database"
-  "./app/token"
+  "./app/csrf"
   "html/template"
   "github.com/namsral/flag"
 )
@@ -43,40 +43,39 @@ func (handler *RegexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func templateHandler(w http.ResponseWriter, r *http.Request){
-  cookie, err := r.Cookie("sessiontokenLit")
+  cookie, err := r.Cookie("session-token")
   if err != nil || cookie.String() == "" {
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
   if user := api.GetCurrentUser(w, cookie.Value); user == (api.User{})  {
-      log.Println("redirecting to /login from /")
     http.Redirect(w, r, "/login", http.StatusSeeOther)
     return
   }
   
   t, _ := template.ParseFiles("index.html")
-  csrf_token, _ := token.GenerateRandomToken(32)
-  d := TemplateData{CSRFToken: csrf_token}
+  token := csrf.SetCSRF(w, r)
+  d := TemplateData{CSRFToken: token}
   t.Execute(w, d)
 }
 
 func LogInPageHandler(w http.ResponseWriter, r *http.Request){
-  cookie, _ := r.Cookie("sessiontokenLit")
+  cookie, _ := r.Cookie("session-token")
   if cookie.String() != "" {
     if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}) {
-      log.Println("redirecting to / from /login..")
       http.Redirect(w, r, "/", http.StatusSeeOther)
       return
     }
   }
+
   t, _ := template.ParseFiles("templates/logInPage.html")
-  csrf_token, _ := token.GenerateRandomToken(32)
-  d := TemplateData{CSRFToken: csrf_token}
+  token := csrf.SetCSRF(w, r)
+  d := TemplateData{CSRFToken: token}
   t.Execute(w, d)
 }
 
 func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
-  cookie, _ := r.Cookie("sessiontokenLit")
+  cookie, _ := r.Cookie("session-token")
   if cookie.String() != "" {
     
     if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}){
@@ -84,8 +83,8 @@ func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
     }
   }
   t, _ := template.ParseFiles("templates/signUpPage.html")
-  csrf_token, _ := token.GenerateRandomToken(32)
-  d := TemplateData{CSRFToken: csrf_token}
+  token := csrf.SetCSRF(w, r)
+  d := TemplateData{CSRFToken: token}
   t.Execute(w, d)
 }
 
@@ -124,6 +123,9 @@ func main() {
   http.HandleFunc("/api/users", api.UsersQueryHandler) 
   http.HandleFunc("/login", LogInPageHandler)
   http.HandleFunc("/signup", SignUpPageHandler)
+  http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request){
+    return
+  })
   http.HandleFunc("/", templateHandler)
   log.Printf("Server listening at port %d", port_num)
   log.Fatal(http.ListenAndServe(port, nil))

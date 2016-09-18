@@ -45,10 +45,20 @@
         username: $("#username").val().toLowerCase(),
         nickname: $("#nickname").val().toLowerCase(),
         password: $("#password").val()
-      }
+      }, token;
       if (!checkError(data)) return;
+      var elements = document.getElementsByTagName("meta");
+      for (var i = 0; i < elements.length; i++){
+        if (elements[i].name === "csrf_token"){
+          token = elements[i].content;
+          break;
+        }
+      }
       $.ajax({
         method: "POST",
+        headers: {
+          'X_CSRF_TOKEN': token
+        },
         url: "/api/user/new",
         data: JSON.stringify(data),
         contentType: "application/json",

@@ -6,6 +6,8 @@ import (
   "time"
   "../database"
   "log"
+  "../csrf"
+  "fmt"
 )
 type Error struct {
   Message string
@@ -26,7 +28,7 @@ type GameApi struct {
 }
 func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method == "GET" {
-    cookie, err := r.Cookie("sessiontokenLit")
+    cookie, err := r.Cookie("session-token")
     if err != nil || cookie.String() == ""{
       log.Println("Can't fetch; no such user");
       return
@@ -65,7 +67,6 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json");
     json.NewEncoder(w).Encode(data)
-
   } else {
     log.Println("unmatch routes")
   }
@@ -73,7 +74,7 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
-  cookie, _ := r.Cookie("sessiontokenLit")
+  cookie, _ := r.Cookie("session-token")
 
   if cookie.String() == "" {
     data, _ := json.Marshal(&Error{"No such User"})
@@ -88,6 +89,12 @@ func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method != "POST" {
+    return
+  }
+  validRequest := csrf.CheckCSRF(r)
+  if !validRequest {
+    w.WriteHeader(http.StatusForbidden)
+    fmt.Fprintf(w, "<html><head></head><body><h1>403 - Forbidden Access</h1><p>Access to this resource is denied!</p></body></html>")
     return
   }
   var u UserData
@@ -105,7 +112,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
   token, newPlayerId, err := u.InsertUser()
 
   expiration := time.Now().Add(30 * 24 * time.Hour)
-  cookie := &http.Cookie{Name: "sessiontokenLit", Value: token, Expires: expiration, Path: "/"}
+  cookie := &http.Cookie{Name: "session-token", Value: token, Expires: expiration, Path: "/"}
   http.SetCookie(w, cookie)
   w.Header().Set("Content-Type", "application/json")
   cu := User{newPlayerId, u.Username, u.Nickname}
