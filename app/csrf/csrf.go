@@ -4,7 +4,6 @@ import (
   "net/http"
   "../token"
   "time"
-  "log"
 )
 
 var csrfs map[string]string;
