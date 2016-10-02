@@ -1,5 +1,5 @@
 {
-  "name": "LostInTranslation",
+  "name": "Hangperson",
   "version": "1.0.0",
   "description": "Chat app with Golang on the backend and React/Redux.",
   "main": "index.js",
