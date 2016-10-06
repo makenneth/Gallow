@@ -1,4 +1,4 @@
-## Gallow [Live Link(very bugg-y)](http://52.52.107.149)
+## Hangperson [Live Link(very bugg-y)](http://hangperson.com)
 The World's first gender-neutral word guessing game.
 Online two-players Hangman with realtime chat functionality.
 Bult with Golang backend and socket and a React/Redux frontend. 
@@ -8,7 +8,7 @@ Bult with Golang backend and socket and a React/Redux frontend.
 - Frontend: React/Redux
 - Backend: Golang
 - Database: PostgreSQL
-- Authentication: OAuth
+- Authentication: OAuth (Not yet)
 
 ## Timeline
 - [x] Game logic (3 days) 
@@ -25,5 +25,4 @@ Bult with Golang backend and socket and a React/Redux frontend.
 - [x] CSRF
 - [x] Add error channel
 - [x] Add dictionary
-- [ ] Another game button
 - [ ] Friend Feature

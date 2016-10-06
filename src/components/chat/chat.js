@@ -3,7 +3,6 @@ import { connect } from "react-redux"
 import Messages from "./messages"
 import Input from "./input"
 
-
 class Chat extends Component {
   constructor(props){
     super(props);

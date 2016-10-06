@@ -8,7 +8,6 @@ export default (state = {}, action) => {
           newState = {};
       newState.userId = id;
       newState.author = nickname;
-
       return newState;
     case FETCHED_GAME:
       let game = action.payload;

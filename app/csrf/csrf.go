@@ -4,11 +4,9 @@ import (
   "net/http"
   "../token"
   "time"
-  "log"
 )
 
 var csrfs map[string]string;
-
 
 func SetCSRF(w http.ResponseWriter, r *http.Request) string {
   var pid string
