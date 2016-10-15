@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import Diagram from "./diagram";
 import GameInput from "./gameInput";
 import Letters from "./letters";
-// import { toggleChat } from "redux/modules/chat";
+import { toggleChat } from "redux/modules/chat_screen";
 
 @connect(
-  ({ game, gameInfo }) => ({ game, gameInfo })
+  ({ game, gameInfo }) => ({ game, gameInfo }),
+  { toggleChat }
   )
 
 export default class GameScreen extends Component {

@@ -1,7 +1,7 @@
 {
   "name": "Hangperson",
   "version": "1.0.0",
-  "description": "Chat app with Golang on the backend and React/Redux.",
+  "description": "Two-players hangman with Golang on the backend and React/Redux.",
   "main": "index.js",
   "dependencies": {
     "axios": "^0.14.0",

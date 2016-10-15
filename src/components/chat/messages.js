@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { toggleChat } from "redux/modules/chat";
+import { toggleChat } from "redux/modules/chat_screen";
 
 @connect(
   () => ({}),
