@@ -6,21 +6,20 @@ module.exports = {
     path: path.join(__dirname, "public", "js"),
     filename: "bundle.js"
   },
-  plugins:[
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       'process.env':{
         'NODE_ENV': JSON.stringify('development'),
-        'WS_URL': JSON.stringify('ws://localhost:8080')
+        'WS_URL': JSON.stringify('ws://localhost:8080'),
+        '__DEVTOOLS__': true
       }
     })
   ],
   module: {
     loaders: [{
-      ignore: /node_modules/,
-      loader: "babel",
-      query: {
-        presets: ["es2015", "react", "stage-0"]
-      }
+      exclude: /node_modules/,
+      loader: "babel"
     }]
   },
   devtool: 'source-maps',
