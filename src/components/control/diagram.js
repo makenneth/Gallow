@@ -3,27 +3,9 @@ import { connect } from "react-redux";
 
 @connect(({ gameInfo }) => ({ gameInfo }))
 export default class Diagram extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-
-  }
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.guessCount1 !== nextProps.guessCount1 ||
-      this.props.guessCount2 !== nextProps.guessCount2 ||
-      this.props.username1 !== nextProps.username1 ||
-      this.props.username2 !== nextProps.username2) {
-      return true;
-    }
-
-    return false;
-  }
-
-  constructDiagram(count, name) {
+  static constructDiagram(count, name) {
     if (!name) {
-      return (<div className="diagram"></div>);
+      return (<div className="diagram" />);
     }
     return (<div className="diagram">
       <h2>{ name }</h2>
@@ -35,6 +17,17 @@ export default class Diagram extends Component {
       />
     </div>);
   }
+  shouldComponentUpdate(nextProps) {
+    if (this.props.guessCount1 !== nextProps.guessCount1 ||
+      this.props.guessCount2 !== nextProps.guessCount2 ||
+      this.props.username1 !== nextProps.username1 ||
+      this.props.username2 !== nextProps.username2) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     const props = this.props;
     return (<div className="diagrams-container">

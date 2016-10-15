@@ -1,7 +1,7 @@
 import "babel-polyfill";
 import React from "react";
 import { render } from "react-dom";
-import { Router, Route,  browserHistory, RouterContext } from "react-router";
+import { Router, browserHistory } from "react-router";
 import { Provider } from "react-redux";
 import { ReduxAsyncConnect } from "redux-async-connect";
 import store from "./redux/store";
@@ -15,22 +15,22 @@ document.addEventListener("DOMContentLoaded", () => {
   if (process.env.__DEVTOOLS__ && !window.devToolsExtension) {
     const DevTools = require("./containers/DevTools/DevTools");
     render(<Provider store={store}>
-        <div>
-          <Router
-            history={browserHistory}
-            render={props => <ReduxAsyncConnect {...props} />}
-          >
-            {getRoutes(store)}
-          </Router>
-          <DevTools />
-        </div>
-      </Provider>, document.getElementById("root"));
+      <div>
+        <Router
+          history={browserHistory}
+          render={props => <ReduxAsyncConnect {...props} />}
+        >
+          {getRoutes(store)}
+        </Router>
+        <DevTools />
+      </div>
+    </Provider>, document.getElementById("root"));
   } else {
     render(<Provider store={store}>
       <Router
         history={browserHistory}
         routes={getRoutes(store)}
-        render={props => <RouterContext {...props}/>}
+        render={props => <ReduxAsyncConnect {...props} />}
       />
     </Provider>, document.getElementById("root"));
   }

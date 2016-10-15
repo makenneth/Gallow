@@ -1,6 +1,6 @@
-const FETCH_SUCCESS = "hangperson/game/FETCH_SUCCESS";
 const UPDATE_SUCCESS = "hangperson/game/UPDATE_SUCESS";
-const CLEAR_GAME = "hangperson/game/CLEAR_GAME";
+export const CLEAR_GAME = "hangperson/game/CLEAR_GAME";
+export const FETCH_SUCCESS = "hangperson/game/FETCH_SUCCESS";
 
 export default (state = {}, action) => {
   switch (action.type) {
@@ -13,8 +13,6 @@ export default (state = {}, action) => {
     default:
       return state;
   }
-
-  return state;
 };
 
 export const fetchedGameData = (game) => {

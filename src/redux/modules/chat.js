@@ -1,24 +1,26 @@
-const FETCHED_GAME = "hangperson/chat/FETCHED_GAME";
-const LOGGED_IN = "hangperson/chat/LOGGED_IN";
+import { FETCH_SUCCESS } from "redux/modules/game";
+import { LOAD_SUCCESS } from "redux/modules/auth";
 
 export default (state = {}, action) => {
   switch (action.type) {
-    case LOGGED_IN:
-      const { id, nickname } = action.payload.data;
-      let newState = {
+    case LOAD_SUCCESS: {
+      const { id, nickname } = action.result.data;
+      const newState = {
         userId: id,
         author: nickname
       };
       return newState;
-    case FETCHED_GAME:
+    }
+    case FETCH_SUCCESS: {
       const game = action.payload;
-      newState = {
+      const newState = {
         ...state,
         gameId: game.id,
         recipient: state.userId === game.userId1 ? game.username2 : game.username1
       };
 
       return newState;
+    }
     default:
       return state;
   }

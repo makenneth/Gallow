@@ -16,24 +16,20 @@ export default class NewGame extends Component {
       selected: false
     };
   }
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
-
   startGame = () => {
     if (!this.state.selectedOpponent) {
       alert("You have to select a player first!");
     } else {
       this.props.createGame(this.props.user,
         this.state.selectedOpponent)
-        .then(res => {
-          browserHistory.push(`/games/${res.data.id}`)
-        }).catch(err => {
+        .then((res) => {
+          browserHistory.push(`/games/${res.data.id}`);
+        }).catch((err) => {
           console.log(err);
         });
     }
   }
-  handleClear = (e) => {
+  handleClear = () => {
     this.setState({
       name: "",
       selectedOpponent: null
@@ -48,29 +44,29 @@ export default class NewGame extends Component {
     });
   }
   handleChange = (e) => {
-    let __timer;
+    let timer;
     this.setState({
       name: e.target.value,
       selected: false
     });
-    clearTimeout(__timer);
-    __timer = setTimeout(() => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
       this.props.fetchUsers(this.state.name);
     }, 700);
   }
-  listFoundUsers = () => {
+  listFoundUsers() {
     return (<ul
       onClick={this.handleSelect}
       style={{
-       display: this.props.usersQuery.length && !this.state.selected ? "block" : "none"
+        display: this.props.usersQuery.length && !this.state.selected ? "block" : "none"
       }}
     >
       {
-        function() {
+        function mapFoundUsers() {
           const users = [];
           const usersQuery = this.props.usersQuery;
           for (let i = 0; i < usersQuery.length; i++) {
-            let user = usersQuery[i];
+            const user = usersQuery[i];
             if (user.id !== 1 && user.id !== this.props.user.id) {
               users.push(<li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>);
             }
@@ -92,8 +88,8 @@ export default class NewGame extends Component {
             value={this.state.name}
           />
           <div onClick={this.handleClear}>&times;</div>
-       </div>
-       { this.listFoundUsers() }
+        </div>
+        { this.listFoundUsers() }
       </div>
 
       <input

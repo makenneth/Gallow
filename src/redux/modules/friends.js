@@ -1,4 +1,5 @@
-import { ADDED_FRIEND, FETCHED_FRIENDS } from "../constants/constants";
+const ADDED_FRIEND = "hangperson/friends/ADDED_FRIEND";
+const FETCHED_FRIENDS = "hangperson/friends/FETCHED_FRIENDS";
 
 export default (state = [], action) => {
   switch (action.type) {

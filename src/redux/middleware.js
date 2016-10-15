@@ -1,5 +1,5 @@
 import { startLoading, stopLoading } from "redux/modules/loading";
-import { setError, clearError } from "redux/modules/error";
+import { setError } from "redux/modules/error";
 
 export default ({ dispatch, getState }) => next => action => {
   if (typeof action === "function") {
@@ -17,7 +17,7 @@ export default ({ dispatch, getState }) => next => action => {
   promise.then(
     (result) => {
       dispatch(stopLoading());
-      next({ ...rest, result, type: SUCCESS })
+      next({ ...rest, result, type: SUCCESS });
     },
     (error) => {
       dispatch(setError(error));
@@ -28,4 +28,4 @@ export default ({ dispatch, getState }) => next => action => {
   });
 
   return promise;
-}
+};

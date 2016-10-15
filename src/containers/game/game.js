@@ -5,30 +5,26 @@ import { clearGame } from "redux/modules/game";
 
 @connect(() => ({}), { clearGame })
 export default class Game extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     try {
       this.props.ws.send(JSON.stringify({
         type: "GAME_CONNECTED",
         data: +this.props.params.id
       }));
-    } catch(e) {
+    } catch (e) {
       this.props.ws.onopen = this.socketOpened;
     }
   }
-
+  componentWillUnmount() {
+    this.props.clearGame();
+  }
   socketOpened = () => {
     this.props.ws.send(JSON.stringify({
       type: "GAME_CONNECTED",
       data: +this.props.params.id
     }));
   }
-  componentWillUnmount() {
-    this.props.clearGame();
-  }
+
   render() {
     return (
       <div className="game-container">

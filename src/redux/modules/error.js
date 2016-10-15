@@ -12,8 +12,6 @@ export default (state = {
     default:
       return state;
   }
-
-  return state;
 };
 
 export const setError = (message) => {

@@ -5,8 +5,8 @@ import middleware from "./middleware";
 let createStoreWithMiddleware;
 
 if (process.env.__DEVTOOLS__) {
-  const { persistState } = require('redux-devtools');
-  const DevTools = require('../containers/DevTools/DevTools');
+  const { persistState } = require("redux-devtools");
+  const DevTools = require("../containers/DevTools/DevTools");
   createStoreWithMiddleware = compose(
     applyMiddleware(middleware),
     window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),

@@ -7,7 +7,7 @@ import Input from "./input";
 
 export default class Chat extends Component {
   render() {
-    return (<div className={"chat-screen" + (this.props.chatScreen ? " chat-open" : "")}>
+    return (<div className={`chat-screen${(this.props.chatScreen ? " chat-open" : "")}`}>
       <Messages messages={this.props.messages} />
       <Input
         ws={this.props.ws}

@@ -75,4 +75,4 @@ export const createdGame = (game) => {
 
 export const isGamesLoaded = (state) => {
   return state.games.loaded;
-}
+};

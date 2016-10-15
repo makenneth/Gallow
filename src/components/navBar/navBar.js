@@ -2,17 +2,17 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 export default class NavBar extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     if ((!this.props.user && nextProps.user) ||
-        (this.props.user && this.props.user.username !== nextProps.user.username)){
+        (this.props.user && this.props.user.username !== nextProps.user.username)) {
       return true;
     }
 
     return false;
   }
   render() {
-    if (!this.props.user){
-      return (<div></div>);
+    if (!this.props.user) {
+      return (<div />);
     }
     return (<div className="navbar-container">
       <div className="navbar">
@@ -24,4 +24,4 @@ export default class NavBar extends Component {
       </div>
     </div>);
   }
-};
+}

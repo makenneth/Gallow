@@ -19,10 +19,6 @@ import { loadGames, isGamesLoaded } from "redux/modules/games";
   ({ games }) => ({ games })
   )
 export default class Games extends Component {
-  constructor(props, context) {
-    super(props);
-  }
-
   handleClick = (e) => {
     browserHistory.push(`/games/${e.target.dataset.id}`);
   }
@@ -34,13 +30,13 @@ export default class Games extends Component {
           <h1>Ongoing Games</h1>
           <ul onClick={this.handleClick}>
             {
-              this.props.games.unfinished.map( game => {
-                return <li key={game.id} data-id={game.id}>
+              this.props.games.unfinished.map((game =>
+                (<li key={game.id} data-id={game.id}>
                   {game.nickname1}<span>vs.</span>{game.nickname2}
                   <br />
                   Last Moved: {moment(game.updatedAt).fromNow()}
-                </li>
-              })
+                </li>)
+              ))
             }
           </ul>
         </div>
@@ -48,13 +44,13 @@ export default class Games extends Component {
           <h1>Finished Games</h1>
           <ul onClick={this.handleClick}>
             {
-              this.props.games.finished.map( game => {
-                return <li key={game.id} data-id={game.id}>
+              this.props.games.finished.map((game =>
+                (<li key={game.id} data-id={game.id}>
                   {game.nickname1}<span>vs.</span>{game.nickname2}
-                  <br/>
+                  <br />
                   { `Result: ${game.winner === this.props.user.id ? "Won" : "Lost"}` }
-                </li>
-              })
+                </li>)
+              ))
             }
           </ul>
         </div>

@@ -3,16 +3,13 @@ import { connect } from "react-redux";
 import Diagram from "./diagram";
 import GameInput from "./gameInput";
 import Letters from "./letters";
-import { toggleChat } from "redux/modules/chat";
+// import { toggleChat } from "redux/modules/chat";
 
 @connect(
   ({ game, gameInfo }) => ({ game, gameInfo })
   )
 
 export default class GameScreen extends Component {
-  constructor(props) {
-    super(props);
-  }
   handleClick = () => {
     if (this.props.game.turn === this.props.user.id &&
       !this.props.game.solving) {
@@ -30,11 +27,14 @@ export default class GameScreen extends Component {
     const game = this.props.game;
     return (
       <div className="game-screen">
-        <Diagram guessCount1={game.wrongGuesses1}
-                 guessCount2={game.wrongGuesses2} />
+        <Diagram
+          guessCount1={game.wrongGuesses1}
+          guessCount2={game.wrongGuesses2}
+        />
         <GameInput guesses={game.correctGuesses || []} />
         <div className="button-div">
-          <button className="solve-it"
+          <button
+            className="solve-it"
             onClick={this.handleClick}
             disabled={game.solving}
           >Solve it</button>

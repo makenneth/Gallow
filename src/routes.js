@@ -11,14 +11,14 @@ export default (store) => {
         replace("/");
       }
       callback();
-    }
+    };
 
     if (!isLoaded(store.getState())) {
       store.dispatch(loadAuth()).then(checkAuth);
     } else {
       checkAuth();
     }
-  }
+  };
 
   return (<Route onEnter={requireAuth}>
     <Route path="/" component={Main}>

@@ -5,13 +5,13 @@ import { connect } from "react-redux";
 
 export default class Input extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       body: ""
     };
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.chatOpen === false && nextProps.chatOpen === true){
+    if (this.props.chatOpen === false && nextProps.chatOpen === true) {
       document.getElementById("body").focus();
     }
   }
@@ -32,11 +32,11 @@ export default class Input extends Component {
       type: "NEW_MESSAGE",
       data: msg
     }));
-    this.setState({body: ""});
+    this.setState({ body: "" });
   }
 
   handleChange = (e) => {
-    this.setState({ body: e.target.value })
+    this.setState({ body: e.target.value });
   }
   render() {
     return (

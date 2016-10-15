@@ -8,11 +8,7 @@ import { toggleChat } from "redux/modules/chat";
 )
 
 export default class Messages extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     if (this.props.messages.length !== nextProps.messages.length) {
       return true;
     }

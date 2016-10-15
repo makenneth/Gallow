@@ -7,7 +7,7 @@ import { fetchedGameData, updatedGame } from "redux/modules/game";
 import { createdGame } from "redux/modules/games";
 import * as chatActions from "redux/modules/messages";
 
-const url = process.env.WS_URL + "/ws";
+const url = `${process.env.WS_URL}/ws`;
 const ws = new WebSocket(url);
 
 @connect(
@@ -23,17 +23,9 @@ const ws = new WebSocket(url);
   })
 )
 export default class Main extends Component {
-  constructor(props, context){
-    super(props);
-  }
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
-
   componentDidMount() {
     ws.onmessage = this.handleNewMessage;
-    ws.onclose = () => this.props.setError("Connection was lost, please try again later...")
+    ws.onclose = () => this.props.setError("Connection was lost, please try again later...");
     ws.send(JSON.stringify({
       type: "USER_CONNECTED",
       data: {
@@ -49,10 +41,10 @@ export default class Main extends Component {
     }
   }
   handleNewMessage = (res) => {
-    let message = JSON.parse(res.data);
+    const message = JSON.parse(res.data);
     switch (message.type) {
       case "GAME_CONNECTED":
-        this.props.fetchedGameData(message.data)
+        this.props.fetchedGameData(message.data);
         break;
       case "MOVE_MADE":
       case "GAME_FINISHED":
@@ -65,7 +57,7 @@ export default class Main extends Component {
         this.props.fetchedMessages(message.data);
         break;
       case "CREATED_GAME":
-        this.props.createdGame(message.data)
+        this.props.createdGame(message.data);
         break;
       default:
         break;
@@ -81,33 +73,31 @@ export default class Main extends Component {
     });
   }
   loadingScreen() {
-    if (this.props.loading) {
-      return (<div className="overlay">
-        <div className="loader"></div>
+    return (this.props.loading &&
+      <div className="overlay">
+        <div className="loader" />
       </div>);
-    }
   }
   flashError() {
-    if (this.props.error.message) {
-      return (<div className="flash-error">
+    return (this.props.error.message &&
+      <div className="flash-error">
         { this.props.error.message }
       </div>);
-    }
   }
   children() {
-    if (this.props.user) {
-      return React.Children.map(this.props.children, (child) => {
-        return React.cloneElement(child, {
+    return (this.props.user &&
+      React.Children.map(this.props.children, (child =>
+        React.cloneElement(child, {
           user: this.props.user,
-          ws: ws
-        });
-      });
-    }
+          ws
+        })
+      ))
+    );
   }
   render() {
     return (
       <div>
-        <NavBar user={this.props.user} logOut={this.logOut}/>
+        <NavBar user={this.props.user} logOut={this.logOut} />
         { this.flashError() }
         { this.children() }
         { this.loadingScreen() }

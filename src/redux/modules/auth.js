@@ -1,11 +1,11 @@
 import axios from "axios";
 
 const LOAD = "hangperson/user/LOAD";
-const LOAD_SUCCESS = "hangperson/user/LOAD_SUCCESS";
 const LOAD_FAIL = "hangperson/user/LOAD_FAIL";
 const LOG_OUT = "hangperson/user/LOG_OUT";
 const LOG_OUT_SUCCESS = "hangperson/user/LOG_OUT_SUCCESS";
 const LOG_OUT_FAIL = "hangperson/user/LOG_OUT_FAIL";
+export const LOAD_SUCCESS = "hangperson/user/LOAD_SUCCESS";
 
 export default (state = { loaded: false }, action) => {
   switch (action.type) {
@@ -59,4 +59,4 @@ export const loadAuth = () => {
 
 export const isLoaded = (state) => {
   return state.loaded;
-}
+};

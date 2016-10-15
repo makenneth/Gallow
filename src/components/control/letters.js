@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Letter from "./letter";
 import { connect } from "react-redux";
+import Letter from "./letter";
 
 @connect(({ gameInfo }) => ({ gameInfo }))
 export default class Letters extends Component {
@@ -13,7 +13,7 @@ export default class Letters extends Component {
                       "u", "v", "w", "x", "y", "z"];
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     if (this.props.usedLetters.length !== nextProps.usedLetters.length ||
       this.props.guesses.length !== nextProps.guesses.length
       || this.props.turn !== nextProps.turn) {
@@ -27,8 +27,8 @@ export default class Letters extends Component {
           this.alphabets.indexOf(e.target.dataset.letter) > -1 &&
           !this.props.gameInfo.finished) {
       const gameInfo = this.props.gameInfo;
-      const move = e.target.dataset.letter
-      if (move.length > 1){
+      const move = e.target.dataset.letter;
+      if (move.length > 1) {
         return;
       }
       this.props.ws.send(JSON.stringify({
@@ -52,9 +52,9 @@ export default class Letters extends Component {
     return (
       <div className="alphabets-container" onClick={this.handleClick}>
         {
-          this.alphabets.map(alphabet => {
+          this.alphabets.map((alphabet) => {
             const bool = this.props.usedLetters.indexOf(alphabet) > -1;
-            return <Letter key={alphabet} used={bool} letter={alphabet} />
+            return <Letter key={alphabet} used={bool} letter={alphabet} />;
           })
         }
       </div>
