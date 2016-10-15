@@ -6,7 +6,7 @@ export default (state = {}, action) => {
   switch (action.type) {
     case FETCH_SUCCESS:
       return action.payload.state;
-    case UPDATE_SUCESS:
+    case UPDATE_SUCCESS:
       return action.payload;
     case CLEAR_GAME:
       return {};
@@ -26,7 +26,7 @@ export const fetchedGameData = (game) => {
 
 export const updatedGame = (game) => {
   return {
-    type: UPDATE_SUCESS,
+    type: UPDATE_SUCCESS,
     payload: game
   };
 };

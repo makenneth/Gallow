@@ -1,8 +1,9 @@
+import "babel-polyfill";
 import React from "react";
 import { render } from "react-dom";
 import { Router, Route,  browserHistory, RouterContext } from "react-router";
 import { Provider } from "react-redux";
-import store from "./store";
+import store from "./redux/store";
 import routes from "./routes";
 
 if (process.env.NODE_ENV !== "production") {
@@ -12,7 +13,6 @@ if (process.env.NODE_ENV !== "production") {
 document.addEventListener("DOMContentLoaded", () => {
   if (process.env.__DEVTOOLS__ && !window.devToolsExtension) {
     const DevTools = require("./containers/DevTools/DevTools");
-    console.log(DevTools);
     render(<Provider store={store}>
         <div>
           <Router

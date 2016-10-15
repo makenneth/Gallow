@@ -1,11 +1,13 @@
 const LOAD_START = "hangperson/loading/LOAD_START";
 const LOAD_STOP = "hangperson/loading/LOAD_STOP";
 
+let intId;
+
 export default (state = true, action) => {
   switch (action.type) {
     case LOAD_START:
       return true;
-    case LOAD_STOPPED:
+    case LOAD_STOP:
       return false;
     default:
       return state;

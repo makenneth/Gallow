@@ -22,8 +22,12 @@ module.exports = {
       loader: "babel"
     }]
   },
-  devtool: 'source-maps',
+  devtool: 'inline-source-map',
   resolve: {
+    modulesDirectories: [
+      "src",
+      "node_modules"
+    ],
     extensions: ["", ".js", ".jsx"]
   }
 }

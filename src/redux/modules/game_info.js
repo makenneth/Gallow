@@ -1,4 +1,4 @@
-import { FETCH_SUCCESS, CLEAR_GAME } from "./game_reducer";
+import { FETCH_SUCCESS, CLEAR_GAME } from "./game";
 
 export default (state = {}, action) => {
   switch (action.type) {

@@ -1,4 +1,4 @@
-export default (client) => ({ dispatch, getState}) => next => action => {
+export default ({ dispatch, getState }) => next => action => {
   if (typeof action === "function") {
     return action(dispatch, getState);
   }
@@ -9,13 +9,13 @@ export default (client) => ({ dispatch, getState}) => next => action => {
   }
   const [REQUEST, SUCCESS, FAILURE] = types;
   next({ ...rest, type: REQUEST });
-  const actionPromise = promise(client);
-  actionPromise.then(
+  promise.then(
     (result) => next({ ...rest, result, type: SUCCESS }),
     (error) => next({ ...rest, error, type: FAILURE })
   ).catch((error) => {
+    console.log(error);
     next({ ...rest, error, type: FAILURE });
   });
 
-  return actionPromise;
+  return promise;
 }

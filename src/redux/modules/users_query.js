@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const FETCH_USERS = "hangperson/users_query/FETCH_USERS";
 const FETCH_USERS_SUCCESS = "hangperson/users_query/FETCH_USERS_SUCCESS";
 const FETCH_USERS_FAIL = "hangperson/users_query/FETCH_USERS_FAIL";
@@ -14,7 +16,7 @@ export default (state = [], action) => {
 
 export const fetchUsers = (string) => {
   return {
-    type: [FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_USERS_FAIL],
+    types: [FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_USERS_FAIL],
     promise: axios.get(`/api/users?name=${string.toLowerCase()}`)
   };
 };

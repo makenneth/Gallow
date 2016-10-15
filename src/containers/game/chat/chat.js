@@ -5,7 +5,7 @@ import Input from "./input";
 
 @connect(({ messages, chatScreen }) => ({ messages, chatScreen }))
 
-export class Chat extends Component {
+export default class Chat extends Component {
   render() {
     return (<div className={"chat-screen" + (this.props.chatScreen ? " chat-open" : "")}>
       <Messages messages={this.props.messages} />

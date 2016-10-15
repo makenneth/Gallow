@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import moment from "moment";
-import { fetchGames } from "redux/module/games";
-import { startLoading, stopLoading } from "redux/module/loading";
-import { setError } from "redux/module/error";
+import { fetchGames } from "redux/modules/games";
+import { startLoading, stopLoading } from "redux/modules/loading";
+import { setError } from "redux/modules/error";
 
 @connect(
   ({ games }) => ({ games }),

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const FETCH = "hangperson/user/FETCH";
 const FETCH_SUCCESS = "hangperson/user/FETCH_SUCCESS";
 const FETCH_FAIL = "hangperson/user/FETCH_FAIL";
@@ -7,8 +9,10 @@ const LOG_OUT_FAIL = "hangperson/user/LOG_OUT_FAIL";
 
 export default (state = {}, action) => {
   switch (action.type) {
+    case FETCH_FAIL:
+      console.log(action);
     case FETCH_SUCCESS:
-      let user = action.payload.data;
+      let user = action.result.data;
       return user;
     case LOG_OUT_SUCCESS:
       return {};
@@ -19,14 +23,14 @@ export default (state = {}, action) => {
 
 export const logOut = () => {
   return {
-    type: [LOG_OUT, LOG_OUT_SUCCESS, LOG_OUT_FAIL],
+    types: [LOG_OUT, LOG_OUT_SUCCESS, LOG_OUT_FAIL],
     promise: axios.delete("/api/session")
   };
 };
 
 export const getCurrentUser = () => {
   return {
-    type: [FETCH, FETCH_SUCCESS, FETCH_FAIL],
+    types: [FETCH, FETCH_SUCCESS, FETCH_FAIL],
     promise: axios.get("/api/user/current")
   };
 };

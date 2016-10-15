@@ -1,4 +1,4 @@
 export Games from "./games/games";
-export Game from "./games/game";
-export NewGame from "./games/newGame";
-export Main from "./games/main";
+export Game from "./game/game";
+export NewGame from "./newGame/newGame";
+export Main from "./main/main";

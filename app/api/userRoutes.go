@@ -47,7 +47,7 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
       ON u1.id = g.user_id1
       INNER JOIN users AS u2
       ON u2.id = g.user_id2
-      WHERE g.user_id1 = $1 OR g.user_id2 = $1 
+      WHERE g.user_id1 = $1 OR g.user_id2 = $1
       ORDER BY g.updated_at
       LIMIT 10
     `, playerId)
@@ -74,13 +74,12 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
 
 func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
   cookie, _ := r.Cookie("session-token")
-
   if cookie.String() == "" {
     data, _ := json.Marshal(&Error{"No such User"})
     w.WriteHeader(http.StatusNotFound)
     w.Write(data)
   } else {
-    user := GetCurrentUser(w, cookie.Value)  
+    user := GetCurrentUser(w, cookie.Value)
     data, _ := json.Marshal(user)
     w.Write(data)
   }
@@ -96,7 +95,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
     newPlayerId int
     )
 
-  errorCh := make(chan *ResultError) 
+  errorCh := make(chan *ResultError)
   go func(){
     validRequest := csrf.CheckCSRF(r)
     if !validRequest {
@@ -111,11 +110,11 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
     err := decoder.Decode(&u)
     b, str := VerifyUser(u)
     if !b || err != nil {
-      errorCh <- &ResultError{422, str} 
+      errorCh <- &ResultError{422, str}
     }
     token, newPlayerId, err = u.InsertUser()
     if err != nil {
-      errorCh <- &ResultError{422, "Username already taken"} 
+      errorCh <- &ResultError{422, "Username already taken"}
     } else {
       errorCh <- &ResultError{0, ""}
     }

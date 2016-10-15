@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const FETCH = "hangperson/games/FETCH";
 const FETCH_SUCCESS = "hangperson/games/FETCH_SUCCESS";
 const FETCH_FAIL = "hangperson/games/FETCH_FAIL";
@@ -14,12 +16,12 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case FETCH_SUCCESS:
-      return action.payload.data;
+      return action.result.data;
     case CREATE_SUCCESS:
       var newState = Object.assign({}, state);
-      newState.unfinished = [...state.unfinished, action.payload.data];
+      newState.unfinished = [...state.unfinished, action.result.data];
       return newState;
-    case OTHER_CREATED_GAME:
+    case OTHER_CREATED:
       var newState = Object.assign({}, state);
       newState.unfinished = [...state.unfinished, action.payload];
       return newState;
@@ -30,7 +32,7 @@ export default (state = initialState, action) => {
 
 export const fetchGames = () => {
   return {
-    type: [FETCH, FETCH_SUCCESS, FETCH_FAIL],
+    types: [FETCH, FETCH_SUCCESS, FETCH_FAIL],
     promise: axios.get("/api/user/games")
   };
 };
@@ -38,8 +40,10 @@ export const fetchGames = () => {
 export const createGame = (user1, user2) => {
   const req = axios({
     url: "/api/games/new",
-    method: "post",
-    headers: {"Content-Type": "application/json; charset=UTF-8"},
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8"
+    },
     data: {
       id: 0,
       username1: user1.username,
@@ -51,7 +55,7 @@ export const createGame = (user1, user2) => {
     }
   });
   return {
-    type: [CREATE, CREATE_SUCCESS, CREATE_FAIL],
+    types: [CREATE, CREATE_SUCCESS, CREATE_FAIL],
     promise: req
   };
 };

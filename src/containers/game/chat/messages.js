@@ -7,7 +7,6 @@ import { toggleChat } from "redux/modules/chat";
   { toggleChat }
 )
 
-
 export default class Messages extends Component {
   constructor(props) {
     super(props);
