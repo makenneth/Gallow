@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const FETCH = "hangperson/games/FETCH";
-const FETCH_SUCCESS = "hangperson/games/FETCH_SUCCESS";
-const FETCH_FAIL = "hangperson/games/FETCH_FAIL";
+const LOAD = "hangperson/games/LOAD";
+const LOAD_SUCCESS = "hangperson/games/LOAD_SUCCESS";
+const LOAD_FAIL = "hangperson/games/LOAD_FAIL";
 const CREATE = "hangperson/games/CREATE";
 const CREATE_SUCCESS = "hangperson/games/CREATE_SUCCESS";
 const CREATE_FAIL = "hangperson/games/CREATE_FAIL";
@@ -11,28 +11,34 @@ const OTHER_CREATED = "hangperson/games/OTHER_CREATED";
 const initialState = {
   unfinished: [],
   finished: [],
-  fetched: false
+  loaded: false
 };
 export default (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_SUCCESS:
-      return action.result.data;
+    case LOAD_SUCCESS:
+      return {
+        ...state,
+        ...action.result.data,
+        loaded: true
+      };
     case CREATE_SUCCESS:
-      var newState = Object.assign({}, state);
-      newState.unfinished = [...state.unfinished, action.result.data];
-      return newState;
+      return {
+        ...state,
+        unfinished: [...state.unfinished, action.result.data]
+      };
     case OTHER_CREATED:
-      var newState = Object.assign({}, state);
-      newState.unfinished = [...state.unfinished, action.payload];
-      return newState;
+      return {
+        ...state,
+        unfinished: [...state.unfinished, action.result.data]
+      };
     default:
       return state;
   }
 };
 
-export const fetchGames = () => {
+export const loadGames = () => {
   return {
-    types: [FETCH, FETCH_SUCCESS, FETCH_FAIL],
+    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: axios.get("/api/user/games")
   };
 };
@@ -66,3 +72,7 @@ export const createdGame = (game) => {
     payload: game
   };
 };
+
+export const isGamesLoaded = (state) => {
+  return state.games.loaded;
+}

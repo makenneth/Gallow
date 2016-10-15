@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import Chat from "./chat/chat";
-import GameScreen from "./control/gameScreen";
+import { Chat, GameScreen } from "components";
 import { clearGame } from "redux/modules/game";
 
 @connect(() => ({}), { clearGame })

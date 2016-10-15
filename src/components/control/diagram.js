@@ -7,6 +7,9 @@ export default class Diagram extends Component {
     super(props);
   }
 
+  componentDidMount() {
+
+  }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.guessCount1 !== nextProps.guessCount1 ||
       this.props.guessCount2 !== nextProps.guessCount2 ||

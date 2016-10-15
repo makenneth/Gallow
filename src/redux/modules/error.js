@@ -4,11 +4,11 @@ const SET_ERROR = "hangperson/error/SET_ERROR";
 export default (state = {
   message: null
 }, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case CLEAR_ERROR:
       return { message: null };
     case SET_ERROR:
-      return { message: action.payload };
+      return { message: action.error };
     default:
       return state;
   }

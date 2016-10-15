@@ -3,8 +3,9 @@ import React from "react";
 import { render } from "react-dom";
 import { Router, Route,  browserHistory, RouterContext } from "react-router";
 import { Provider } from "react-redux";
+import { ReduxAsyncConnect } from "redux-async-connect";
 import store from "./redux/store";
-import routes from "./routes";
+import getRoutes from "./routes";
 
 if (process.env.NODE_ENV !== "production") {
   window.React = React;
@@ -17,9 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <div>
           <Router
             history={browserHistory}
-            render={props => <RouterContext {...props}/>}
+            render={props => <ReduxAsyncConnect {...props} />}
           >
-            { routes }
+            {getRoutes(store)}
           </Router>
           <DevTools />
         </div>
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     render(<Provider store={store}>
       <Router
         history={browserHistory}
-        routes={routes}
+        routes={getRoutes(store)}
         render={props => <RouterContext {...props}/>}
       />
     </Provider>, document.getElementById("root"));

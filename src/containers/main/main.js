@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import NavBar from "./navBar";
-import * as userActions from "redux/modules/user";
+import { NavBar } from "components";
+import * as authActions from "redux/modules/auth";
 import { clearError, setError } from "redux/modules/error";
-import { stopLoading } from "redux/modules/loading";
 import { fetchedGameData, updatedGame } from "redux/modules/game";
 import { createdGame } from "redux/modules/games";
 import * as chatActions from "redux/modules/messages";
@@ -12,16 +11,15 @@ const url = process.env.WS_URL + "/ws";
 const ws = new WebSocket(url);
 
 @connect(
-  ({ user, error, loading }) => ({ user, error, loading }),
+  ({ auth, error }) => ({ user: auth.user, error }),
   ({
     ...chatActions,
-    ...userActions,
+    ...authActions,
     fetchedGameData,
     updatedGame,
     createdGame,
     clearError,
-    setError,
-    stopLoading
+    setError
   })
 )
 export default class Main extends Component {
@@ -33,31 +31,21 @@ export default class Main extends Component {
     router: React.PropTypes.object.isRequired
   }
 
-  componentWillMount() {
-    if (!this.props.user.id){
-      this.props.getCurrentUser();
-    }
-
+  componentDidMount() {
     ws.onmessage = this.handleNewMessage;
-    ws.onclose = () => this.props.setError("Connection lost, please try again later...")
+    ws.onclose = () => this.props.setError("Connection was lost, please try again later...")
+    ws.send(JSON.stringify({
+      type: "USER_CONNECTED",
+      data: {
+        username: this.props.user.username,
+        nickname: this.props.user.nickname
+      }
+    }));
   }
 
-  catchError = () => {
-    if (!this.props.user) {
-      window.location.replace("/login");
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.user.id && nextProps.user.id) {
-      this.props.stopLoading();
-      ws.send(JSON.stringify({
-        type: "USER_CONNECTED",
-        data: {
-          username: nextProps.user.username,
-          nickname: nextProps.user.nickname
-        }
-      }));
+  componentWillReceivePropsn(nextProps) {
+    if (this.props.user && !nextProps.user) {
+      window.location.replace("/");
     }
   }
   handleNewMessage = (res) => {

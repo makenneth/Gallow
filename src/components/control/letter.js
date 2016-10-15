@@ -14,7 +14,7 @@ export default class Letter extends Component {
     return false
   }
   render() {
-    let className = "letter-box" + (this.props.used ? " used" : "");
+    const className = "letter-box" + (this.props.used ? " used" : "");
     return (
       <div data-letter={ this.props.letter } className={className}>
         <div data-letter={ this.props.letter }>{ this.props.letter.toUpperCase() }</div>

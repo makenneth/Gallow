@@ -1,24 +1,26 @@
 import { combineReducers } from "redux";
-import messagesReducer from "./messages";
-import userReducer from "./user";
-import gameReducer from "./game";
-import usersQueryReducer from "./users_query";
-import chatScreenReducer from "./chat_screen";
-import gamesReducer from "./games";
-import gameInfoReducer from "./game_info";
-import chatReducer from "./chat";
-import errorReducer from "./error";
-import loadingReducer from "./loading";
+import { reducer as reduxAsyncConnect } from "redux-async-connect";
+import messages from "./messages";
+import auth from "./auth";
+import game from "./game";
+import usersQuery from "./users_query";
+import chatScreen from "./chat_screen";
+import games from "./games";
+import gameInfo from "./game_info";
+import chat from "./chat";
+import error from "./error";
+import loading from "./loading";
 
 export default combineReducers({
-  messages: messagesReducer,
-  user: userReducer,
-  usersQuery: usersQueryReducer,
-  games: gamesReducer,
-  chat: chatReducer,
-  game: gameReducer,
-  gameInfo: gameInfoReducer,
-  chatScreen: chatScreenReducer,
-  error: errorReducer,
-  loading: loadingReducer
+  reduxAsyncConnect,
+  messages,
+  auth,
+  usersQuery,
+  games,
+  chat,
+  game,
+  gameInfo,
+  chatScreen,
+  error,
+  loading
 });

@@ -1,41 +1,30 @@
 import React, { Component } from "react";
+import { browserHistory } from "react-router";
 import { connect } from "react-redux";
+import { asyncConnect } from "redux-async-connect";
 import moment from "moment";
-import { fetchGames } from "redux/modules/games";
-import { startLoading, stopLoading } from "redux/modules/loading";
-import { setError } from "redux/modules/error";
+import { loadGames, isGamesLoaded } from "redux/modules/games";
 
+@asyncConnect([{
+  promise: ({ store }) => {
+    let promise;
+    if (!isGamesLoaded(store.getState())) {
+      promise = store.dispatch(loadGames());
+    }
+
+    return promise;
+  }
+}])
 @connect(
-  ({ games }) => ({ games }),
-  { fetchGames, startLoading, stopLoading, setError }
+  ({ games }) => ({ games })
   )
 export default class Games extends Component {
   constructor(props, context) {
     super(props);
   }
 
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
-  componentDidMount() {
-    if (this.props.user.id && !this.props.games.fetched){
-      this.props.fetchGames();
-      this.props.startLoading(this.props.setError);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.games.fetched && nextProps.games.fetched){
-      this.props.stopLoading();
-    }
-    if ((!this.props.user && nextProps.user) ||
-          (this.props.user && nextProps.user.id !== this.props.user.id)){
-        this.props.fetchGames();
-        this.props.startLoading(this.props.setError);
-    }
-  }
   handleClick = (e) => {
-    this.context.router.push(`/games/${e.target.dataset.id}`);
+    browserHistory.push(`/games/${e.target.dataset.id}`);
   }
 
   render() {

@@ -1,7 +1,7 @@
 const TOGGLE = "hangperson/chat-screen/TOGGLE"
 
 export default (state = false, action) => {
-  if (action.type === TOGGLE){
+  if (action.type === TOGGLE) {
     return !state;
   }
 
