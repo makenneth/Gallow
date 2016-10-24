@@ -1,18 +1,24 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { sendNewMessage } from "redux/modules/messages";
 
-@connect(({ chat }) => ({ chat }))
+@connect(({ chat, messages }) => ({ chat, messages }), { sendNewMessage })
 
 export default class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      body: ""
+      body: "",
+      sending: false
     };
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.chatOpen === false && nextProps.chatOpen === true) {
       document.getElementById("body").focus();
+    }
+
+    if (this.state.sending && nextProps.messages.length > this.props.messages.length) {
+      this.setState({ body: "", sending: false });
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -28,11 +34,10 @@ export default class Input extends Component {
     e.preventDefault();
     const msg = Object.assign({}, this.props.chat);
     msg.body = this.state.body;
-    this.props.ws.send(JSON.stringify({
-      type: "NEW_MESSAGE",
-      data: msg
-    }));
-    this.setState({ body: "" });
+    this.props.sendNewMessage(msg);
+
+    this.setState({ sending: true });
+    //  after 5 secs say failed to send?
   }
 
   handleChange = (e) => {

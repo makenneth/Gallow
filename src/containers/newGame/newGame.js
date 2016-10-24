@@ -49,6 +49,7 @@ export default class NewGame extends Component {
       name: e.target.value,
       selected: false
     });
+
     clearTimeout(timer);
     timer = setTimeout(() => {
       this.props.fetchUsers(this.state.name);

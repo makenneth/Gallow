@@ -1,77 +1,29 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { NavBar } from "components";
-import * as authActions from "redux/modules/auth";
-import { clearError, setError } from "redux/modules/error";
-import { fetchedGameData, updatedGame } from "redux/modules/game";
-import { createdGame } from "redux/modules/games";
-import * as chatActions from "redux/modules/messages";
-
-const url = `${process.env.WS_URL}/ws`;
-const ws = new WebSocket(url);
+import { logOut } from "redux/modules/auth";
+import { connectUser } from "redux/modules/game";
 
 @connect(
-  ({ auth, error }) => ({ user: auth.user, error }),
-  ({
-    ...chatActions,
-    ...authActions,
-    fetchedGameData,
-    updatedGame,
-    createdGame,
-    clearError,
-    setError
-  })
+  ({ auth, error, loading }) => ({ user: auth.user, error, loading }),
+  { logOut, connectUser }
 )
 export default class Main extends Component {
   componentDidMount() {
-    ws.onmessage = this.handleNewMessage;
-    ws.onclose = () => this.props.setError("Connection was lost, please try again later...");
-    ws.send(JSON.stringify({
-      type: "USER_CONNECTED",
-      data: {
-        username: this.props.user.username,
-        nickname: this.props.user.nickname
-      }
-    }));
+    this.props.connectUser();
   }
 
-  componentWillReceivePropsn(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.user && !nextProps.user) {
       window.location.replace("/");
-    }
-  }
-  handleNewMessage = (res) => {
-    const message = JSON.parse(res.data);
-    switch (message.type) {
-      case "GAME_CONNECTED":
-        this.props.fetchedGameData(message.data);
-        break;
-      case "MOVE_MADE":
-      case "GAME_FINISHED":
-        this.props.updatedGame(message.data);
-        break;
-      case "NEW_MESSAGE":
-        this.props.addNewMessage(message.data);
-        break;
-      case "FETCHED_MESSAGES":
-        this.props.fetchedMessages(message.data);
-        break;
-      case "CREATED_GAME":
-        this.props.createdGame(message.data);
-        break;
-      default:
-        break;
     }
   }
 
   logOut = () => {
     this.setState({ loading: true });
-    this.props.logOut().then(() => {
-      window.location.replace("/");
-    }).catch(() => {
-      window.location.replace("/");
-    });
+    this.props.logOut();
   }
+
   loadingScreen() {
     return (this.props.loading &&
       <div className="overlay">
@@ -88,8 +40,7 @@ export default class Main extends Component {
     return (this.props.user &&
       React.Children.map(this.props.children, (child =>
         React.cloneElement(child, {
-          user: this.props.user,
-          ws
+          user: this.props.user
         })
       ))
     );

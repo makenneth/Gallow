@@ -1,26 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { toggleChat } from "redux/modules/chat_screen";
+import { solveGame } from "redux/modules/game";
 import Diagram from "./diagram";
 import GameInput from "./gameInput";
 import Letters from "./letters";
-import { toggleChat } from "redux/modules/chat_screen";
 
 @connect(
-  ({ game, gameInfo }) => ({ game, gameInfo }),
-  { toggleChat }
-  )
-
+  ({ game }) => ({ game }),
+  { toggleChat, solveGame }
+)
 export default class GameScreen extends Component {
   handleClick = () => {
     if (this.props.game.turn === this.props.user.id &&
       !this.props.game.solving) {
-      this.props.ws.send(JSON.stringify({
-        type: "SOLVE_GAME",
-        data: {
-          id: this.props.gameInfo.id,
-          userId: this.props.user.id
-        }
-      }));
+      this.props.solveGame();
     }
   }
 

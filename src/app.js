@@ -6,12 +6,15 @@ import { Provider } from "react-redux";
 import { ReduxAsyncConnect } from "redux-async-connect";
 import store from "./redux/store";
 import getRoutes from "./routes";
+import startSocket from "./redux/socketMiddleware";
 
 if (process.env.NODE_ENV !== "production") {
   window.React = React;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  startSocket(store);
+
   if (process.env.__DEVTOOLS__ && !window.devToolsExtension) {
     const DevTools = require("./containers/DevTools/DevTools");
     render(<Provider store={store}>

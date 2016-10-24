@@ -1,5 +1,5 @@
-const LOAD_START = "hangperson/loading/LOAD_START";
-const LOAD_STOP = "hangperson/loading/LOAD_STOP";
+export const LOAD_STOP = "hangperson/loading/LOAD_STOP";
+export const LOAD_START = "hangperson/loading/LOAD_START";
 
 let intId;
 

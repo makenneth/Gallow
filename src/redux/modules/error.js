@@ -1,5 +1,5 @@
 const CLEAR_ERROR = "hangperson/error/CLEAR_ERROR";
-const SET_ERROR = "hangperson/error/SET_ERROR";
+export const SET_ERROR = "hangperson/error/SET_ERROR";
 
 export default (state = {
   message: null

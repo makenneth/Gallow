@@ -65,9 +65,11 @@ input[type="submit"] {
 
 .facebook-icon {
   background-color: #3a5b9b;
+  cursor: not-allowed;
 }
 .google-icon {
   background-color: #f5321d;
+  cursor: not-allowed;
 }
 .__facebook-logo {
   background-size: cover;
@@ -129,9 +131,9 @@ input[type="submit"] {
   color: black;
 }
 .error-input {
-  box-shadow: 0px 0px 10px 3px #B71C1C; 
+  box-shadow: 0px 0px 10px 3px #B71C1C;
   -moz-box-shadow: 0px 0px 10px 3px #B71C1C;
-  -webkit-box-shadow: 0px 0px 10px 3px #B71C1C;  
+  -webkit-box-shadow: 0px 0px 10px 3px #B71C1C;
 }
 
 

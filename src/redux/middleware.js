@@ -11,8 +11,8 @@ export default ({ dispatch, getState }) => next => action => {
     return next(action);
   }
 
-  dispatch(startLoading());
   const [REQUEST, SUCCESS, FAILURE] = types;
+  dispatch(startLoading());
   next({ ...rest, type: REQUEST });
   promise.then(
     (result) => {
@@ -21,7 +21,6 @@ export default ({ dispatch, getState }) => next => action => {
     },
     (error) => {
       dispatch(setError(error));
-      // next({ ...rest, error, type: FAILURE })
     }
   ).catch((error) => {
     dispatch(setError(error));

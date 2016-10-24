@@ -24,6 +24,7 @@ export default class Games extends Component {
   }
 
   render() {
+    console.log(this.props.games);
     return (
       <div className="games-container">
         <div>
