@@ -21,14 +21,12 @@ export const socketMiddleware = ({ getState }) => next => action => {
       break;
     }
     case GAME_CONNECTED:
-      console.log(action);
       socket.send(JSON.stringify({
         type: "GAME_CONNECTED",
         data: +action.payload
       }));
       break;
     case SEND_MESSAGE:
-      console.log(action)
       socket.send(JSON.stringify({
         type: "NEW_MESSAGE",
         data: action.payload

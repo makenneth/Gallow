@@ -22,7 +22,6 @@ export default (state = initialState, action) => {
         loaded: true
       };
     case CREATE_SUCCESS:
-      console.log(action);
       return {
         ...state,
         unfinished: [...state.unfinished, action.result.data]
