@@ -39,7 +39,7 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
         error <- &ResultError{404, "Invalid username or password"}
       } else {
         error <- &ResultError{0, ""}
-      } 
+      }
     }()
 
     for i := 0; i < 2; i++ {
@@ -65,8 +65,8 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
       cu := User{id, u.Username, u.Nickname}
       log.Println("cu: ", cu)
       SetCurrentUser(sessionToken, cu)
-      data, _ = json.Marshal(&cu) 
-      done <- true 
+      data, _ = json.Marshal(&cu)
+      done <- true
     }()
     for i := 0; i < 2; i++ {
       <-done
@@ -75,7 +75,7 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(data)
 
     break;
-  default: 
+  default:
     log.Println("does not match any routes");
     break;
   }
@@ -86,19 +86,20 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
 func LogOutHandler(w http.ResponseWriter, r *http.Request) {
   switch r.Method {
   case "DELETE":
-    cookie, _ := r.Cookie("session-token")    
-    
+    cookie, _ := r.Cookie("session-token")
+
     if cookie.String() != "" {
-      newToken, _ := token.GenerateRandomToken(32)  
-      _, _ = database.DBConn.Query(`UPDATE users
+      newToken, _ := token.GenerateRandomToken(32)
+      rows, _ := database.DBConn.Query(`UPDATE users
         SET session_token = $1
         WHERE session_token = $2`, newToken, cookie.Value)
+      rows.Close()
       delete(Sessions, cookie.Value)
       cookie = &http.Cookie{Name: "session-token", Value: "", MaxAge: -1, Path: "/" }
       http.SetCookie(w, cookie)
     }
     return;
-  default: 
+  default:
     log.Println("does not match any routes");
     break;
   }

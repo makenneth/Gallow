@@ -12,7 +12,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env":{
         "NODE_ENV": JSON.stringify("development"),
-        "WS_URL": JSON.stringify("ws://localhost:8080"),
+        "WS_URL": JSON.stringify("ws://localhost:8081"),
         "__DEVTOOLS__": true
       }
     })

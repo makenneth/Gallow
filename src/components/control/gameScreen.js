@@ -43,7 +43,6 @@ export default class GameScreen extends Component {
           guesses={game.correctGuesses || []}
           turn={game.turn === this.props.user.id}
           user={this.props.user}
-          ws={this.props.ws}
         />
       </div>
     );

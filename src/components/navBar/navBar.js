@@ -4,7 +4,7 @@ import { Link } from "react-router";
 export default class NavBar extends Component {
   shouldComponentUpdate(nextProps) {
     if ((!this.props.user && nextProps.user) ||
-        (this.props.user && this.props.user.username !== nextProps.user.username)) {
+        (this.props.user && nextProps.user && this.props.user.username !== nextProps.user.username)) {
       return true;
     }
 

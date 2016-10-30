@@ -8,6 +8,7 @@ import { setError } from "redux/modules/error";
 let socket;
 
 export const socketMiddleware = ({ getState }) => next => action => {
+  if (!socket) return next(action);
   switch (action.type) {
     case PLAYER_CONNECTED: {
       const user = getState().auth.user;

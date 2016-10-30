@@ -20,8 +20,7 @@ export default class NewGame extends Component {
     if (!this.state.selectedOpponent) {
       alert("You have to select a player first!");
     } else {
-      this.props.createGame(this.props.user,
-        this.state.selectedOpponent)
+      this.props.createGame(this.state.selectedOpponent)
         .then((res) => {
           browserHistory.push(`/games/${res.data.id}`);
         }).catch((err) => {

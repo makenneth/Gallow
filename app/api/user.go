@@ -1,4 +1,4 @@
-package api 
+package api
 import (
   // "log"
   "net/http"
@@ -28,6 +28,20 @@ func SetCurrentUser(token string, u User){
   Sessions[token] = u
 }
 
+func GetUserFromCookie(w http.ResponseWriter, r *http.Request) (User, error) {
+  cookie, err := r.Cookie("session-token")
+  if err != nil || cookie.String() == ""{
+    return User{}, err
+  }
+  user := GetCurrentUser(w, cookie.Value)
+
+  if user == (User{}) {
+    return User{}, err
+  }
+
+  return user, nil
+}
+
 func GetCurrentUser(w http.ResponseWriter, userToken string) User {
   if user, ok := Sessions[userToken]; ok {
     return user
@@ -48,7 +62,7 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
   newToken, _ := token.GenerateRandomToken(32)
   err := database.DBConn.QueryRow(`UPDATE users
     SET session_token = $1
-    WHERE session_token = $2 
+    WHERE session_token = $2
     returning id, username, nickname`, newToken, userToken).Scan(&id, &username, &nickname)
   if id == 0 || err != nil {
     return "", false
@@ -64,8 +78,8 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
 
 func (u *UserData) CheckPassword() error {
   var passwordDigest, sessionToken string
-  err := database.DBConn.QueryRow(`SELECT password_digest, session_token 
-    FROM users 
+  err := database.DBConn.QueryRow(`SELECT password_digest, session_token
+    FROM users
     WHERE username = $1`, u.Username).Scan(&passwordDigest, &sessionToken)
 
   if err != nil {
@@ -81,14 +95,14 @@ func (u *UserData) CheckPassword() error {
 func (u *UserData) ResetSessionToken() (int, string, error) {
   newToken, _ := token.GenerateRandomToken(32)
   var playerId int
-  err := database.DBConn.QueryRow(`UPDATE users 
+  err := database.DBConn.QueryRow(`UPDATE users
     SET session_token = $1
     WHERE username = $2 returning id`, newToken, u.Username).Scan(&playerId)
 
   return playerId, newToken, err
 }
 
-func (u *UserData) InsertUser() (string, int, error) { 
+func (u *UserData) InsertUser() (string, int, error) {
 
   password := []byte(u.Password)
   digest, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
@@ -102,11 +116,11 @@ func (u *UserData) InsertUser() (string, int, error) {
   }
 
   var newPlayerId int
-  err = database.DBConn.QueryRow(`INSERT INTO 
-    users (session_token, username, nickname, password_digest) 
+  err = database.DBConn.QueryRow(`INSERT INTO
+    users (session_token, username, nickname, password_digest)
     VALUES ($1, $2, $3, $4) returning id`, token, u.Username, u.Nickname, digest).Scan(&newPlayerId)
 
   return token, newPlayerId, err
-}  
+}
 
 

@@ -32,9 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
     render(<Provider store={store}>
       <Router
         history={browserHistory}
-        routes={getRoutes(store)}
         render={props => <ReduxAsyncConnect {...props} />}
-      />
+      >
+        {getRoutes(store)}
+      </Router>
     </Provider>, document.getElementById("root"));
   }
 });

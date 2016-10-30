@@ -4,14 +4,12 @@ import (
   "fmt"
 	"log"
 	"net/http"
-	"./app/socket"
+  "./app/static"
   "./app/api"
   "database/sql"
   _ "github.com/lib/pq"
   "regexp"
   "./app/database"
-  "./app/csrf"
-  "html/template"
   "github.com/namsral/flag"
 )
 
@@ -22,9 +20,6 @@ type route struct {
 
 type RegexHandler struct {
   routes []*route
-}
-type TemplateData struct {
-  CSRFToken string
 }
 
 func (handler *RegexHandler) AddRoute(reg string, h func(http.ResponseWriter, *http.Request, []string)) {
@@ -42,54 +37,7 @@ func (handler *RegexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
   }
 }
 
-func templateHandler(w http.ResponseWriter, r *http.Request){
-  cookie, err := r.Cookie("session-token")
-  if err != nil || cookie.String() == "" {
-    http.Redirect(w, r, "/login", http.StatusSeeOther)
-    return
-  }
-  if user := api.GetCurrentUser(w, cookie.Value); user == (api.User{})  {
-    http.Redirect(w, r, "/login", http.StatusSeeOther)
-    return
-  }
-  
-  t, _ := template.ParseFiles("index.html")
-  token := csrf.SetCSRF(w, r)
-  d := TemplateData{CSRFToken: token}
-  t.Execute(w, d)
-}
-
-func LogInPageHandler(w http.ResponseWriter, r *http.Request){
-  cookie, _ := r.Cookie("session-token")
-  if cookie.String() != "" {
-    if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}) {
-      http.Redirect(w, r, "/", http.StatusSeeOther)
-      return
-    }
-  }
-
-  t, _ := template.ParseFiles("templates/logInPage.html")
-  token := csrf.SetCSRF(w, r)
-  d := TemplateData{CSRFToken: token}
-  t.Execute(w, d)
-}
-
-func SignUpPageHandler(w http.ResponseWriter, r *http.Request){
-  cookie, _ := r.Cookie("session-token")
-  if cookie.String() != "" {
-    
-    if user := api.GetCurrentUser(w, cookie.Value); user != (api.User{}){
-      http.Redirect(w, r, "/", http.StatusSeeOther)
-    }
-  }
-  t, _ := template.ParseFiles("templates/signUpPage.html")
-  token := csrf.SetCSRF(w, r)
-  d := TemplateData{CSRFToken: token}
-  t.Execute(w, d)
-}
-
-
-func main() {  
+func main() {
   port_num := 8080
   flag.IntVar(&port_num, "P", port_num, "SERVER PORT")
   dbinfo := DBInfo()
@@ -101,32 +49,27 @@ func main() {
   checkErr(err)
   defer database.DBConn.Close();
 
-	server := socket.NewServer("/ws")
-	go server.Listen()
-
   http.HandleFunc("/public/", func(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, r.URL.Path[1:])
   })
 
-  // regHandler := new(RegexHandler)
-  // regHandler.AddRoute("/api/games/([0-9]+)$", api.GameRoutesHandler)
-  // regHandler.AddRoute("/api/games/([0-9]+)/messages$", api.MessageRoutesHandler)
   http.HandleFunc("/api/user/games", api.GamesRouteHandler)
   http.HandleFunc("/api/user/new", api.SignUpHandler)
-  http.HandleFunc("/api/user", api.UserHandler) 
-  http.HandleFunc("/api/user/current", api.CurrentUserHandler) 
+  http.HandleFunc("/api/user", api.UserHandler)
+  http.HandleFunc("/api/user/current", api.CurrentUserHandler)
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
   http.HandleFunc("/api/games/new", func(w http.ResponseWriter, r *http.Request){
-    api.NewGameHandler(w, r, server);
+    api.NewGameHandler(w, r);
   })
-  http.HandleFunc("/api/users", api.UsersQueryHandler) 
-  http.HandleFunc("/login", LogInPageHandler)
-  http.HandleFunc("/signup", SignUpPageHandler)
+  http.HandleFunc("/api/users", api.UsersQueryHandler)
+  http.HandleFunc("/api/me/friends", api.FriendsHandler)
+  http.HandleFunc("/login", static.LogInPageHandler)
+  http.HandleFunc("/signup", static.SignUpPageHandler)
   http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request){
     return
   })
-  http.HandleFunc("/", templateHandler)
+  http.HandleFunc("/", static.TemplateHandler)
   log.Printf("Server listening at port %d", port_num)
   log.Fatal(http.ListenAndServe(port, nil))
 }

@@ -14,7 +14,7 @@ if (process.env.__DEVTOOLS__) {
     persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
   )(createStore);
 } else {
-  createStoreWithMiddleware = applyMiddleware(middleware)(createStore);
+  createStoreWithMiddleware = applyMiddleware(middleware, socketMiddleware)(createStore);
 }
 
 const store = createStoreWithMiddleware(reducer);

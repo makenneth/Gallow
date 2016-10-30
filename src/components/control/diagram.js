@@ -20,6 +20,7 @@ export default class Diagram extends Component {
       if (!name) {
         return (<div className="diagram" />);
       }
+
       return (<div className="diagram">
         <h2>{name}</h2>
         <div

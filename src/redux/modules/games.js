@@ -43,7 +43,7 @@ export const loadGames = () => {
   };
 };
 
-export const createGame = (user1, user2) => {
+export const createGame = (opponent) => {
   const req = axios({
     url: "/api/games/new",
     method: "POST",
@@ -52,12 +52,9 @@ export const createGame = (user1, user2) => {
     },
     data: {
       id: 0,
-      username1: user1.username,
-      username2: user2.username,
-      nickname1: user1.nickname,
-      nickname2: user2.nickname,
-      userId1: user1.id,
-      userId2: user2.id
+      userId2: opponent.id,
+      username2: opponent.username,
+      nickname2: opponent.nickname
     }
   });
   return {

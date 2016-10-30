@@ -4,9 +4,9 @@ import (
   "log"
   "golang.org/x/net/websocket"
   "encoding/json"
-  "../database"
-  "../game"
-  "../state"
+  "../app/database"
+  "../app/game"
+  "../app/state"
 )
 
 type Client struct {
@@ -23,7 +23,7 @@ type Err struct {
 }
 const buffSize = 1000
 
-func NewClient(ws *websocket.Conn, server *Server) *Client { 
+func NewClient(ws *websocket.Conn, server *Server) *Client {
   if ws == nil {
     panic("Websocket can't be nil!!")
   } else if server == nil {
@@ -67,10 +67,10 @@ func (this *Client) ListenRead() {
         this.done <- true
       }
       switch msg.Type {
-      case "USER_CONNECTED": 
+      case "USER_CONNECTED":
         data := make(map[string]string)
         err := json.Unmarshal(msg.Data, &data)
-        
+
         if err != nil {
           this.SendErrorMsg("Data is corrupted.")
           return
@@ -80,7 +80,7 @@ func (this *Client) ListenRead() {
         this.nickname = data["nickname"]
         this.server.AddClient() <- this
         break;
-      case "GAME_CONNECTED": 
+      case "GAME_CONNECTED":
         var gameId int;
         err := json.Unmarshal(msg.Data, &gameId)
         if err != nil {
@@ -96,12 +96,12 @@ func (this *Client) ListenRead() {
           data, _ := json.Marshal(chatMsgs)
           message1 := &Message{"FETCHED_MESSAGES", data}
           this.msgCh <- message1
-          
+
           }()
-          
+
         go func(){
           gameData, err := this.RetreiveData(gameId)
-      
+
           if err != nil  {
             this.SendErrorMsg("Data not found...")
             return
@@ -181,7 +181,7 @@ func (this *Client) ListenRead() {
           return
         }
         err = database.DBConn.QueryRow(`
-          SELECT g.game_state, u1.username, u2.username 
+          SELECT g.game_state, u1.username, u2.username
           FROM games AS g
           INNER JOIN users AS u1
           ON g.user_id1 = u1.id
@@ -198,7 +198,7 @@ func (this *Client) ListenRead() {
         if state.Turn == dataRec["userId"] {
           if opponent = username1; this.username == opponent {
             opponent = username2
-          } 
+          }
           go this.SendSystemMessage(opponent, this.nickname + " is solving...", dataRec["id"])
 
           state.Solving = true
@@ -230,7 +230,12 @@ func (this *Client) ListenRead() {
         data, _ := json.Marshal(newChat)
 
         msg := &Message{"NEW_MESSAGE", data}
-        go chatMsgData.SaveChatMessage()
+        go func() {
+          e := chatMsgData.SaveChatMessage()
+          if e != "" {
+            this.SendErrorMsg(e)
+          }
+        }();
         this.msgCh <- msg
         this.server.SendToClientConn(chatMsgData.Recipient, msg, chatMsgData.GameId)
         break;
@@ -239,8 +244,8 @@ func (this *Client) ListenRead() {
         this.done <- true
         break;
       }
-   
-    }    
+
+    }
   }
 }
 
@@ -262,10 +267,10 @@ func SaveChatMessage(chatMsg *ChatMsg, username string, user_id, game_id int) er
   _, err := database.DBConn.Query(`INSERT INTO messages
     (author, body, user_id, game_id)
     VALUES ($1, $2, $3, $4)`, chatMsg.Author, chatMsg.Body, user_id, game_id)
-  
+
   return err
 }
-func (this *Client) RetreiveChatMessages(gameId int) ([]ChatMsg, error) { 
+func (this *Client) RetreiveChatMessages(gameId int) ([]ChatMsg, error) {
   chatMsgs := make([]ChatMsg, 0)
   var author, body string
   rows, err := database.DBConn.Query(`SELECT m.author, m.body
@@ -311,9 +316,9 @@ func (this *Client) RetreiveData(gameId int) (*game.Game, error) {
     finished bool
     gameJson []byte
    )
-  err := database.DBConn.QueryRow(`SELECT 
+  err := database.DBConn.QueryRow(`SELECT
     g.id, g.user_id1, g.user_id2,
-    u1.username, u2.username, 
+    u1.username, u2.username,
     u1.nickname, u2.nickname,
     g.finished, g.winner, g.game_state
     FROM games AS g
@@ -322,12 +327,12 @@ func (this *Client) RetreiveData(gameId int) (*game.Game, error) {
     INNER JOIN users AS u2
     ON u2.id = g.user_id2
     WHERE g.id = $1
-    LIMIT 1`, gameId).Scan(&id, &userId1, &userId2, &username1, &username2, 
+    LIMIT 1`, gameId).Scan(&id, &userId1, &userId2, &username1, &username2,
       &nickname1, &nickname2, &finished, &winner, &gameJson)
 
   var gameState state.State
   _ = json.Unmarshal(gameJson, &gameState)
-  game := &game.Game{id, userId1, userId2, username1, username2, 
-    nickname1, nickname2, finished, winner, gameState}
+  game := &game.Game{id, userId2, username2, nickname2, userId1,
+    username1, nickname1, finished, winner, gameState}
   return game, err
 }

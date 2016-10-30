@@ -1,7 +1,6 @@
-package socket 
+package socket
 import (
-  "../database"
-  "log"
+  "../app/database"
   )
 
 type ChatMsg struct {
@@ -9,8 +8,6 @@ type ChatMsg struct {
   Body string `json:"body"`
 }
 
-//author is nickname
-//recipient is username
 type ChatMsgData struct {
   GameId int `json:"gameId"`
   UserId int `json:"userId"`
@@ -19,10 +16,12 @@ type ChatMsgData struct {
   Recipient string `json:"recipient"`
 }
 
-func (this *ChatMsgData) SaveChatMessage(){
+func (this *ChatMsgData) SaveChatMessage() string {
   _, err := database.DBConn.Query(`INSERT INTO messages
     (author, body, user_id, game_id)
     VALUES ($1, $2, $3, $4)`, this.Author, this.Body, this.UserId, this.GameId)
-  //should check err then let the user know that an error has occured
-  log.Println("save chat message err: ", err)
+  if err != nil {
+    return "Error has occured while saving chat messages"
+  }
+  return ""
 }

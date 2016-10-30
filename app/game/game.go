@@ -1,20 +1,21 @@
-package game 
+package game
 
 
 import (
   "../state"
   "log"
   "../database"
+  "database/sql"
 )
 
 type Game struct {
   Id int `json:"id"`
-  UserId1 int `json:"userId1"`
   UserId2 int `json:"userId2"`
-  Username1 string `json:"username1"`
   Username2 string `json:"username2"`
-  Nickname1 string `json:"nickname1"`
   Nickname2 string `json:"nickname2"`
+  UserId1 int `json:"userId1"`
+  Username1 string `json:"username1"`
+  Nickname1 string `json:"nickname1"`
   Finished bool `json:"finished"`
   Winner int `json:"winner"`
   State state.State `json:"state"`
@@ -99,7 +100,7 @@ func (this *Game) UpdateStats(correct bool) {
       this.State.WrongGuesses2++
     }
     if this.State.WrongGuesses2 == 6 {
-      this.Winner = this.UserId1 
+      this.Winner = this.UserId1
       this.Finished = true
     } else {
       this.State.Turn = this.UserId1
@@ -109,7 +110,7 @@ func (this *Game) UpdateStats(correct bool) {
       this.State.WrongGuesses1++
     }
     if this.State.WrongGuesses1 == 6 {
-      this.Winner = this.UserId2 
+      this.Winner = this.UserId2
       this.Finished = true
     } else {
       this.State.Turn = this.UserId2
@@ -121,9 +122,10 @@ func (this *Game) UpdateDatabase(gJson []byte) (string, error){
   var (
     err error
     msgType string
+    rows *sql.Rows
     )
   if this.Finished && this.Winner != 0 {
-    _, err = database.DBConn.Query(`
+    rows, err = database.DBConn.Query(`
       UPDATE games
       SET game_state = $1,
           winner = $2,
@@ -133,7 +135,7 @@ func (this *Game) UpdateDatabase(gJson []byte) (string, error){
     msgType = "GAME_FINISHED"
     //logic now causing the last letter not to show up
   } else {
-    _, err = database.DBConn.Query(`
+    rows, err = database.DBConn.Query(`
       UPDATE games
       SET game_state = $1
       WHERE id = $2 AND user_id1 = $3 AND user_id2 = $4
@@ -141,6 +143,6 @@ func (this *Game) UpdateDatabase(gJson []byte) (string, error){
 
     msgType = "MOVE_MADE"
   }
-
+  rows.Close()
   return msgType, err
 }

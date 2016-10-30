@@ -18,14 +18,14 @@ func UsersQueryHandler(w http.ResponseWriter, r *http.Request) {
     if searchQuery != "" {
       var (
         id int
-        username string 
+        username string
         nickname string
       )
-
       rows, err := database.DBConn.Query(`
-        SELECT id, username, nickname 
+        SELECT id, username, nickname
         FROM users
-        WHERE nickname LIKE '%' || $1 || '%'`, searchQuery) 
+        WHERE nickname LIKE '%' || $1 || '%'`, searchQuery)
+      defer rows.Close()
       if err != nil {
         log.Println(err)
         break;
@@ -39,7 +39,7 @@ func UsersQueryHandler(w http.ResponseWriter, r *http.Request) {
         users = append(users, User{id, username, nickname})
       }
     }
-    
+
     data, err := json.Marshal(users)
     if err != nil {
       log.Fatal(err)

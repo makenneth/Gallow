@@ -10,6 +10,7 @@ import gameInfo from "./game_info";
 import chat from "./chat";
 import error from "./error";
 import loading from "./loading";
+import friends from "./friends";
 
 export default combineReducers({
   reduxAsyncConnect,
@@ -22,5 +23,6 @@ export default combineReducers({
   gameInfo,
   chatScreen,
   error,
-  loading
+  loading,
+  friends
 });

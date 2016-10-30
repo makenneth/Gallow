@@ -51,6 +51,7 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
       ORDER BY g.updated_at
       LIMIT 10
     `, playerId)
+    defer rows.Close()
     if err != nil {
       log.Println(err)
     }
