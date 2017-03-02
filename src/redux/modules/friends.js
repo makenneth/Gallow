@@ -1,12 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
 
-const ADDED_FRIEND = "hangperson/friends/ADDED_FRIEND";
-const REMOVED_FRIEND = "hangperson/friends/REMOVED_FRIEND";
-const FETCHED_FRIENDS = "hangperson/friends/FETCHED_FRIENDS";
+const ADDED_FRIEND = 'hangperson/friends/ADDED_FRIEND';
+const REMOVED_FRIEND = 'hangperson/friends/REMOVED_FRIEND';
+const FETCHED_FRIENDS = 'hangperson/friends/FETCHED_FRIENDS';
 
 const initialState = {
   friends: [],
-  loaded: false
+  loaded: false,
 };
 
 export default (state = initialState, action) => {
@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
     case ADDED_FRIEND:
       return {
         ...state,
-        friends: [...state.friends, action.payload.data]
+        friends: [...state.friends, action.payload.data],
       };
     case REMOVED_FRIEND: {
       const friends = [];
@@ -28,13 +28,13 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        friends
+        friends,
       };
     }
     case FETCHED_FRIENDS:
       return {
         loaded: true,
-        friends: action.payload.data
+        friends: action.payload.data,
       };
     default:
       return state;
@@ -43,41 +43,41 @@ export default (state = initialState, action) => {
 
 export const addFriend = (user) => {
   const req = axios({
-    url: "/api/me/friends",
-    method: "POST",
+    url: '/api/me/friends',
+    method: 'POST',
     data: { user },
     headers: {
-      "Content-Type": "application/json; charset=UTF-8"
-    }
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
   });
 
   return {
     type: ADDED_FRIEND,
-    payload: req
+    payload: req,
   };
 };
 
 export const unfriend = (user) => {
   const req = axios({
-    url: "/api/me/friends",
-    method: "DELETE",
+    url: '/api/me/friends',
+    method: 'DELETE',
     data: { user },
     headers: {
-      "Content-Type": "application/json; charset=UTF-8"
-    }
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
   });
 
   return {
     type: REMOVED_FRIEND,
-    payload: req
+    payload: req,
   };
 };
 
 export const loadFriends = () => {
-  const req = axios.get("/api/me/friends");
+  const req = axios.get('/api/me/friends');
   return {
     type: FETCHED_FRIENDS,
-    payload: req
+    payload: req,
   };
 };
 

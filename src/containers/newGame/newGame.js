@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { browserHistory } from "react-router";
-import { createGame } from "redux/modules/games";
-import { fetchUsers } from "redux/modules/users_query";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { browserHistory } from 'react-router';
+import { createGame } from 'redux/modules/games';
+import { fetchUsers } from 'redux/modules/users_query';
 @connect(
   ({ usersQuery }) => ({ usersQuery }),
   { fetchUsers, createGame }
@@ -11,14 +11,14 @@ export default class NewGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
+      name: '',
       selectedOpponent: null,
-      selected: false
+      selected: false,
     };
   }
   startGame = () => {
     if (!this.state.selectedOpponent) {
-      alert("You have to select a player first!");
+      alert('You have to select a player first!');
     } else {
       this.props.createGame(this.state.selectedOpponent)
         .then((res) => {
@@ -30,8 +30,8 @@ export default class NewGame extends Component {
   }
   handleClear = () => {
     this.setState({
-      name: "",
-      selectedOpponent: null
+      name: '',
+      selectedOpponent: null,
     });
   }
   handleSelect = (e) => {
@@ -39,14 +39,14 @@ export default class NewGame extends Component {
     this.setState({
       name: user.nickname,
       selectedOpponent: user,
-      selected: true
+      selected: true,
     });
   }
   handleChange = (e) => {
     let timer;
     this.setState({
       name: e.target.value,
-      selected: false
+      selected: false,
     });
 
     clearTimeout(timer);
@@ -58,7 +58,7 @@ export default class NewGame extends Component {
     return (<ul
       onClick={this.handleSelect}
       style={{
-        display: this.props.usersQuery.length && !this.state.selected ? "block" : "none"
+        display: this.props.usersQuery.length && !this.state.selected ? 'block' : 'none',
       }}
     >
       {

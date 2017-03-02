@@ -1,8 +1,8 @@
-import React,  { Component } from "react";
-import { asyncConnect } from "redux-async-connect";
-import { connect } from "react-redux";
-import { isLoaded, loadFriends, unfriend } from "redux/modules/friends";
-import { createGame } from "redux/modules/games";
+import React, { Component } from 'react';
+import { asyncConnect } from 'redux-async-connect';
+import { connect } from 'react-redux';
+import { isLoaded, loadFriends, unfriend } from 'redux/modules/friends';
+import { createGame } from 'redux/modules/games';
 
 @asyncConnect([{
   promise: ({ store }) => {
@@ -12,7 +12,7 @@ import { createGame } from "redux/modules/games";
     }
 
     return promise;
-  }
+  },
 }])
 @connect(({ friends }) => ({ friends }), { createGame })
 class Friends extends Component {

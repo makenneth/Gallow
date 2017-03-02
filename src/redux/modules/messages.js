@@ -1,6 +1,6 @@
-const NEW = "hangperson/messages/NEW";
-const FETCHED = "hangperson/messages/FETCHED";
-export const SEND_MESSAGE = "hangperson/messages/SEND_MESSAGE";
+const NEW = 'hangperson/messages/NEW';
+const FETCHED = 'hangperson/messages/FETCHED';
+export const SEND_MESSAGE = 'hangperson/messages/SEND_MESSAGE';
 
 export default (state = [], action) => {
   let newState;
@@ -18,20 +18,20 @@ export default (state = [], action) => {
 export const addNewMessage = (message) => {
   return {
     type: NEW,
-    payload: message
+    payload: message,
   };
 };
 
 export const fetchedMessages = (messages) => {
   return {
     type: FETCHED,
-    payload: messages
+    payload: messages,
   };
 };
 
 export const sendNewMessage = (message) => {
   return {
     type: SEND_MESSAGE,
-    payload: message
+    payload: message,
   };
 };

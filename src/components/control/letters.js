@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { makeMove } from "redux/modules/game";
-import Letter from "./letter";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { makeMove } from 'redux/modules/game';
+import Letter from './letter';
 
 @connect(({ gameInfo }) => ({ gameInfo }), { makeMove })
 export default class Letters extends Component {
   constructor(props) {
     super(props);
-    this.alphabets = ["a", "b", "c", "d", "e",
-                      "f", "g", "h", "i", "j",
-                      "k", "l", "m", "n", "o",
-                      "p", "q", "r", "s", "t",
-                      "u", "v", "w", "x", "y", "z"];
+    this.alphabets = ['a', 'b', 'c', 'd', 'e',
+                      'f', 'g', 'h', 'i', 'j',
+                      'k', 'l', 'm', 'n', 'o',
+                      'p', 'q', 'r', 's', 't',
+                      'u', 'v', 'w', 'x', 'y', 'z'];
   }
 
   shouldComponentUpdate(nextProps) {

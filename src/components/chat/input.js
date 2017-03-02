@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { sendNewMessage } from "redux/modules/messages";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { sendNewMessage } from 'redux/modules/messages';
 
 @connect(({ chat, messages }) => ({ chat, messages }), { sendNewMessage })
 
@@ -8,17 +8,17 @@ export default class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      body: "",
-      sending: false
+      body: '',
+      sending: false,
     };
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.chatOpen === false && nextProps.chatOpen === true) {
-      document.getElementById("body").focus();
+      document.getElementById('body').focus();
     }
 
     if (this.state.sending && nextProps.messages.length > this.props.messages.length) {
-      this.setState({ body: "", sending: false });
+      this.setState({ body: '', sending: false });
     }
   }
   shouldComponentUpdate(nextProps, nextState) {

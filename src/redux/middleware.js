@@ -1,8 +1,8 @@
-import { startLoading, stopLoading } from "redux/modules/loading";
-import { setError } from "redux/modules/error";
+import { startLoading, stopLoading } from 'redux/modules/loading';
+import { setError } from 'redux/modules/error';
 
 export default ({ dispatch, getState }) => next => action => {
-  if (typeof action === "function") {
+  if (typeof action === 'function') {
     return action(dispatch, getState);
   }
 

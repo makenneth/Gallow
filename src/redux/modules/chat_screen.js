@@ -1,4 +1,4 @@
-const TOGGLE = "hangperson/chat-screen/TOGGLE";
+const TOGGLE = 'hangperson/chat-screen/TOGGLE';
 
 export default (state = false, action) => {
   if (action.type === TOGGLE) {
@@ -10,6 +10,6 @@ export default (state = false, action) => {
 
 export const toggleChat = () => {
   return {
-    type: TOGGLE
+    type: TOGGLE,
   };
 };

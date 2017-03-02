@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Chat, GameScreen } from "components";
-import { clearGame, connectGame } from "redux/modules/game";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Chat, GameScreen } from 'components';
+import { clearGame, connectGame } from 'redux/modules/game';
 
 @connect(() => ({}), { clearGame, connectGame })
 export default class Game extends Component {

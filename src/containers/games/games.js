@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { browserHistory } from "react-router";
-import { connect } from "react-redux";
-import { asyncConnect } from "redux-async-connect";
-import moment from "moment";
-import { loadGames, isGamesLoaded } from "redux/modules/games";
+import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
+import { connect } from 'react-redux';
+import { asyncConnect } from 'redux-async-connect';
+import moment from 'moment';
+import { loadGames, isGamesLoaded } from 'redux/modules/games';
 
 @asyncConnect([{
   promise: ({ store }) => {
@@ -13,7 +13,7 @@ import { loadGames, isGamesLoaded } from "redux/modules/games";
     }
 
     return promise;
-  }
+  },
 }])
 @connect(
   ({ games }) => ({ games })
@@ -48,7 +48,7 @@ export default class Games extends Component {
                 (<li key={game.id} data-id={game.id}>
                   {game.nickname1}<span>vs.</span>{game.nickname2}
                   <br />
-                  { `Result: ${game.winner === this.props.user.id ? "Won" : "Lost"}` }
+                  { `Result: ${game.winner === this.props.user.id ? 'Won' : 'Lost'}` }
                 </li>)
               ))
             }

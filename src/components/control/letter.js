@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 export default class Letter extends Component {
   shouldComponentUpdate(nextProps) {
@@ -10,7 +10,7 @@ export default class Letter extends Component {
     return false;
   }
   render() {
-    const className = `letter-box${(this.props.used ? " used" : "")}`;
+    const className = `letter-box${(this.props.used ? ' used' : '')}`;
     return (
       <div data-letter={this.props.letter} className={className}>
         <div data-letter={this.props.letter}>{ this.props.letter.toUpperCase() }</div>

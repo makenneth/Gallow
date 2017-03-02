@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { toggleChat } from "redux/modules/chat_screen";
-import { solveGame } from "redux/modules/game";
-import Diagram from "./diagram";
-import GameInput from "./gameInput";
-import Letters from "./letters";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { toggleChat } from 'redux/modules/chat_screen';
+import { solveGame } from 'redux/modules/game';
+import Diagram from './diagram';
+import GameInput from './gameInput';
+import Letters from './letters';
 
 @connect(
   ({ game }) => ({ game }),

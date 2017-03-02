@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import Messages from "./messages";
-import Input from "./input";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Messages from './messages';
+import Input from './input';
 
 @connect(({ messages, chatScreen }) => ({ messages, chatScreen }))
 export default class Chat extends Component {
   render() {
-    return (<div className={`chat-screen${(this.props.chatScreen ? " chat-open" : "")}`}>
+    return (<div className={`chat-screen${(this.props.chatScreen ? ' chat-open' : '')}`}>
       <Messages messages={this.props.messages} />
       <Input
         messages={this.props.messages}

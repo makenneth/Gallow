@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 export default class GameInput extends Component {
   shouldComponentUpdate(nextProps) {
@@ -22,7 +22,7 @@ export default class GameInput extends Component {
       <div className="correct-container cf">
         {
           this.props.guesses.map((letter, i) => {
-            const style = `guess-letter${letter ? "" : " empty"}`;
+            const style = `guess-letter${letter ? '' : ' empty'}`;
             return (<div key={`${letter} ${i}`} className={style}>
               { letter.toUpperCase() }
             </div>);

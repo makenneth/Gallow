@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Link } from "react-router";
+import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 export default class NavBar extends Component {
   shouldComponentUpdate(nextProps) {

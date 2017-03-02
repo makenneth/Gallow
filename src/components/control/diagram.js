@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 @connect(({ gameInfo }) => ({ gameInfo }))
 export default class Diagram extends Component {
@@ -26,7 +26,7 @@ export default class Diagram extends Component {
         <div
           style={{
             backgroundImage: `url("/public/images/0${count}.png")`,
-            backgroundSize: "cover"
+            backgroundSize: 'cover',
           }}
         />
       </div>);
