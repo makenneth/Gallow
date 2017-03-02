@@ -1,0 +1,199 @@
+.games-container,
+.navbar-container > div,
+.new-game-container,
+.game-container {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+}
+
+h3 {
+  color: white;
+}
+
+.user-name {
+  transform: translate(-50%, -100%);
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  top: 50%;
+}
+
+.user-name > input[type="text"] {
+  width: 60%;
+  padding: 10px;
+  font-size: 18px;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 3px;
+  margin-top: 20px;
+}
+
+.user-name > input[type="submit"] {
+  margin-top: 20px;
+  padding: 5px 10px;
+  font-size: 16px;
+  border: 1px solid black;
+  border-radius: 3px;
+  min-width: 150px;
+  width: 20%;
+  cursor: pointer;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.cf:after {
+  clear: both;
+  display: block;
+  content: " ";
+}
+
+.loader {
+  top: 35%;
+  color: #ffffff;
+  font-size: 20px;
+  margin: 100px auto;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  -webkit-animation: load 1.3s infinite linear;
+  animation: load 1.3s infinite linear;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.flash-error {
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background-color: #FDD835;
+  top: 0;
+  left: 50%;
+  max-width: 500px;
+  width: 50%;
+  min-width: 300px;
+  height: 40px;
+  font-size: 18px;
+  transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  animation: flash 5s infinite;
+  -webkit-animation: flash 5s infinite;
+  color: white;
+}
+
+@media (max-device-width: 768px) {
+  .games-container,
+  .navbar-container > div,
+  .new-game-container,
+  .game-container {
+    width: 90%;
+  }
+}
+
+@media (max-device-width: 414px) {
+  .games-container,
+  .navbar-container > div,
+  .new-game-container, .game-container {
+    width: 90%;
+  }
+}
+
+@-webkit-keyframes slide {
+  0% { transform: translateX(250px); }
+  100% { transform: translateX(0px); }
+}
+@keyframes slide {
+  0% { transform: translateX(250px); }
+  100% { transform: translateX(0px); }
+}
+
+@-webkit-keyframes flash {
+  0% { opacity: 0; }
+  45% { opacity: 1;}
+  50% { opacity: 0;}
+  95% { opacity: 1;}
+  100% { opacity: 0.5;}
+}
+
+@keyframes flash {
+  0% { opacity: 0; }
+  35% { opacity: 1;}
+  50% { opacity: 0;}
+  85% { opacity: 1;}
+  100% { opacity: 0;}
+}
+
+@-webkit-keyframes load {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}
+
+@keyframes load {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}

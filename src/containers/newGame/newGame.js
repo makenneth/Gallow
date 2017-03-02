@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { createGame } from 'redux/modules/games';
 import { fetchUsers } from 'redux/modules/users_query';
+import './styles.css';
+
 @connect(
   ({ usersQuery }) => ({ usersQuery }),
   { fetchUsers, createGame }

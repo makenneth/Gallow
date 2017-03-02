@@ -1,0 +1,139 @@
+.new-game-container {
+  width: 50%;
+  min-width: 400px;
+  justify-content: space-between;
+  margin-top: 10%;
+  padding: 30px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 3px;
+  border: 1px solid #E0E0E0;
+}
+
+.new-game-container > div {
+  position: relative;
+}
+
+.user-input > input {
+  position: relative;
+  width: 300px;
+  padding: 5px 15px;
+  font-size: 25px;
+  border-radius: 3px;
+  border: 1px solid #E0E0E0;
+}
+
+.user-input div {
+  position: absolute;
+  right: 2%;
+  top: 0;
+  font-size: 32px;
+  color: #757575;
+  cursor: pointer;
+}
+
+.new-game-container input[type="submit"] {
+  cursor: pointer;
+  margin-top: 5%;
+  padding: 10px 20px;
+  border: 1px solid #E0E0E0;
+  font-size: 20px;
+  border-radius: 3px;
+}
+
+.new-game-container ul {
+  position: absolute;
+  top: 44px;
+  background-color: white;
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #E0E0E0;
+  border-top: none;
+  align-items: center;
+  width: 330px;
+}
+
+.new-game-container li {
+  cursor: pointer;
+  padding: 5px 0px;
+  padding-left: 10px;
+}
+
+.new-game-container li:hover {
+  background-color: #E0E0E0;
+}
+
+
+@media (max-device-width: 768px) {
+ .new-game-container {
+    width: 70%;
+    padding: 50px;
+    border: 3px solid #E0E0E0;
+  }
+
+  .new-game-container > h1 {
+    font-size: 50px;
+  }
+
+  .user-input > input {
+    width: 400px;
+    padding: 10px 20px;
+    font-size: 36px;
+    border-radius: 3px;
+    border: 1px solid #E0E0E0;
+  }
+  .user-input div {
+    font-size: 50px;
+  }
+  .new-game-container input[type="submit"] {
+    margin-top: 5%;
+    padding: 15px 25px;
+    font-size: 36px;
+  }
+  .new-game-container ul {
+    top: 70px;
+    font-size: 36px;
+    width: 440px;
+  }
+  .new-game-container li{
+    padding: 5px 0px;
+    padding-left: 10px;
+  }
+}
+
+@media (max-device-width: 414px) {
+ .new-game-container {
+    width: 80%;
+    padding: 50px;
+  }
+
+  .new-game-container > h1 {
+    font-size: 65px;
+  }
+
+  .user-input > input {
+    width: 600px;
+    padding: 15px 25px;
+    font-size: 46px;
+    border-radius: 3px;
+    border: 1px solid #E0E0E0;
+  }
+  .user-input div {
+    font-size: 70px;
+  }
+
+  .new-game-container input[type="submit"] {
+    padding: 25px 40px;
+    font-size: 46px;
+  }
+  .new-game-container ul {
+    top: 90px;
+    font-size: 46px;
+    width: 550px;
+  }
+  .new-game-container li {
+    padding: 15px 0px;
+    padding-left: 15px;
+  }
+}

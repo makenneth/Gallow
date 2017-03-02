@@ -5,6 +5,8 @@ import { asyncConnect } from 'redux-async-connect';
 import moment from 'moment';
 import { loadGames, isGamesLoaded } from 'redux/modules/games';
 
+import './styles.css';
+
 @asyncConnect([{
   promise: ({ store }) => {
     let promise;
