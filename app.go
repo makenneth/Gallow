@@ -57,6 +57,7 @@ func main() {
   http.HandleFunc("/api/user/new", api.SignUpHandler)
   http.HandleFunc("/api/user", api.UserHandler)
   http.HandleFunc("/api/user/current", api.CurrentUserHandler)
+  http.HandleFunc("/api/user/suggestions", api.PlayerSuggestionsHandler)
   http.HandleFunc("/api/session/new", api.LogInHandler)
   http.HandleFunc("/api/session", api.LogOutHandler)
   http.HandleFunc("/api/games/new", func(w http.ResponseWriter, r *http.Request){

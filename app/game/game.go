@@ -6,6 +6,7 @@ import (
   "log"
   "../database"
   "database/sql"
+  "time"
 )
 
 type Game struct {
@@ -19,6 +20,15 @@ type Game struct {
   Finished bool `json:"finished"`
   Winner int `json:"winner"`
   State state.State `json:"state"`
+}
+
+
+type Player struct {
+  Id int `json:"id"`
+  Wins int `json:"wins"`
+  Losses int `json:"losses"`
+  Nickname string `json:"nickname"`
+  UpdatedAt time.Time `json:"updatedAt"`
 }
 
 func (this *Game) Update(guess, word string){

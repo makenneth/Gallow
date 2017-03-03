@@ -9,7 +9,9 @@ import (
   "../game"
   "../state"
   "net"
+  "../error"
 )
+
 type RPCMessage struct {
   Type string
   Data json.RawMessage
@@ -112,6 +114,38 @@ func MessageRoutesHandler(w http.ResponseWriter, r *http.Request, matches []stri
       break;
   }
 }
+
+func PlayerSuggestionsHandler(w http.ResponseWriter, r *http.Request) {
+  if r.Method != "GET" {
+    log.Println("unknown method for /api/suggestions")
+    return;
+  }
+  suggestions := make([]game.Player, 0)
+  var player game.Player
+  rows, err := database.DBConn.Query(`
+    SELECT id, wins, losses, nickname, updated_at
+    FROM users ORDER BY random() LIMIT 10;
+  `)
+
+  defer rows.Close()
+  if err != nil {
+    error.SendErrorResponse(w, 500, "Internal Error")
+    return
+  }
+
+  for rows.Next() {
+    err = rows.Scan(&player)
+    if err != nil {
+      break
+    }
+
+    suggestions = append(suggestions, player)
+  }
+  data, _ := json.Marshal(suggestions)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(data)
+}
+
 
 func checkErr(err error) {
   if err != nil {
