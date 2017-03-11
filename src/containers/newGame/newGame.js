@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { createGame } from 'redux/modules/games';
-import { fetchUsers } from 'redux/modules/users_query';
-import './styles.css';
+import { fetchUsers, getUserSuggestions } from 'redux/modules/users_query';
+import './styles.scss';
 
 @connect(
-  ({ usersQuery }) => ({ usersQuery }),
-  { fetchUsers, createGame }
+  ({ userQuery, auth: { user }, userSuggestions: { suggestions, isLoading } }) =>
+  ({ userQuery, suggestions, isLoading, user }),
+  { fetchUsers, createGame, getUserSuggestions }
 )
 export default class NewGame extends Component {
   constructor(props) {
@@ -18,6 +19,11 @@ export default class NewGame extends Component {
       selected: false,
     };
   }
+
+  componentDidMount() {
+    this.props.getUserSuggestions();
+  }
+
   startGame = () => {
     if (!this.state.selectedOpponent) {
       alert('You have to select a player first!');
@@ -30,12 +36,14 @@ export default class NewGame extends Component {
         });
     }
   }
+
   handleClear = () => {
     this.setState({
       name: '',
       selectedOpponent: null,
     });
   }
+
   handleSelect = (e) => {
     const user = JSON.parse(e.target.dataset.user);
     this.setState({
@@ -44,6 +52,14 @@ export default class NewGame extends Component {
       selected: true,
     });
   }
+
+  handleSelectSuggestion = (user) => {
+    this.setState({
+      name: user.nickname,
+      selectedOpponent: user,
+    }, this.startGame);
+  }
+
   handleChange = (e) => {
     let timer;
     this.setState({
@@ -56,19 +72,20 @@ export default class NewGame extends Component {
       this.props.fetchUsers(this.state.name);
     }, 700);
   }
+
   listFoundUsers() {
     return (<ul
       onClick={this.handleSelect}
       style={{
-        display: this.props.usersQuery.length && !this.state.selected ? 'block' : 'none',
+        display: this.props.userQuery.length && !this.state.selected ? 'block' : 'none',
       }}
     >
       {
         function mapFoundUsers() {
           const users = [];
-          const usersQuery = this.props.usersQuery;
-          for (let i = 0; i < usersQuery.length; i++) {
-            const user = usersQuery[i];
+          const userQuery = this.props.userQuery;
+          for (let i = 0; i < userQuery.length; i++) {
+            const user = userQuery[i];
             if (user.id !== 1 && user.id !== this.props.user.id) {
               users.push(<li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>);
             }
@@ -78,8 +95,30 @@ export default class NewGame extends Component {
       }
     </ul>);
   }
+
   render() {
+    const { isLoading, suggestions, user } = this.props;
     return (<div className="new-game-container">
+      <div className="user-suggestions">
+        {
+          suggestions.filter(s => !user || s.username !== user.username).map((suggestion, i) => {
+            return (<div key={i}>
+              <div className="name">{suggestion.nickname}</div>
+              <div className="stats"><span>Wins: </span>{suggestion.wins}</div>
+              <div className="stats"><span>Losses: </span>{suggestion.losses}</div>
+
+              <button onClick={() => this.handleSelectSuggestion(suggestion)}>
+                Start Game
+              </button>
+            </div>);
+          })
+        }
+        {
+          isLoading && <div className="overlay">
+            <div className="loader" />
+          </div>
+        }
+      </div>
       <h1>New Game</h1>
       <div>
         <div className="user-input">
@@ -91,7 +130,7 @@ export default class NewGame extends Component {
           />
           <div onClick={this.handleClear}>&times;</div>
         </div>
-        { this.listFoundUsers() }
+        {this.listFoundUsers()}
       </div>
 
       <input
@@ -100,7 +139,6 @@ export default class NewGame extends Component {
         onClick={this.startGame}
         disabled={!this.state.selectedOpponent}
       />
-    </div>
-    );
+    </div>);
   }
 }

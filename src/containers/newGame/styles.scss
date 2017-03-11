@@ -8,10 +8,42 @@
   align-items: center;
   border-radius: 3px;
   border: 1px solid #E0E0E0;
-}
 
-.new-game-container > div {
-  position: relative;
+  &> div {
+    position: relative;
+  }
+
+  input[type="submit"] {
+    cursor: pointer;
+    margin-top: 5%;
+    padding: 10px 20px;
+    border: 1px solid #E0E0E0;
+    font-size: 20px;
+    border-radius: 3px;
+  }
+
+  ul {
+    position: absolute;
+    top: 44px;
+    background-color: white;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #E0E0E0;
+    border-top: none;
+    align-items: center;
+    width: 330px;
+  }
+
+  li {
+    cursor: pointer;
+    padding: 5px 0px;
+    padding-left: 10px;
+
+    &:hover {
+      background-color: #E0E0E0;
+    }
+  }
 }
 
 .user-input > input {
@@ -32,38 +64,56 @@
   cursor: pointer;
 }
 
-.new-game-container input[type="submit"] {
-  cursor: pointer;
-  margin-top: 5%;
-  padding: 10px 20px;
-  border: 1px solid #E0E0E0;
-  font-size: 20px;
-  border-radius: 3px;
-}
-
-.new-game-container ul {
-  position: absolute;
-  top: 44px;
-  background-color: white;
-  font-size: 20px;
+.user-suggestions {
   display: flex;
-  flex-direction: column;
-  border: 1px solid #E0E0E0;
-  border-top: none;
-  align-items: center;
-  width: 330px;
-}
+  padding: 20px;
+  width: 100%;
+  overflow: scroll;
 
-.new-game-container li {
-  cursor: pointer;
-  padding: 5px 0px;
-  padding-left: 10px;
-}
+  > div {
+    border: 1px solid #e0e0e0;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-width: 100px;
+    margin-left: 10px;
 
-.new-game-container li:hover {
-  background-color: #E0E0E0;
-}
+    &:first-child {
+      margin-left: 0;
+    }
+  }
 
+  .name {
+    font-weight: 700;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .stats {
+    span {
+      margin-right: 5px;
+    }
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 5px 15px;
+    font-size: 16px;
+    background-color: #1bb72b;
+    color: white;
+    outline: 0;
+    border: 0;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(#1bb72b, 0.75);
+    }
+  }
+}
 
 @media (max-device-width: 768px) {
  .new-game-container {
