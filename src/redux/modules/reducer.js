@@ -3,7 +3,7 @@ import { reducer as reduxAsyncConnect } from 'redux-async-connect';
 import messages from './messages';
 import auth from './auth';
 import game from './game';
-import { userQueryReducer, userSuggestionsReducer } from './users_query';
+import { userQuery, userSuggestions } from './users_query';
 import chatScreen from './chat_screen';
 import games from './games';
 import gameInfo from './game_info';
@@ -24,6 +24,6 @@ export default combineReducers({
   error,
   loading,
   friends,
-  userQueryReducer,
-  userSuggestionsReducer,
+  userQuery,
+  userSuggestions,
 });
