@@ -9,7 +9,7 @@ import (
   "../game"
   "../state"
   "net"
-  "../error"
+  "../requestError"
 )
 
 type RPCMessage struct {
@@ -123,22 +123,22 @@ func PlayerSuggestionsHandler(w http.ResponseWriter, r *http.Request) {
   suggestions := make([]game.Player, 0)
   var player game.Player
   rows, err := database.DBConn.Query(`
-    SELECT id, wins, losses, nickname, updated_at
-    FROM users ORDER BY random() LIMIT 10;
+    SELECT id, nickname, username, wins, losses, updated_at
+    FROM users ORDER BY random() LIMIT 11;
   `)
-
   defer rows.Close()
   if err != nil {
-    error.SendErrorResponse(w, 500, "Internal Error")
+    requestError.SendErrorResponse(w, 500, "Internal Error")
     return
   }
 
   for rows.Next() {
-    err = rows.Scan(&player)
+    err = rows.Scan(&player.Id, &player.Nickname, &player.Username, &player.Wins,
+      &player.Losses, &player.UpdatedAt)
     if err != nil {
       break
     }
-
+    log.Println(player)
     suggestions = append(suggestions, player)
   }
   data, _ := json.Marshal(suggestions)

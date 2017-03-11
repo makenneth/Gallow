@@ -25,9 +25,10 @@ type Game struct {
 
 type Player struct {
   Id int `json:"id"`
+  Nickname string `json:"nickname"`
+  Username string `json:"username"`
   Wins int `json:"wins"`
   Losses int `json:"losses"`
-  Nickname string `json:"nickname"`
   UpdatedAt time.Time `json:"updatedAt"`
 }
 

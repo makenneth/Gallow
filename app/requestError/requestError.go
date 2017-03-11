@@ -1,10 +1,11 @@
-package error
+package requestError
 import (
   "encoding/json"
+  "net/http"
 )
 
 type error struct {
-  message `json:"message"`
+  message string `json:"message"`
 }
 
 func SendErrorResponse(w http.ResponseWriter, code int, message string) {
