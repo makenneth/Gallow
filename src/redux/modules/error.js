@@ -8,7 +8,7 @@ export default (state = {
     case CLEAR_ERROR:
       return { message: null };
     case SET_ERROR:
-      return { message: action.error };
+      return { message: action.payload };
     default:
       return state;
   }
