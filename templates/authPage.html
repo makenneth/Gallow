@@ -18,16 +18,18 @@
       <div class="sign-up link">Sign Up</div>
       <div class="log-in active link">Log In</div>
     </div>
-    <form>
+    <form class="log-in">
       <div id="error"></div>
       <input
         type="text"
+        class="draw"
         id="username"
         placeholder="Username"
         autoFocus
         />
       <input
         type="password"
+        class="draw"
         id="password"
         placeholder="Password"
         />
@@ -150,8 +152,17 @@
         $('.link').removeClass('active');
         $(target).addClass('active');
       }
-
-    })
+    });
+    if (window.location.pathname.indexOf('/signup') > -1) {
+      $('.link').removeClass('active');
+      $('.sign-up').addClass('active');
+      $('form').html(
+        '<input type="text" id="nickname" placeholder="Nickname" />' +
+        '<input type="text" id="username" placeholder="Username" />' +
+        '<input type="password" id="password" placeholder="Password" />' +
+        '<input type="submit" value="Sign Up" id="signup"/>'
+      );
+    }
     setTimeout(function() {
       $('.title').addClass('fade-in');
     }, 50);

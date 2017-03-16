@@ -65,8 +65,8 @@ func main() {
   })
   http.HandleFunc("/api/users", api.UsersQueryHandler)
   http.HandleFunc("/api/me/friends", api.FriendsHandler)
-  http.HandleFunc("/login", static.LogInPageHandler)
-  http.HandleFunc("/signup", static.SignUpPageHandler)
+  http.HandleFunc("/login", static.AuthPageHandler)
+  http.HandleFunc("/signup", static.AuthPageHandler)
   http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request){
     return
   })

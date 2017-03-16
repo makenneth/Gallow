@@ -8,6 +8,10 @@ ul, li{
   font-family: 'Raleway', sans-serif;
 }
 
+h1, h2, h3, h4 {
+  font-family: 'Quicksand', sans-serif;
+}
+
 html,
 body {
   margin: 0;

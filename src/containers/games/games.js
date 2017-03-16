@@ -5,7 +5,7 @@ import { asyncConnect } from 'redux-async-connect';
 import moment from 'moment';
 import { loadGames, isGamesLoaded } from 'redux/modules/games';
 
-import './styles.css';
+import './styles.scss';
 
 @asyncConnect([{
   promise: ({ store }) => {
@@ -33,7 +33,7 @@ export default class Games extends Component {
           <ul onClick={this.handleClick}>
             {
               this.props.games.unfinished.map((game =>
-                (<li key={game.id} data-id={game.id}>
+                (<li key={game.id} data-id={game.id} className="draw">
                   {game.nickname1}<span>vs.</span>{game.nickname2}
                   <br />
                   Last Moved: {moment(game.updatedAt).fromNow()}
@@ -47,7 +47,7 @@ export default class Games extends Component {
           <ul onClick={this.handleClick}>
             {
               this.props.games.finished.map((game =>
-                (<li key={game.id} data-id={game.id}>
+                (<li key={game.id} data-id={game.id} className="draw">
                   {game.nickname1}<span>vs.</span>{game.nickname2}
                   <br />
                   { `Result: ${game.winner === this.props.user.id ? 'Won' : 'Lost'}` }
