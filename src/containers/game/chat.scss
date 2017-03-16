@@ -1,3 +1,5 @@
+@import '~sass/mixins.scss';
+
 /* chat */
 .chat-screen {
   flex: 1;
@@ -13,7 +15,8 @@
 .message-list,
 .msg-input-form {
   font-family: 'Raleway', sans-serif;
-  border: 1px solid #e0e0e0;
+  border: 0;
+  box-shadow: 0px 1px 5px #dcdcdc;
   border-top: 0;
   border-right: 0;
   border-radius: 3px;
@@ -27,37 +30,51 @@
   padding-top: 30px;
   height: 80%;
 
+  li {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+
+  li span {
+    font-weight: 700;
+  }
 }
-.message-list li {
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
+
 .msg-input-form {
-  background-color: #1A237E;
+  background-color: white;
   margin-top: 3px;
   padding: 15px;
   display: flex;
   justify-content: space-between;
-}
-.msg-input-form > input[type="text"] {
-  padding: 5px;
-  font-size: 16px;
-  width: 80%;
-  border-radius: 2px;
-  border: 1px solid black;
-}
-.msg-input-form > input[type="submit"] {
-  font-size: 16px;
-  border-radius: 2px;
-  padding: 5px;
-  color: white;
-  background-color: #009688;
-  box-shadow: none;
-  border: 1px solid black;
-  cursor: pointer;
-}
-.message-list li span {
-  font-weight: 700;
+
+  input {
+    outline: 0;
+    box-shadow: 0px 1px 5px #dcdcdc;
+  }
+  input[type="text"] {
+    padding: 5px;
+    padding-left: 10px;
+    font-size: 14px;
+    width: 80%;
+    border-radius: 2px;
+    border: 0;
+  }
+
+  input[type="submit"] {
+    @include raiseButton(2px);
+    font-size: 16px;
+    border-radius: 3px;
+    padding: 5px 10px;
+    color: rgba(white, 0.9);
+    background-color: #009688;
+    border: 0;
+    cursor: pointer;
+
+    &:hover {
+      color: white;
+      background-color: rgba(#009688, 0.9);
+    }
+  }
 }
 
 @media screen and (max-width: 768px) {

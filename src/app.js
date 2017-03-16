@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import 'assets/css/app.css';
+import 'sass/app.scss';
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory } from 'react-router';

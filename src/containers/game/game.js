@@ -5,8 +5,8 @@ import { Chat, GameScreen } from 'components';
 import { clearGame, connectGame } from 'redux/modules/game';
 import { setError, clearError } from 'redux/modules/error';
 
-import './game.css';
-import './chat.css';
+import './game.scss';
+import './chat.scss';
 
 @connect(() => ({}), { clearGame, connectGame, setError, clearError })
 export default class Game extends Component {

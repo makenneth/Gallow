@@ -55,6 +55,9 @@ module.exports = {
       "src",
       "node_modules"
     ],
-    extensions: ["", ".js", ".jsx"]
+    extensions: ["", ".js", ".jsx"],
+    alias: {
+      sass: path.resolve(__dirname, 'src/assets/sass'),
+    }
   }
 }
