@@ -12,7 +12,7 @@
   <form id="sign-up-form">
     <div class="nav">
       <div class="active">Sign Up</div>
-      <div class="link"><a href="/login">Log In</a></div>
+      <div class="link" onclick="handleRedirection()">Log In</div>
     </div>
     <div id="error"></div>
     <input
@@ -33,12 +33,12 @@
       />
 
     <input type="submit" value="Sign Up" id="signup"/>
-    <div class="or">OR</div>
-    <div class="facebook-icon"><div class="__facebook-logo"></div><span>Log in with Facebook</span></div>
-    <div class="google-icon"><div class="__google-logo"></div><span>Log In With Google</span></div>
   </form>
 
   <script>
+    function handleRedirection() {
+      window.location.href = '/login';
+    }
     $("#sign-up-form").on("submit", function(e) {
       e.preventDefault();
       var data = {

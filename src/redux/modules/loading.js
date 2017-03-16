@@ -16,7 +16,7 @@ export default (state = false, action) => {
 
 export const startLoading = (cb) => {
   intId = setTimeout(() => {
-    cb('An error has occured, please reload..');
+    if (cb) cb('An error has occured, please reload..');
   }, 5000);
   return {
     type: LOAD_START,

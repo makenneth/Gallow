@@ -11,8 +11,8 @@
 <body>
   <form id="log-in-form">
     <div class="nav">
-      <div class="link"><a href="/signup">Sign Up</a></div>
-      <div class="active">Log In</div>
+      <div class="link" onclick="handleRedirection()">Sign Up</div>
+      <div class="link active">Log In</div>
     </div>
     <div id="error"></div>
     <input
@@ -26,14 +26,13 @@
       id="password"
       placeholder="Password"
       />
-    <input type="submit" value="Log In" id="login"/>
-
-    <div class="or">OR</div>
-    <div class="facebook-icon"><div class="__facebook-logo"></div><span>Log in with Facebook</span></div>
-    <div class="google-icon"><div class="__google-logo"></div><span>Log In With Google</span></div>
+    <input type="submit" value="Log In" id="login" />
   </form>
 
   <script>
+    function handleRedirection() {
+      window.location.href = '/signup';
+    }
     var showError = function(err){
       $("#error").html("<p>" + err + "</p>");
 

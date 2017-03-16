@@ -7,8 +7,10 @@ export default (state = {
   switch (action.type) {
     case CLEAR_ERROR:
       return { message: null };
-    case SET_ERROR:
-      return { message: action.payload };
+    case SET_ERROR: {
+      const message = typeof action.payload === 'object' ? action.payload.message : action.payload;
+      return { message };
+    }
     default:
       return state;
   }

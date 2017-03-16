@@ -138,7 +138,6 @@ func PlayerSuggestionsHandler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
       break
     }
-    log.Println(player)
     suggestions = append(suggestions, player)
   }
   data, _ := json.Marshal(suggestions)
