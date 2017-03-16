@@ -1,7 +1,10 @@
 /* chat */
 .chat-screen {
-  flex-grow: 2;
-  width: 100%;
+  flex: 1;
+  margin-left: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 .message-list div:first-child {
   display: none;
@@ -10,10 +13,12 @@
 .message-list,
 .msg-input-form {
   font-family: 'Raleway', sans-serif;
-  border: 1px solid black;
+  border: 1px solid #e0e0e0;
+  border-top: 0;
+  border-right: 0;
   border-radius: 3px;
   width: 90%;
-  margin: 0 auto;
+  margin: 0;
 }
 .message-list {
   background-color: white;

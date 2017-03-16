@@ -1,12 +1,15 @@
 .game-container {
   margin: 0 auto;
-  margin-top: 5%;
+  width: 100%;
+  display: flex;
   flex-direction: row;
+  height: 100%;
 }
 
 .game-screen {
-  flex-grow: 1;
-  width: 100%;
+  margin-top: 20px;
+  margin-left: 5%;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;

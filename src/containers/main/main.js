@@ -47,7 +47,7 @@ export default class Main extends Component {
   }
   render() {
     return (
-      <div>
+      <div className="root">
         <NavBar user={this.props.user} logOut={this.logOut} />
         { this.flashError() }
         { this.children() }
