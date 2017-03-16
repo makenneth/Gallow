@@ -144,13 +144,9 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 func VerifyUser(u UserData) (bool, string) {
   b, e := true, ""
-  if len(u.Nickname) < 8 {
-    b, e = false, "Nickname"
-  }
   if len(u.Username) < 8 {
     b, e = false, "Username"
-  }
-  if len(u.Password) < 8 {
+  } else if len(u.Password) < 8 {
     b, e = false, "Password"
   }
 

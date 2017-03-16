@@ -2,75 +2,169 @@
 <html>
 <head>
   <title>Gallow</title>
-  <link href="https://fonts.googleapis.com/css?family=Raleway:200,400,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700|Raleway:200,400,700" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/public/styles/reset.css">
   <link rel="stylesheet" type="text/css" href="/public/styles/userform.css">
   <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
   <meta name="csrf_token" content="{{.CSRFToken}}" />
 </head>
 <body>
-  <form id="log-in-form">
+  <h2 class="title">
+    Hangperson
+    <div>Online Two Player Game</div>
+  </h2>
+  <div class="main-container hidden">
     <div class="nav">
-      <div class="link" onclick="handleRedirection()">Sign Up</div>
-      <div class="link active">Log In</div>
+      <div class="sign-up link">Sign Up</div>
+      <div class="log-in active link">Log In</div>
     </div>
-    <div id="error"></div>
-    <input
-      type="text"
-      id="username"
-      placeholder="Username"
-      autoFocus
-      />
-    <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      />
-    <input type="submit" value="Log In" id="login" />
-  </form>
-
+    <form>
+      <div id="error"></div>
+      <input
+        type="text"
+        id="username"
+        placeholder="Username"
+        autoFocus
+        />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        />
+      <input type="submit" value="Log In" id="login" />
+    </form>
+  </div>
   <script>
-    function handleRedirection() {
-      window.location.href = '/signup';
-    }
-    var showError = function(err){
-      $("#error").html("<p>" + err + "</p>");
+    var showError = function(err, id){
+      $('#error').html('<p>' + err + '</p>');
+      if (id) $('#' + id).addClass('error-input');
 
       setTimeout(function(){
-        $("#error").html("");
+        $('#error').html('');
+        if (id) $('#' + id).removeClass('error-input')
       }, 4000)
     }
 
-    $("#log-in-form").on("submit", function(e) {
-      e.preventDefault();
+    var checkError = function(data) {
+      var passwordTest = data.password.length >= 8;
+      var usernameTest = data.username.length >= 8;
 
+      if (!usernameTest) {
+        showError("Username must be at least 8 chars long.", "username");
+        return false;
+      }
+      if (!passwordTest){
+        showError("Password must be at least 8 chars long.", "password");
+        return false;
+      }
+      return true;
+    }
+
+    var login = function(token) {
+      var data = {
+        username: $('#username').val().toLowerCase(),
+        password: $('#password').val()
+      };
+      $.ajax({
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': token
+        },
+        url: '/api/session/new',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(data){
+          window.location.replace('/');
+        },
+        error: function(err) {
+          showError('Password or username error');
+        }
+      })
+    };
+
+    var signup = function(token) {
       var data = {
         username: $("#username").val().toLowerCase(),
+        nickname: $("#nickname").val().toLowerCase(),
         password: $("#password").val()
-      }, token;
-      var elements = document.getElementsByTagName("meta");
-      for (var i = 0; i < elements.length; i++){
-        if (elements[i].name === "csrf_token"){
-          token = elements[i].content;
-          break;
-        }
-      }
+      };
+      if (!checkError(data)) return;
       $.ajax({
         method: "POST",
         headers: {
           'X-CSRF-TOKEN': token
         },
-        url: "/api/session/new",
+        url: "/api/user/new",
         data: JSON.stringify(data),
         contentType: "application/json",
         success: function(data){
           window.location.replace("/");
         },
         error: function(err) {
-          showError("Password or username error");
+          $("#error").html("<p>"+ err.responseJSON + "</p>");
+          setTimeout(function(){
+            $("#error").html("");
+          }, 4000)
         }
-      })
+      });
+    }
+    var getCSRF = function() {
+      var elements = document.getElementsByTagName('meta');
+      for (var i = 0; i < elements.length; i++){
+        if (elements[i].name === 'csrf_token'){
+          return elements[i].content;
+        }
+      }
+
+      return null;
+    }
+
+    $('form').on('submit', function(ev) {
+      ev.preventDefault();
+      var token = getCSRF();
+      console.log($(this).attr('id'));
+      if ($(this).attr('id') === 'log-in') {
+        login(token);
+      } else {
+        signup(token);
+      }
+    });
+
+
+    $('.nav').on('click', '.link', function(ev) {
+      const target = ev.currentTarget;
+      if (!target.classList.contains('active')) {
+        let htmlStr;
+        if (target.classList.contains('sign-up')) {
+          htmlStr = '<input type="text" id="nickname" placeholder="Nickname" />' +
+            '<input type="text" id="username" placeholder="Username" />' +
+            '<input type="password" id="password" placeholder="Password" />' +
+            '<input type="submit" value="Sign Up" id="signup"/>';
+        } else {
+          htmlStr = '<input type="text" id="username" placeholder="Username" />' +
+            '<input type="password" id="password" placeholder="Password" />' +
+            '<input type="submit" value="Log In" id="login" />';
+        }
+        $('form').html(htmlStr);
+        $('form').attr('id', target.classList[0]);
+        $('.link').removeClass('active');
+        $(target).addClass('active');
+      }
+
     })
+    setTimeout(function() {
+      $('.title').addClass('fade-in');
+    }, 50);
+    setTimeout(function() {
+      $('.title').removeClass('fade-in');
+    }, 2000);
+    setTimeout(function() {
+      $('.title').addClass('hidden')
+      $('.main-container').removeClass('hidden');
+    }, 3000);
+    setTimeout(function() {
+      $('.main-container').addClass('fade-in');
+    }, 3050);
   </script>
 </body>
 </html>

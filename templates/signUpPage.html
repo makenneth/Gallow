@@ -2,37 +2,21 @@
 <html>
 <head>
   <title>Gallow</title>
-  <link href="https://fonts.googleapis.com/css?family=Raleway:200,400,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700|Raleway:200,400,700" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/public/styles/reset.css">
   <link rel="stylesheet" type="text/css" href="/public/styles/userform.css">
     <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
   <meta name="csrf_token" content="{{.CSRFToken}}" />
 </head>
 <body>
-  <form id="sign-up-form">
+  <h2 class="title">Hangperson</h2>
+  <form class="hidden">
     <div class="nav">
       <div class="active">Sign Up</div>
       <div class="link" onclick="handleRedirection()">Log In</div>
     </div>
     <div id="error"></div>
-    <input
-      type="text"
-      id="nickname"
-      placeholder="Nickname"
-      autoFocus
-      />
-    <input
-      type="text"
-      id="username"
-      placeholder="Username"
-      />
-    <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      />
 
-    <input type="submit" value="Sign Up" id="signup"/>
   </form>
 
   <script>
