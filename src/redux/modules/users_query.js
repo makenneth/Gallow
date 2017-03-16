@@ -4,11 +4,14 @@ const FETCH_USERS = 'hangperson/users_query/FETCH_USERS';
 const FETCH_USERS_SUCCESS = 'hangperson/users_query/FETCH_USERS_SUCCESS';
 const FETCH_USERS_FAIL = 'hangperson/users_query/FETCH_USERS_FAIL';
 const GET_USER_SUGGESTIONS = 'hangperson/users_query/GET_USER_SUGGESTIONS';
+const CLEAR_USER_QUERY = 'hangperson/users_query/CLEAR_USER_QUERY';
 const GET_USER_SUGGESTIONS_SUCCESS = 'hangperson/users_query/GET_USER_SUGGESTIONS_SUCCESS';
 const GET_USER_SUGGESTIONS_FAIL = 'hangperson/users_query/GET_USER_SUGGESTIONS_FAIL';
 
 export function userQuery(state = [], action) {
   switch (action.type) {
+    case CLEAR_USER_QUERY:
+      return [];
     case FETCH_USERS_SUCCESS:
       return action.result.data;
     default:
@@ -23,10 +26,11 @@ export const fetchUsers = (string) => {
   };
 };
 
-export function userSuggestions(state = {
+const initialState = {
   suggestions: [],
   isLoading: false,
-}, action) {
+};
+export function userSuggestions(state = initialState, action) {
   switch (action.type) {
     case GET_USER_SUGGESTIONS:
       return {
@@ -52,5 +56,11 @@ export const getUserSuggestions = () => {
   return {
     types: [GET_USER_SUGGESTIONS, GET_USER_SUGGESTIONS_SUCCESS, GET_USER_SUGGESTIONS_FAIL],
     promise: axios.get('/api/user/suggestions'),
+  };
+};
+
+export const clearUserQuery = () => {
+  return {
+    type: CLEAR_USER_QUERY,
   };
 };

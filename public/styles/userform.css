@@ -22,6 +22,10 @@ h2 {
   transition: opacity 1s ease-in;
 }
 
+p {
+  font-family: 'Quicksand', sans-serif;
+}
+
 h2 div {
   font-size: 24px;
   font-weight: 400;
@@ -42,8 +46,10 @@ h2 div {
 }
 
 form {
+  position: relative;
   background-color: white;
   padding: 40px;
+  padding-top: 50px;
   display: flex;
   display: -webkit-flex;
   display: -ms-flex;
@@ -126,7 +132,7 @@ input[type=password] {
   position: absolute;
   text-align: center;
   font-size: 15px;
-  top: 50px;
+  top: 0;
   color: red;
   white-space: nowrap;
   font-weight: 700;
@@ -182,6 +188,74 @@ input[type=password] {
   -webkit-box-shadow: 0px 0px 10px 3px #B71C1C;
 }
 
+.shake {
+  -webkit-animation: headShake 0.5s ease-in-out;
+  animation: headShake 0.5s ease-in-out;
+}
+
+@keyframes headShake {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  6.5% {
+    -webkit-transform: translateX(-6px) rotateY(-9deg);
+    transform: translateX(-6px) rotateY(-9deg);
+  }
+
+  18.5% {
+    -webkit-transform: translateX(5px) rotateY(7deg);
+    transform: translateX(5px) rotateY(7deg);
+  }
+
+  31.5% {
+    -webkit-transform: translateX(-3px) rotateY(-5deg);
+    transform: translateX(-3px) rotateY(-5deg);
+  }
+
+  43.5% {
+    -webkit-transform: translateX(2px) rotateY(3deg);
+    transform: translateX(2px) rotateY(3deg);
+  }
+
+  50% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+@-webkit-keyframes headShake {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  6.5% {
+    -webkit-transform: translateX(-6px) rotateY(-9deg);
+    transform: translateX(-6px) rotateY(-9deg);
+  }
+
+  18.5% {
+    -webkit-transform: translateX(5px) rotateY(7deg);
+    transform: translateX(5px) rotateY(7deg);
+  }
+
+  31.5% {
+    -webkit-transform: translateX(-3px) rotateY(-5deg);
+    transform: translateX(-3px) rotateY(-5deg);
+  }
+
+  43.5% {
+    -webkit-transform: translateX(2px) rotateY(3deg);
+    transform: translateX(2px) rotateY(3deg);
+  }
+
+  50% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
 
 @media (max-device-width: 768px){
   #error {

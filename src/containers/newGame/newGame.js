@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { createGame } from 'redux/modules/games';
-import { fetchUsers, getUserSuggestions } from 'redux/modules/users_query';
+import { fetchUsers, getUserSuggestions, clearUserQuery } from 'redux/modules/users_query';
 import './styles.scss';
 
 @connect(
   ({ userQuery, auth: { user }, userSuggestions: { suggestions, isLoading } }) =>
   ({ userQuery, suggestions, isLoading, user }),
-  { fetchUsers, createGame, getUserSuggestions }
+  { fetchUsers, createGame, getUserSuggestions, clearUserQuery }
 )
 export default class NewGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
+      dropdownOpen: false,
       selectedOpponent: null,
       selected: false,
     };
@@ -22,6 +23,19 @@ export default class NewGame extends Component {
 
   componentDidMount() {
     this.props.getUserSuggestions();
+    document.addEventListener('click', this.handleClick);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(this.props.userQuery, nextProps.userQuery);
+    if (this.props.userQuery !== nextProps.userQuery &&
+      nextProps.userQuery.length > 0 && !this.state.dropdownOpen) {
+      this.setState({ dropdownOpen: true });
+    }
+  }
+
+  handleclick = (ev) => {
+    debugger;
   }
 
   startGame = () => {
@@ -41,7 +55,9 @@ export default class NewGame extends Component {
     this.setState({
       name: '',
       selectedOpponent: null,
+      dropdownOpen: false,
     });
+    this.props.clearUserQuery();
   }
 
   handleSelect = (e) => {
@@ -50,6 +66,7 @@ export default class NewGame extends Component {
       name: user.nickname,
       selectedOpponent: user,
       selected: true,
+      dropdownOpen: false,
     });
   }
 
@@ -76,9 +93,7 @@ export default class NewGame extends Component {
   listFoundUsers() {
     return (<ul
       onClick={this.handleSelect}
-      style={{
-        display: this.props.userQuery.length && !this.state.selected ? 'block' : 'none',
-      }}
+      className={!this.state.dropdownOpen && 'not-show'}
     >
       {
         function mapFoundUsers() {
@@ -87,7 +102,7 @@ export default class NewGame extends Component {
           for (let i = 0; i < userQuery.length; i++) {
             const user = userQuery[i];
             if (user.id !== 1 && user.id !== this.props.user.id) {
-              users.push(<li data-user={JSON.stringify(user)} key={user.id}>{ user.nickname }</li>);
+              users.push(<li data-user={JSON.stringify(user)} key={user.id}>{user.nickname}</li>);
             }
           }
           return users;
@@ -98,7 +113,8 @@ export default class NewGame extends Component {
 
   render() {
     const { isLoading, suggestions, user } = this.props;
-    return (<div className="new-game-container">
+    return (<div className="new-game-container" ref="new-game-container">
+      <h3>Suggestions</h3>
       <div className="user-suggestions">
         {
           suggestions.filter(s => !user || s.username !== user.username).map((suggestion, i) => {
@@ -120,7 +136,7 @@ export default class NewGame extends Component {
         }
       </div>
       <h1>New Game</h1>
-      <div>
+      <div className="user-input-container">
         <div className="user-input">
           <input
             type="text"

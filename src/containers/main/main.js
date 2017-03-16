@@ -50,7 +50,9 @@ export default class Main extends Component {
       <div className="root">
         <NavBar user={this.props.user} logOut={this.logOut} />
         { this.flashError() }
-        { this.children() }
+        <div className="app-container">
+          { this.children() }
+        </div>
         { this.loadingScreen() }
       </div>
     );
