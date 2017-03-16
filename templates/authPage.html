@@ -18,7 +18,7 @@
       <div class="sign-up link">Sign Up</div>
       <div class="log-in active link">Log In</div>
     </div>
-    <form class="log-in">
+    <form id="log-in">
       <div id="error"></div>
       <input
         type="text"
@@ -39,27 +39,37 @@
   <script>
     var showError = function(err, id){
       $('#error').html('<p>' + err + '</p>');
+      animateError();
       if (id) $('#' + id).addClass('error-input');
-
-      setTimeout(function(){
+      if (this.errorTimeout) clearTimeout(this.errorTimeout);
+      this.errorTimeout = setTimeout(function(){
         $('#error').html('');
-        if (id) $('#' + id).removeClass('error-input')
+        if (id) $('#' + id).removeClass('error-input');
       }, 4000)
     }
 
     var checkError = function(data) {
-      var passwordTest = data.password.length >= 8;
-      var usernameTest = data.username.length >= 8;
-
-      if (!usernameTest) {
-        showError("Username must be at least 8 chars long.", "username");
+      if (data.nickname.length === 0) {
+        showError('Nickname cannot be empty.', 'username');
         return false;
       }
-      if (!passwordTest){
-        showError("Password must be at least 8 chars long.", "password");
+      if (data.username.length < 8) {
+        showError('Username must be at least 8 chars long.', 'username');
+        return false;
+      }
+      if (data.password.length < 8){
+        showError('Password must be at least 8 chars long.', 'password');
         return false;
       }
       return true;
+    }
+
+    var animateError = function() {
+      $('.main-container').addClass('shake');
+      if (this.shakeTimeout) clearTimeout(this.shakeTimeout);
+      this.shakeTimeout = setTimeout(function() {
+        $('.main-container').removeClass('shake');
+      }, 1000);
     }
 
     var login = function(token) {
@@ -67,6 +77,13 @@
         username: $('#username').val().toLowerCase(),
         password: $('#password').val()
       };
+
+      if (data.username.length === 0) {
+        return showError('Username cannot be empty');
+      }
+      if (data.password.length === 0) {
+        return showError('Password cannot be empty');
+      }
       $.ajax({
         method: 'POST',
         headers: {
@@ -79,6 +96,7 @@
           window.location.replace('/');
         },
         error: function(err) {
+          animateError();
           showError('Password or username error');
         }
       })
@@ -86,26 +104,29 @@
 
     var signup = function(token) {
       var data = {
-        username: $("#username").val().toLowerCase(),
-        nickname: $("#nickname").val().toLowerCase(),
-        password: $("#password").val()
+        username: $('#username').val().toLowerCase(),
+        nickname: $('#nickname').val().toLowerCase(),
+        password: $('#password').val()
       };
-      if (!checkError(data)) return;
+      if (!checkError(data)) {
+        return;
+      }
       $.ajax({
-        method: "POST",
+        method: 'POST',
         headers: {
           'X-CSRF-TOKEN': token
         },
-        url: "/api/user/new",
+        url: '/api/user/new',
         data: JSON.stringify(data),
-        contentType: "application/json",
+        contentType: 'application/json',
         success: function(data){
-          window.location.replace("/");
+          window.location.replace('/');
         },
         error: function(err) {
-          $("#error").html("<p>"+ err.responseJSON + "</p>");
+          animateError();
+          $('#error').html('<p>'+ err.responseJSON + '</p>');
           setTimeout(function(){
-            $("#error").html("");
+            $('#error').html("");
           }, 4000)
         }
       });
@@ -124,7 +145,6 @@
     $('form').on('submit', function(ev) {
       ev.preventDefault();
       var token = getCSRF();
-      console.log($(this).attr('id'));
       if ($(this).attr('id') === 'log-in') {
         login(token);
       } else {
