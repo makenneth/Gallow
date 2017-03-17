@@ -7,7 +7,12 @@ import './styles.scss';
 
 @connect(
   ({ userQuery, auth: { user }, userSuggestions: { suggestions, isLoading } }) =>
-  ({ userQuery, suggestions, isLoading, user }),
+  ({
+    userQuery,
+    isLoading,
+    user,
+    suggestions: suggestions.filter(s => !user || s.username !== user.username),
+  }),
   { fetchUsers, createGame, getUserSuggestions, clearUserQuery }
 )
 export default class NewGame extends Component {
@@ -15,6 +20,7 @@ export default class NewGame extends Component {
     super(props);
     this.state = {
       name: '',
+      currentLocation: 0,
       dropdownOpen: false,
       selectedOpponent: null,
       selected: false,
@@ -90,6 +96,10 @@ export default class NewGame extends Component {
     }, 700);
   }
 
+  prev = () => this.setState({ currentLocation: this.state.currentLocation - 2 });
+
+  next = () => this.setState({ currentLocation: this.state.currentLocation + 2 });
+
   listFoundUsers() {
     return (<ul
       onClick={this.handleSelect}
@@ -112,31 +122,44 @@ export default class NewGame extends Component {
   }
 
   render() {
-    const { isLoading, suggestions, user } = this.props;
+    const { isLoading, suggestions } = this.props;
+    const { currentLocation } = this.state;
+    const showNext = currentLocation + 2 < suggestions.length;
+    const showPrev = currentLocation > 0;
     return (<div className="new-game-container" ref="new-game-container">
-      <h3>Suggestions</h3>
-      <div className="user-suggestions">
-        {
-          suggestions.filter(s => !user || s.username !== user.username).map((suggestion, i) => {
-            return (<div key={i}>
-              <div className="name">{suggestion.nickname}</div>
-              <div className="stats"><span>Wins: </span>{suggestion.wins}</div>
-              <div className="stats"><span>Losses: </span>{suggestion.losses}</div>
+      <div className="user-suggestions-container">
+        <h3>Suggestions</h3>
+        <div className="user-suggestions">
+          <i
+            className={`fa fa-chevron-left ${!showPrev && 'not-show'}`}
+            onClick={this.prev}
+          />
+          {
+            suggestions.slice(currentLocation, currentLocation + 2).map((suggestion, i) => {
+              return (<div key={i}>
+                <div className="name">{suggestion.nickname}</div>
+                <div className="stats"><span>Wins: </span>{suggestion.wins}</div>
+                <div className="stats"><span>Losses: </span>{suggestion.losses}</div>
 
-              <button onClick={() => this.handleSelectSuggestion(suggestion)}>
-                Start Game
-              </button>
-            </div>);
-          })
-        }
-        {
-          isLoading && <div className="overlay">
-            <div className="loader" />
-          </div>
-        }
+                <button onClick={() => this.handleSelectSuggestion(suggestion)}>
+                  Start Game
+                </button>
+              </div>);
+            })
+          }
+          <i
+            className={`fa fa-chevron-right ${!showNext && 'not-show'}`}
+            onClick={this.next}
+          />
+          {
+            isLoading && <div className="overlay">
+              <div className="loader" />
+            </div>
+          }
+        </div>
       </div>
-      <h1>New Game</h1>
       <div className="user-input-container">
+        <h1>New Game</h1>
         <div className="user-input">
           <input
             type="text"
@@ -145,16 +168,15 @@ export default class NewGame extends Component {
             value={this.state.name}
           />
           <div onClick={this.handleClear}>&times;</div>
+          {this.listFoundUsers()}
         </div>
-        {this.listFoundUsers()}
+        <input
+          type="submit"
+          value="Start Game"
+          onClick={this.startGame}
+          disabled={!this.state.selectedOpponent}
+        />
       </div>
-
-      <input
-        type="submit"
-        value="Start Game"
-        onClick={this.startGame}
-        disabled={!this.state.selectedOpponent}
-      />
     </div>);
   }
 }

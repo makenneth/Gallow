@@ -11,8 +11,7 @@
   }
 
   li {
-    @include drawBorderOnHover(#e0e0e0);
-    background-color: #6e80f1;
+    background-color: #009688;
     position: relative;
     cursor: pointer;
     padding: 20px 40px;

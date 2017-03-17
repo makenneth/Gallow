@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 import 'sass/app.scss';
+import 'font-awesome-webpack';
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory } from 'react-router';
