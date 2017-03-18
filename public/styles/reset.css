@@ -4,7 +4,12 @@ ul, li{
   margin: 0;
   padding: 0;
 }
-* {
+
+.fa {
+  font-family: 'FontAwesome' !important;
+}
+
+div, ul, li, span, input, textarea, button {
   font-family: 'Raleway', sans-serif;
 }
 

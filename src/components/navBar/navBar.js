@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import './styles.css';
+import './styles.scss';
 
 export default class NavBar extends Component {
   shouldComponentUpdate(nextProps) {
@@ -19,8 +19,12 @@ export default class NavBar extends Component {
       <div className="navbar">
         <div className="logo"><Link to="/">Hangperson</Link></div>
         <ul>
-          <li><Link to="/games/new">New Game</Link></li>
-          <li><a onClick={this.props.logOut}>Log Out</a></li>
+          <li className="menu-item">
+            <Link to="/games/new"><i className="fa fa-plus" /></Link>
+          </li>
+          <li className="menu-item">
+            <a onClick={this.props.logOut}><i className="fa fa-sign-out" /></a>
+          </li>
         </ul>
       </div>
     </div>);

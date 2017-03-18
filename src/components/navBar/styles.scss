@@ -21,11 +21,10 @@
 }
 .navbar ul {
   font-size: 20px;
-  width: 200px;
-  /*width: 60%;*/
   display: flex;
   align-items: center;
   justify-content: space-between;
+
 
 }
 .navbar a:hover {
@@ -38,6 +37,23 @@
   cursor: pointer;
   text-decoration: none;
   color: black;
+
+}
+.menu-item {
+  margin-left: 30px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  .fa {
+    font-size: 30px;
+    color: #333;
+  }
+
+  a:hover .fa {
+    color: #666;
+  }
 }
 
 @media (max-device-width: 768px) {
