@@ -114,6 +114,9 @@
 }
 
 .guess-letter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 15px;
   height: 25px;
   padding: 10px;
@@ -204,15 +207,17 @@
   }
 
   .correct-container {
-    width: 80%;
+    margin-top: 20px;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
   }
   .guess-letter {
     width: 30px;
     height: 40px;
-    padding: 10px;
+    padding: 20px;
     font-size: 46px;
+    margin-left: 20px;
   }
 
   .letter-box {
@@ -239,7 +244,7 @@
     padding-bottom: 2%;
 
     div {
-      font-size: 18px;
+      font-size: 36px;
     }
   }
 
@@ -253,13 +258,18 @@
   .button-div {
     padding-top: 5%;
     padding-bottom: 5%;
+
+    > div {
+      font-size: 44px;
+    }
   }
 
   .guess-letter {
     width: 40px;
     height: 55px;
-    padding: 10px;
+    padding: 20px;
     font-size: 56px;
+    margin-left: 20px;
   }
 
   .letter-box {

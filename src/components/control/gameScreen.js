@@ -19,6 +19,7 @@ export default class GameScreen extends Component {
   }
   toggleChat = (ev) => {
     ev.stopPropagation();
+    console.log('clicked');
     this.props.toggleChat();
   }
 
@@ -43,7 +44,7 @@ export default class GameScreen extends Component {
             onClick={this.handleClick}
             disabled={game.solving}
           >Solve it</button>
-          <div>It's {curPlayer}'s turn</div>
+          <div>{curPlayer}'s turn</div>
           <button
             className="open-chat"
             onClick={this.toggleChat}
