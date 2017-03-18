@@ -22,6 +22,7 @@ export default class NewGame extends Component {
       name: '',
       direction: 'next',
       currentLocation: 0,
+      numOfSuggestion: 2,
       dropdownOpen: false,
       selectedOpponent: null,
       selected: false,
@@ -32,6 +33,8 @@ export default class NewGame extends Component {
   componentDidMount() {
     this.props.getUserSuggestions();
     document.addEventListener('click', this.handleClick);
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -43,6 +46,17 @@ export default class NewGame extends Component {
 
   componentWillUnmount() {
     document.removeEventListener('click', this.handleClick);
+  }
+
+  handleResize = () => {
+    let num = 2;
+    const width = window.innerWidth;
+    if (width >= 1100) {
+      num += Math.floor((width - 1000) / 200);
+    }
+    if (num !== this.state.numOfSuggestion) {
+      this.setState({ numOfSuggestion: num });
+    }
   }
 
   handleClick = (ev) => {
@@ -136,7 +150,7 @@ export default class NewGame extends Component {
 
   render() {
     const { isLoading, suggestions } = this.props;
-    const { currentLocation, inputFocused } = this.state;
+    const { currentLocation, inputFocused, numOfSuggestion } = this.state;
     const showNext = currentLocation + 2 < suggestions.length;
     const showPrev = currentLocation > 0;
     return (<div className="new-game-container" ref="new-game-container">
@@ -148,17 +162,18 @@ export default class NewGame extends Component {
             onClick={this.prev}
           />
           {
-            suggestions.slice(currentLocation, currentLocation + 2).map((suggestion, i) => {
-              return (<div key={i}>
-                <div className="name">{suggestion.nickname}</div>
-                <div className="stats"><span>Wins: </span>{suggestion.wins}</div>
-                <div className="stats"><span>Losses: </span>{suggestion.losses}</div>
+            suggestions.slice(currentLocation, currentLocation + numOfSuggestion)
+              .map((suggestion, i) => {
+                return (<div key={i}>
+                  <div className="name">{suggestion.nickname}</div>
+                  <div className="stats"><span>Wins: </span>{suggestion.wins}</div>
+                  <div className="stats"><span>Losses: </span>{suggestion.losses}</div>
 
-                <button onClick={() => this.handleSelectSuggestion(suggestion)}>
-                  Play
-                </button>
-              </div>);
-            })
+                  <button onClick={() => this.handleSelectSuggestion(suggestion)}>
+                    Play
+                  </button>
+                </div>);
+              })
           }
           <i
             className={`fa fa-chevron-right ${!showNext && 'not-show'}`}
