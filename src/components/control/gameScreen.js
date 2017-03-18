@@ -7,7 +7,7 @@ import GameInput from './gameInput';
 import Letters from './letters';
 
 @connect(
-  ({ game }) => ({ game }),
+  ({ game, gameInfo }) => ({ game, gameInfo }),
   { toggleChat, solveGame }
 )
 export default class GameScreen extends Component {
@@ -23,12 +23,18 @@ export default class GameScreen extends Component {
   }
 
   render() {
-    const game = this.props.game;
+    const { game, gameInfo } = this.props;
+    let curPlayer = gameInfo.nickname1;
+    if (game.turn === gameInfo.userId2) {
+      curPlayer = gameInfo.nickname2;
+    }
     return (
       <div className="game-screen">
         <Diagram
+          gameInfo={this.props.gameInfo}
           guessCount1={game.wrongGuesses1}
           guessCount2={game.wrongGuesses2}
+          turn={game.turn}
         />
         <GameInput guesses={game.correctGuesses || []} />
         <div className="button-div">
@@ -37,6 +43,7 @@ export default class GameScreen extends Component {
             onClick={this.handleClick}
             disabled={game.solving}
           >Solve it</button>
+          <div>It's {curPlayer}'s turn</div>
           <button
             className="open-chat"
             onClick={this.toggleChat}

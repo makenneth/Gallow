@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
-@connect(({ gameInfo }) => ({ gameInfo }))
 export default class Diagram extends Component {
   shouldComponentUpdate(nextProps) {
-    if (this.props.guessCount1 !== nextProps.guessCount1 ||
-      this.props.guessCount2 !== nextProps.guessCount2 ||
-      this.props.username1 !== nextProps.username1 ||
-      this.props.username2 !== nextProps.username2) {
+    if (this.props !== nextProps) {
       return true;
     }
 
@@ -15,14 +10,14 @@ export default class Diagram extends Component {
   }
 
   render() {
-    const props = this.props;
-    const constructDiagram = (count, name) => {
+    const { guessCount1, guessCount2, gameInfo, turn } = this.props;
+    const constructDiagram = (count, name, id) => {
       if (!name) {
         return (<div className="diagram" />);
       }
 
       return (<div className="diagram">
-        <h2>{name}</h2>
+        <h2 className={`${turn === id ? 'bold' : ''}`}>{name}</h2>
         <div
           style={{
             backgroundImage: `url("/public/images/0${count}.png")`,
@@ -32,8 +27,8 @@ export default class Diagram extends Component {
       </div>);
     };
     return (<div className="diagrams-container">
-      { constructDiagram(props.guessCount1, props.gameInfo.nickname1) }
-      { constructDiagram(props.guessCount2, props.gameInfo.nickname2) }
+      { constructDiagram(guessCount1, gameInfo.nickname1, gameInfo.userId1) }
+      { constructDiagram(guessCount2, gameInfo.nickname2, gameInfo.userId2) }
     </div>);
   }
 }
