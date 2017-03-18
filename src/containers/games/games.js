@@ -32,7 +32,7 @@ export default class Games extends Component {
           <h1>Ongoing Games</h1>
           <ul onClick={this.handleClick}>
             {
-              this.props.games.unfinished.map((game =>
+              this.props.games.unfinished.slice(0, 7).map((game =>
                 (<li key={game.id} data-id={game.id} className="draw">
                   {game.nickname1}<span>vs.</span>{game.nickname2}
                   <br />
@@ -46,7 +46,7 @@ export default class Games extends Component {
           <h1>Finished Games</h1>
           <ul onClick={this.handleClick}>
             {
-              this.props.games.finished.map((game =>
+              this.props.games.finished.slice(0, 5).map((game =>
                 (<li key={game.id} data-id={game.id} className="draw">
                   {game.nickname1}<span>vs.</span>{game.nickname2}
                   <br />
