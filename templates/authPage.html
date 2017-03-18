@@ -20,19 +20,23 @@
     </div>
     <form id="log-in">
       <div id="error"></div>
-      <input
-        type="text"
-        class="draw"
-        id="username"
-        placeholder="Username"
-        autoFocus
+      <div class="form-input">
+        <input
+          type="text"
+          class="draw"
+          id="username"
+          placeholder="Username"
+          autoFocus
         />
-      <input
-        type="password"
-        class="draw"
-        id="password"
-        placeholder="Password"
+      </div>
+      <div class="form-input">
+        <input
+          type="password"
+          class="draw"
+          id="password"
+          placeholder="Password"
         />
+      </div>
       <input type="submit" value="Log In" id="login" />
     </form>
   </div>
@@ -160,15 +164,15 @@
         let htmlStr;
         let focus;
         if (target.classList.contains('sign-up')) {
-          htmlStr = '<input type="text" id="nickname" placeholder="Nickname" />' +
-            '<input type="text" id="username" placeholder="Username" />' +
-            '<input type="password" id="password" placeholder="Password" />' +
-            '<input type="submit" value="Sign Up" id="signup"/>';
+          htmlStr = '<div class="form-input"><input type="text" id="nickname" placeholder="Nickname" /></div>' +
+            '<div class="form-input"><input type="text" id="username" placeholder="Username" /></div>' +
+            '<div class="form-input"><input type="password" id="password" placeholder="Password" /></div>' +
+            '<input type="submit" value="Sign Up" id="signup" />';
           focus = '#nickname';
         } else {
-          htmlStr = '<input type="text" id="username" placeholder="Username" />' +
-            '<input type="password" id="password" placeholder="Password" />' +
-            '<input type="submit" value="Log In" id="login" />';
+          htmlStr = '<div class="form-input"><input type="text" id="username" placeholder="Username" />' +
+            '</div><div class="form-input"><input type="password" id="password" placeholder="Password" />' +
+            '</div><input type="submit" value="Log In" id="login" />';
           focus = '#username';
         }
         $('form').html(htmlStr);
@@ -182,13 +186,26 @@
       $('.link').removeClass('active');
       $('.sign-up').addClass('active');
       $('form').html(
-        '<input type="text" id="nickname" placeholder="Nickname" />' +
-        '<input type="text" id="username" placeholder="Username" />' +
-        '<input type="password" id="password" placeholder="Password" />' +
+        '<div class="form-input"><input type="text" id="nickname" placeholder="Nickname" /></div>' +
+        '<div class="form-input"><input type="text" id="username" placeholder="Username" /></div>' +
+        '<div class="form-input"><input type="password" id="password" placeholder="Password" /></div>' +
         '<input type="submit" value="Sign Up" id="signup"/>'
       );
       $('#nickname').focus();
     }
+    $('form').on('focus', 'input', function(ev) {
+      var inputDiv = $(ev.currentTarget).closest('.form-input');
+      if (inputDiv.length > 0) {
+        inputDiv.addClass('focus');
+      }
+    });
+    $('form').on('blur', 'input', function(ev) {
+      var inputDiv = $(ev.currentTarget).closest('.form-input');
+      if (inputDiv.length > 0) {
+        inputDiv.removeClass('focus');
+      }
+    });
+
     setTimeout(function() {
       $('.title').addClass('fade-in');
     }, 50);
