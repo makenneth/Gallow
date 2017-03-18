@@ -62,7 +62,7 @@
   }
 
   input[type="submit"] {
-    @include raiseButton(2px);
+    @include raiseButton(1px);
     font-size: 16px;
     border-radius: 3px;
     padding: 5px 10px;

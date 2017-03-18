@@ -124,7 +124,7 @@ func PlayerSuggestionsHandler(w http.ResponseWriter, r *http.Request) {
   var player game.Player
   rows, err := database.DBConn.Query(`
     SELECT id, nickname, username, wins, losses, updated_at
-    FROM users ORDER BY random() LIMIT 11;
+    FROM users ORDER BY random() LIMIT 21;
   `)
   defer rows.Close()
   if err != nil {

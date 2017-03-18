@@ -2,10 +2,16 @@
   box-shadow: 0px 1px 5px 1px rgba(66, 66, 66,0.75);
   transform: translateY(0);
   transition: transform 0.2s;
+  outline: 0;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-$distance);
     box-shadow: 0px $distance 5px 1px rgba(66, 66, 66, 0.75);
+  }
+
+  &:active {
+    transform: translateY(2px);
+    box-shadow: inset 0px 0px 0px 50px rgba(0,0,0,0.2);
   }
 }
 

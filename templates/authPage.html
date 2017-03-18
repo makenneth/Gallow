@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Gallow</title>
+  <title>Hangperson</title>
   <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700|Raleway:200,400,700" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/public/styles/reset.css">
   <link rel="stylesheet" type="text/css" href="/public/styles/userform.css">
@@ -145,6 +145,7 @@
     $('form').on('submit', function(ev) {
       ev.preventDefault();
       var token = getCSRF();
+      console.log($(this).attr('id'));
       if ($(this).attr('id') === 'log-in') {
         login(token);
       } else {

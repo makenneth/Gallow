@@ -92,7 +92,9 @@
     background-color: #45b2e8;
 
     &:enabled {
-      @include raiseButton(2px);
+      @include raiseButton(1px);
+      box-shadow: none;
+
       &:hover {
         background-color: rgba(#45b2e8, 0.96);
         color: white;
@@ -237,6 +239,8 @@
   }
 
   button {
+    @include raiseButton(1px);
+    box-shadow: none;
     margin-top: 10px;
     padding: 5px 15px;
     font-size: 16px;

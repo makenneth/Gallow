@@ -10,7 +10,7 @@
 }
 
 .game-screen {
-  margin-top: 20px;
+  padding-top: 20px;
   margin-left: 5%;
   width: 60%;
   max-width: 450px;
@@ -29,7 +29,7 @@
 }
 .solve-it,
 .open-chat {
-  @include raiseButton(2px);
+  @include raiseButton(1px);
   /*box-shadow: 0px 1px 5px #666666;*/
   cursor: pointer;
   padding: 10px 15px;
@@ -86,12 +86,18 @@
   background-color: rgba(#24b47e, 0.9);
 }
 
+.letter-box:active {
+  box-shadow: inset 0px 0px 0px 50px rgba(0,0,0,0.2);
+}
+
 .alphabets-container {
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   padding: 10px 0;
 }
+
 .used {
   background-color: gray;
   cursor: pointer;
@@ -106,22 +112,21 @@
   padding: 10px;
   font-size: 20px;
   margin-left: 5px;
-  border-bottom: 1px solid black;
-  font-weight: 700;
+  border-radius: 4px;
+  box-shadow: 0px 1px 5px #666;
+  border: 0;
+  font-weight: 400;
+  font-family: 'QuickSand', sans-serif;
 
   &:first-child {
     margin-left: 0;
   }
 }
 
-.empty {
-  border-bottom: 1px solid black;
-}
-
 .correct-container {
   padding-top: 20px;
   padding-bottom: 20px;
-  width: 80%;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -164,9 +169,8 @@
     height: 30px;
     padding: 10px;
     font-size: 26px;
-    border-bottom: 2px solid black;
     margin-right: 10px;
-    font-weight: 700;
+    font-weight: 400;
   }
 
   .letter-box {
