@@ -3,6 +3,7 @@
 /* chat */
 .chat-screen {
   flex: 1;
+  max-width: 450px;
   margin-left: 50px;
   display: flex;
   flex-direction: column;
@@ -15,6 +16,7 @@
 .message-list,
 .msg-input-form {
   font-family: 'Raleway', sans-serif;
+  background-color: white;
   border: 0;
   box-shadow: 0px 1px 5px #dcdcdc;
   border-top: 0;
@@ -23,8 +25,8 @@
   width: 90%;
   margin: 0;
 }
+
 .message-list {
-  background-color: white;
   overflow-y: scroll;
   padding: 15px;
   padding-top: 30px;
@@ -41,7 +43,6 @@
 }
 
 .msg-input-form {
-  background-color: white;
   margin-top: 3px;
   padding: 15px;
   display: flex;
@@ -79,14 +80,12 @@
 
 @media screen and (max-width: 768px) {
   .chat-screen {
-    display: none;
-    background-color: white;
-    position: fixed;
-    height: 80%;
+    visibility: hidden;
+    position: absolute;
+    height: calc(100% - 70px);
     width: 300px;
     right: 0;
-    animation: slide 1s ease;
-    -webkit-animation: slide 1s ease;
+    transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out 0.1s;
   }
   .message-list div:first-child {
     display: block;
@@ -96,28 +95,37 @@
     left: 5px;
     font-size: 36px;
   }
+  .chat-close {
+    transform: translateX(250px);
+    opacity: 0;
+  }
   .chat-open {
-    display: block;
+    visibility: visible;
+    transform: translateX(0px);
+    opacity: 1;
   }
   .message-list {
-    border: 2px solid black;
+    border: 0;
     font-size: 20px;
   }
 }
 
 @media (max-device-width: 768px) {
   .chat-screen {
-    display: none;
+    transform: translateX(250px);
+    height: calc(100% - 70px);
+    visibility: hidden;
     background-color: rgba(255, 255, 255, 0.8);
     position: absolute;
-    height: 80%;
+    height: 100%;
     width: 100%;
     flex-direction: column;
     right: 0;
+    transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out 0.1s;
   }
 
   .message-list div:first-child {
-    display: block;
+    visibility: visible;
     cursor: pointer;
     position: absolute;
     top: -20px;
@@ -125,13 +133,17 @@
     font-size: 106px;
   }
 
+  .chat-close {
+    opacity: 0;
+    transform: translateX(250px);
+  }
   .chat-open {
+    opacity: 1;
     display: flex;
+    transform: translateX(0px);
   }
 
   .message-list, .msg-input-form {
-    border: 5px solid black;
-    border-radius: 5px;
     width: 70%;
   }
   .message-list {

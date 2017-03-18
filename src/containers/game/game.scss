@@ -5,7 +5,7 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   height: 100%;
 }
 
@@ -17,6 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .button-div {
@@ -24,39 +25,44 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
+  margin-top: 10px;
 }
-.solve-it, .open-chat {
-  box-shadow: 0px 1px 5px #dcdcdc;
+.solve-it,
+.open-chat {
+  @include raiseButton(2px);
+  /*box-shadow: 0px 1px 5px #666666;*/
   cursor: pointer;
   padding: 10px 15px;
   width: 100px;
- border: 1px solid transparent;
+  border: 1px solid transparent;
   border-radius: 3px;
-  color: white;
+  color: rgba(white, 0.8);
   font-size: 18px;
 }
 
 .solve-it {
-  background-color: #D84315;
+  background-color: #e25950;
 }
 .solve-it:hover {
-  background-color: #FF5722;
+  color: white;
+  background-color: rgba(#e25950, 0.97);
 }
 .open-chat {
   visibility: hidden;
-  background-color: #283593;
+  background-color: #6772e5;
 }
 .open-chat:hover {
-  background-color: #3949AB;
+  background-color: rgba(#6772e5, 0.97);
 }
 
 .letter-box {
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: center;
   box-shadow: 0px 1px 5px #dcdcdc;
-  border-radius: 5px;
-  background-color: #388E3C;
+  border-radius: 3px;
+  background-color: #24b47e;
   color: white;
   font-size: 18px;
   font-weight: 700;
@@ -66,9 +72,18 @@
   cursor: pointer;
   margin-right: 10px;
   margin-bottom: 10px;
+
+  &:not(.used) {
+    @include drawBorderOnHover(white);
+  }
+
+  &.used {
+    cursor: not-allowed;
+  }
 }
+
 .letter-box:hover {
-  background-color: #4CAF50;
+  background-color: rgba(#24b47e, 0.9);
 }
 
 .alphabets-container {
@@ -86,42 +101,64 @@
 }
 
 .guess-letter {
-  float: left;
   width: 15px;
   height: 25px;
   padding: 10px;
   font-size: 20px;
-  border-bottom: 2px solid black;
+  margin-left: 5px;
+  border-bottom: 1px solid black;
   font-weight: 700;
+
+  &:first-child {
+    margin-left: 0;
+  }
 }
 
 .empty {
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid black;
 }
 
 .correct-container {
-  padding-top: 5%;
-  padding-bottom: 5%;
+  padding-top: 20px;
+  padding-bottom: 20px;
   width: 80%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
+
 .diagrams-container {
   display: flex;
   justify-content: center;
 }
+
 .diagram {
   text-align: center;
-}
-.diagram:first-child {
-  margin-right: 10%;
-}
-.diagram > div {
-  width: 140px;
-  height: 100px;
+
+  h2 {
+    font-family: 'QuickSand', sans-serif;
+    font-weight: 400;
+  }
+
+  &:first-child {
+    margin-right: 10%;
+  }
+
+  &> div {
+    width: 140px;
+    height: 100px;
+  }
 }
 
 @media screen and (max-width: 768px) {
+  .game-container {
+    justify-content: center;
+  }
+
+  .game-screen {
+    width: 90%;
+    max-width: 450px;
+  }
+
   .guess-letter {
     width: 20px;
     height: 30px;
@@ -142,6 +179,15 @@
 }
 
 @media (max-device-width: 768px) {
+  .game-container {
+    justify-content: center;
+  }
+
+  .game-screen {
+    width: 90%;
+    max-width: 450px;
+  }
+
   .correct-container {
     width: 80%;
     display: flex;
