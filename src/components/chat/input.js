@@ -10,6 +10,7 @@ export default class Input extends Component {
     this.state = {
       body: '',
       sending: false,
+      inputFocused: false,
     };
   }
 
@@ -20,7 +21,7 @@ export default class Input extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.body !== nextState.body ||
+    if (this.state !== nextState ||
       this.props.chat.author !== nextProps.chat.author ||
       this.props.chat.gameId !== nextProps.chat.gameId) {
       return true;
@@ -50,16 +51,25 @@ export default class Input extends Component {
   handleChange = (e) => {
     this.setState({ body: e.target.value });
   }
+
+  toggleInputFocus = () => {
+    this.setState({ inputFocused: !this.state.inputFocused });
+  }
+
   render() {
     return (
       <form onSubmit={this.handleSubmit} className="msg-input-form">
-        <input
-          type="text"
-          id="msg-input"
-          onChange={this.handleChange}
-          value={this.state.body}
-          placeholder="Enter your message..."
-        />
+        <div className={`input-field ${this.state.inputFocused && 'focus'}`}>
+          <input
+            type="text"
+            id="msg-input"
+            onChange={this.handleChange}
+            value={this.state.body}
+            onFocus={this.toggleInputFocus}
+            onBlur={this.toggleInputFocus}
+            placeholder="Enter your message..."
+          />
+        </div>
         <input type="submit" value="Submit" />
       </form>
       );

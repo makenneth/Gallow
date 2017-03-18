@@ -12,7 +12,7 @@
 
   li {
     @include raiseButton(2px);
-    background-color: rgba(#009688, 0.9);
+    background-color: rgba(#3ecf8e, 0.9);
     position: relative;
     cursor: pointer;
     padding: 20px 40px;
@@ -21,9 +21,9 @@
     border: 0;
     border-radius: 3px;
     text-align: center;
-    color: rgba(white, 0.85);
-    transition: color 0.5s;
-    -webkit-transition: color 0.5s;
+    color: rgba(white, 0.9);
+    transition: color 0.2s;
+    -webkit-transition: color 0.2s;
 
     &:hover {
       color: white;

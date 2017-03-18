@@ -52,11 +52,18 @@
     outline: 0;
     box-shadow: 0px 1px 5px #dcdcdc;
   }
+
+  .input-field {
+    @include drawBorderOnFocus(#69e7f8);
+    position: relative;
+    width: 100%;
+  }
+
   input[type="text"] {
-    padding: 5px;
-    padding-left: 10px;
+    box-sizing: border-box;
+    padding: 7px 10px;
     font-size: 14px;
-    width: 80%;
+    width: 100%;
     border-radius: 2px;
     border: 0;
   }
@@ -65,11 +72,13 @@
     @include raiseButton(1px);
     font-size: 16px;
     border-radius: 3px;
+    margin-left: 5px;
     padding: 5px 10px;
     color: rgba(white, 0.9);
     background-color: #009688;
     border: 0;
     cursor: pointer;
+    box-shadow: none;
 
     &:hover {
       color: white;

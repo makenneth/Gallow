@@ -25,6 +25,7 @@ export default class NewGame extends Component {
       dropdownOpen: false,
       selectedOpponent: null,
       selected: false,
+      inputFocused: false,
     };
   }
 
@@ -91,6 +92,10 @@ export default class NewGame extends Component {
     }, this.startGame);
   }
 
+  toggleInputFocus = () => {
+    this.setState({ inputFocused: !this.state.inputFocused });
+  }
+
   handleChange = (e) => {
     let timer;
     this.setState({
@@ -131,7 +136,7 @@ export default class NewGame extends Component {
 
   render() {
     const { isLoading, suggestions } = this.props;
-    const { currentLocation } = this.state;
+    const { currentLocation, inputFocused } = this.state;
     const showNext = currentLocation + 2 < suggestions.length;
     const showPrev = currentLocation > 0;
     return (<div className="new-game-container" ref="new-game-container">
@@ -168,12 +173,14 @@ export default class NewGame extends Component {
       </div>
       <div className="user-input-container">
         <h1>New Game</h1>
-        <div className="user-input">
+        <div className={`user-input ${inputFocused && 'focus'}`}>
           <input
             type="text"
             placeholder="Enter the user name"
             onChange={this.handleChange}
             value={this.state.name}
+            onFocus={this.toggleInputFocus}
+            onBlur={this.toggleInputFocus}
           />
           <div onClick={this.handleClear}>&times;</div>
           {this.listFoundUsers()}
