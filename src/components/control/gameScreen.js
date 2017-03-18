@@ -17,6 +17,10 @@ export default class GameScreen extends Component {
       this.props.solveGame();
     }
   }
+  toggleChat = (ev) => {
+    ev.stopPropagation();
+    this.props.toggleChat();
+  }
 
   render() {
     const game = this.props.game;
@@ -35,7 +39,7 @@ export default class GameScreen extends Component {
           >Solve it</button>
           <button
             className="open-chat"
-            onClick={() => this.props.toggleChat()}
+            onClick={this.toggleChat}
           >Chat</button>
         </div>
         <Letters

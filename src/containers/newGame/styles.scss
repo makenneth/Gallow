@@ -56,6 +56,7 @@
 }
 
 .new-game-container {
+  padding: 20px 0;
   justify-content: space-between;
   flex-direction: column;
   align-items: center;
@@ -78,11 +79,13 @@
     padding: 0 10px;
   }
 
-  input[type="submit"] {
+  button.submit {
+    display: flex;
+    align-items: center;
     cursor: pointer;
     margin-top: 20px;
     padding: 5px 10px;
-    color: rgba(white, 0.9);
+    color: rgba(white, 0.8);
     border: 0;
     font-size: 18px;
     border-radius: 3px;
@@ -91,7 +94,7 @@
     &:enabled {
       @include raiseButton(2px);
       &:hover {
-        background-color: rgba(#45b2e8, 0.85);
+        background-color: rgba(#45b2e8, 0.96);
         color: white;
       }
     }
@@ -101,6 +104,26 @@
       cursor: not-allowed;
     }
 
+    .chevron-right,
+    .underscore {
+      transition: transform 0.3s ease-in-out;
+      font-family: 'Quicksand', sans-serif;
+      transform: translate(0, 0);
+    }
+
+    .underscore {
+      margin-right: 5px;
+    }
+
+    &:enabled:hover {
+      .chevron-right {
+        transform: translate(10px, -2px);
+      }
+
+      .underscore {
+        transform: translate(-10px, -8px);
+      }
+    }
   }
 
   ul {
@@ -133,6 +156,8 @@
     text-align: center;
     padding: 5px 0px;
     padding-left: 10px;
+    background-color: white;
+    transition: background-color 0.3s ease-in-out;
 
     &:hover {
       background-color: #E0E0E0;
@@ -217,13 +242,14 @@
     font-size: 16px;
     background-color: #24b47e;
     border-radius: 3px;
-    color: white;
+    color: rgba(white, 0.9);
     outline: 0;
     border: 0;
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(#24b47e, 0.75);
+      color: white;
+      background-color: rgba(#24b47e, 0.97);
     }
   }
 }

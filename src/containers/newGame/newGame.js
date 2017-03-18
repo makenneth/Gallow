@@ -20,6 +20,7 @@ export default class NewGame extends Component {
     super(props);
     this.state = {
       name: '',
+      direction: 'next',
       currentLocation: 0,
       dropdownOpen: false,
       selectedOpponent: null,
@@ -33,15 +34,22 @@ export default class NewGame extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props.userQuery, nextProps.userQuery);
     if (this.props.userQuery !== nextProps.userQuery &&
       nextProps.userQuery.length > 0 && !this.state.dropdownOpen) {
       this.setState({ dropdownOpen: true });
     }
   }
 
-  handleclick = (ev) => {
-    debugger;
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick);
+  }
+
+  handleClick = (ev) => {
+    if (this.state.dropdownOpen) {
+      if (!document.querySelector('.user-input-container').contains(ev.target)) {
+        this.setState({ dropdownOpen: false });
+      }
+    }
   }
 
   startGame = () => {
@@ -103,7 +111,7 @@ export default class NewGame extends Component {
   listFoundUsers() {
     return (<ul
       onClick={this.handleSelect}
-      className={!this.state.dropdownOpen && 'not-show'}
+      className={`user-query-list ${!this.state.dropdownOpen ? 'not-show' : ''}`}
     >
       {
         function mapFoundUsers() {
@@ -170,12 +178,15 @@ export default class NewGame extends Component {
           <div onClick={this.handleClear}>&times;</div>
           {this.listFoundUsers()}
         </div>
-        <input
-          type="submit"
-          value="Start Game"
+        <button
+          className="submit"
           onClick={this.startGame}
           disabled={!this.state.selectedOpponent}
-        />
+        >
+          <span className="chevron-right">></span>
+          <span className="underscore">_</span>
+          Start Game
+        </button>
       </div>
     </div>);
   }
