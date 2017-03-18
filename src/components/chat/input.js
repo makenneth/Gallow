@@ -12,15 +12,13 @@ export default class Input extends Component {
       sending: false,
     };
   }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.chatOpen === false && nextProps.chatOpen === true) {
-      document.getElementById('body').focus();
-    }
 
+  componentWillReceiveProps(nextProps) {
     if (this.state.sending && nextProps.messages.length > this.props.messages.length) {
       this.setState({ body: '', sending: false });
     }
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.body !== nextState.body ||
       this.props.chat.author !== nextProps.chat.author ||
@@ -30,6 +28,15 @@ export default class Input extends Component {
 
     return false;
   }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.chatOpen && this.props.chatOpen) {
+      setTimeout(() => {
+        document.querySelector('#msg-input').focus();
+      }, 500);
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     const msg = Object.assign({}, this.props.chat);
@@ -48,7 +55,7 @@ export default class Input extends Component {
       <form onSubmit={this.handleSubmit} className="msg-input-form">
         <input
           type="text"
-          id="body"
+          id="msg-input"
           onChange={this.handleChange}
           value={this.state.body}
           placeholder="Enter your message..."

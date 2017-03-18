@@ -1,11 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { toggleChat } from 'redux/modules/chat_screen';
-
-@connect(
-  () => ({}),
-  { toggleChat }
-)
 
 export default class Messages extends Component {
   shouldComponentUpdate(nextProps) {
@@ -23,7 +16,6 @@ export default class Messages extends Component {
   render() {
     return (
       <div className="message-list">
-        <div onClick={this.props.toggleChat}>&times;</div>
         <ul>
           { this.mapMessages() }
         </ul>
