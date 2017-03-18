@@ -157,20 +157,24 @@
       const target = ev.currentTarget;
       if (!target.classList.contains('active')) {
         let htmlStr;
+        let focus;
         if (target.classList.contains('sign-up')) {
           htmlStr = '<input type="text" id="nickname" placeholder="Nickname" />' +
             '<input type="text" id="username" placeholder="Username" />' +
             '<input type="password" id="password" placeholder="Password" />' +
             '<input type="submit" value="Sign Up" id="signup"/>';
+          focus = '#nickname';
         } else {
           htmlStr = '<input type="text" id="username" placeholder="Username" />' +
             '<input type="password" id="password" placeholder="Password" />' +
             '<input type="submit" value="Log In" id="login" />';
+          focus = '#username';
         }
         $('form').html(htmlStr);
         $('form').attr('id', target.classList[0]);
         $('.link').removeClass('active');
         $(target).addClass('active');
+        $(focus).focus();
       }
     });
     if (window.location.pathname.indexOf('/signup') > -1) {
@@ -182,6 +186,7 @@
         '<input type="password" id="password" placeholder="Password" />' +
         '<input type="submit" value="Sign Up" id="signup"/>'
       );
+      $('#nickname').focus();
     }
     setTimeout(function() {
       $('.title').addClass('fade-in');
