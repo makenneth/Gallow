@@ -64,6 +64,10 @@
     width: 0;
     top: 0;
     left: 0;
+
+    @media (max-device-width: 768px) {
+      border: 6px solid transparent;
+    }
   }
 
   &.focus::before,

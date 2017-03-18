@@ -155,7 +155,7 @@ export default class NewGame extends Component {
                 <div className="stats"><span>Losses: </span>{suggestion.losses}</div>
 
                 <button onClick={() => this.handleSelectSuggestion(suggestion)}>
-                  Start Game
+                  Play
                 </button>
               </div>);
             })

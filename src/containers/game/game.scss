@@ -24,8 +24,15 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 5px;
   margin-top: 10px;
+
+  div {
+    font-family: 'QuickSand', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
 }
 .solve-it,
 .open-chat {
@@ -142,6 +149,10 @@
   h2 {
     font-family: 'QuickSand', sans-serif;
     font-weight: 400;
+
+    &.bold {
+      font-weight: 700;
+    }
   }
 
   &:first-child {
@@ -189,7 +200,7 @@
 
   .game-screen {
     width: 90%;
-    max-width: 450px;
+    max-width: initial;
   }
 
   .correct-container {
@@ -226,6 +237,10 @@
   .button-div {
     padding-top: 2%;
     padding-bottom: 2%;
+
+    div {
+      font-size: 18px;
+    }
   }
 
   .diagram > div {

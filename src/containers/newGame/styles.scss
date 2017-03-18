@@ -80,6 +80,7 @@
   }
 
   button.submit {
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -198,6 +199,7 @@
 
 
 .user-suggestions {
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -261,19 +263,70 @@
 }
 
 @media (max-device-width: 768px) {
- .new-game-container {
-    width: 70%;
-    padding: 50px;
-    border: 3px solid #E0E0E0;
+  .user-input-container,
+  .user-suggestions-container {
+    width: 95%;
+    padding: 40px 20px;
   }
 
-  .new-game-container > h1 {
-    font-size: 50px;
+  .user-suggestions-container {
+    h3 {
+      font-size: 40px;
+    }
+  }
+
+  .user-suggestions {
+
+    .fa {
+      font-size: 34px;
+      padding: 34px;
+    }
+
+    &> div {
+      font-size: 40px;
+      padding: 15px 25px;
+
+      & > div {
+        padding: 3px 0;
+      }
+
+      button {
+        margin-top: 20px;
+        border-radius: 10px;
+        font-size: 40px;
+        padding: 15px 25px;
+      }
+    }
+  }
+
+ .new-game-container {
+    padding-top: 50px;
+
+    h1 {
+      font-size: 50px;
+    }
+
+    button.submit {
+      margin-top: 40px;
+      padding: 15px 25px;
+      font-size: 36px;
+    }
+
+    ul {
+      top: 70px;
+      font-size: 36px;
+      width: 600px;
+    }
+
+    li{
+      padding: 5px 0px;
+      padding-left: 10px;
+    }
   }
 
   .user-input > input {
-    width: 400px;
-    padding: 10px 20px;
+    width: 600px;
+    padding: 20px 20px;
     font-size: 36px;
     border-radius: 3px;
     border: 1px solid #E0E0E0;
@@ -281,30 +334,43 @@
   .user-input div {
     font-size: 50px;
   }
-  .new-game-container input[type="submit"] {
-    margin-top: 5%;
-    padding: 15px 25px;
-    font-size: 36px;
-  }
-  .new-game-container ul {
-    top: 70px;
-    font-size: 36px;
-    width: 440px;
-  }
-  .new-game-container li{
-    padding: 5px 0px;
-    padding-left: 10px;
-  }
+
 }
 
 @media (max-device-width: 414px) {
- .new-game-container {
-    width: 80%;
-    padding: 50px;
+  .user-input-container,
+  .user-suggestions-container {
+    width: 95%;
+    padding: 40px 20px;
   }
 
-  .new-game-container > h1 {
-    font-size: 65px;
+  .user-suggestions-container {
+    h3 {
+      font-size: 48px;
+    }
+  }
+
+  .user-suggestions {
+
+    .fa {
+      font-size: 40px;
+      padding: 40px;
+    }
+
+    &> div {
+      font-size: 48px;
+      padding: 25px 40px;
+
+      & > div {
+        padding: 5px 0;
+      }
+
+      button {
+        border-radius: 10px;
+        font-size: 48px;
+        padding: 20px 40px;
+      }
+    }
   }
 
   .user-input > input {
@@ -318,17 +384,27 @@
     font-size: 70px;
   }
 
-  .new-game-container input[type="submit"] {
-    padding: 25px 40px;
-    font-size: 46px;
-  }
-  .new-game-container ul {
-    top: 90px;
-    font-size: 46px;
-    width: 550px;
-  }
-  .new-game-container li {
-    padding: 15px 0px;
-    padding-left: 15px;
+  .new-game-container {
+    padding-top: 60px;
+
+    h1 {
+      font-size: 65px;
+    }
+
+    button.submit {
+      border-radius: 10px;
+      padding: 20px 40px;
+      font-size: 48px;
+    }
+
+    ul {
+      top: 90px;
+      font-size: 46px;
+      width: 600px;
+    }
+    li {
+      padding: 15px 0px;
+      padding-left: 15px;
+    }
   }
 }

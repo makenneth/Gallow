@@ -10,6 +10,7 @@
 }
 
 .navbar-container > div {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   color: black;
@@ -62,10 +63,17 @@
     height: 120px;
     font-size: 30px;
   }
-  .navbar ul {
-    font-size: 38px;
-    max-width: 400px;
+
+  .navbar {
+    .menu-item {
+      margin-left: 50px;
+    }
+
+    ul .fa {
+      font-size: 48px;
+    }
   }
+
   .logo {
     font-size: 42px;
   }
@@ -77,9 +85,8 @@
     height: 180px;
   }
 
-  .navbar ul {
-    font-size: 40px;
-    width: 500px;
+  .navbar ul .fa {
+    font-size: 66px;
   }
 
   .logo {
