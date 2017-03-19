@@ -289,6 +289,10 @@ input[type=password] {
   box-shadow: inset -5px 0px 5px -4px rgba(0, 0, 0,1);
 }
 
+.nav div:last-child:not(.active):active:after {
+  left: -1px;
+}
+
 .nav div:first-child:not(.active):active:before {
   height: calc(100% + 1px);
   box-shadow: inset 4px 0px 5px -4px rgba(0, 0, 0,1);
@@ -296,6 +300,7 @@ input[type=password] {
 
 .nav div:last-child:not(.active):active:before {
   height: calc(100% + 1px);
+  left: -1px;
   box-shadow: inset 4px 0px 5px -4px rgba(0, 0, 0,1);
 }
 
