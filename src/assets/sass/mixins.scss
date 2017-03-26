@@ -1,12 +1,12 @@
 @mixin raiseButton($distance) {
-  box-shadow: 0px 1px 5px 1px rgba(66, 66, 66,0.75);
-  transform: translateY(0);
+  box-shadow: 0px 2px 1px 1px rgba(122, 122, 122,0.75);
   transition: transform 0.2s;
   outline: 0;
+  border: 0;
 
   &:hover {
     transform: translateY(-$distance);
-    box-shadow: 0px $distance 5px 1px rgba(66, 66, 66, 0.75);
+    box-shadow: 0px $distance 1px 1px rgba(122, 122, 122, 0.75);
   }
 
   &:active {

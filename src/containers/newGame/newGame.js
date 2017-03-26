@@ -155,7 +155,7 @@ export default class NewGame extends Component {
     const showPrev = currentLocation > 0;
     return (<div className="new-game-container" ref="new-game-container">
       <div className="user-suggestions-container">
-        <h3>Suggestions</h3>
+        <h3>User suggestions</h3>
         <div className="user-suggestions">
           <i
             className={`fa fa-chevron-left ${!showPrev && 'not-show'}`}
@@ -191,7 +191,7 @@ export default class NewGame extends Component {
         <div className={`user-input ${inputFocused && 'focus'}`}>
           <input
             type="text"
-            placeholder="Enter the user name"
+            placeholder="Search for a player to play with"
             onChange={this.handleChange}
             value={this.state.name}
             onFocus={this.toggleInputFocus}
