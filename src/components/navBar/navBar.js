@@ -11,6 +11,13 @@ export default class NavBar extends Component {
 
     return false;
   }
+
+  tooltip(text) {
+    return (<div className="tooltip bottom">
+      {text}
+    </div>)
+  }
+
   render() {
     if (!this.props.user) {
       return (<div />);
@@ -21,9 +28,11 @@ export default class NavBar extends Component {
         <ul>
           <li className="menu-item">
             <Link to="/games/new"><i className="fa fa-plus" /></Link>
+            {this.tooltip('New game')}
           </li>
           <li className="menu-item">
             <a onClick={this.props.logOut}><i className="fa fa-sign-out" /></a>
+            {this.tooltip('Log Out')}
           </li>
         </ul>
       </div>

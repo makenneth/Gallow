@@ -206,6 +206,7 @@
   padding: 10px 5px 20px 5px;
 
   > div {
+    position: relative;
     border-radius: 3px;
     border: 0;
     padding: 10px 20px;
@@ -216,15 +217,10 @@
     flex-direction: column;
     min-width: 100px;
     margin-left: 10px;
-    transform: scale(1);
-    transition: transform 0.3s ease-in-out;
+    @include drawBorderOnHover(#69e7f8);
 
     &:nth-child(2) {
       margin-left: 0;
-    }
-
-    &:hover {
-      transform: scale(1.05);
     }
   }
 
@@ -244,6 +240,7 @@
 
   button {
     @include raiseButton(1px);
+    z-index: 3;
     box-shadow: none;
     margin-top: 10px;
     padding: 5px 15px;

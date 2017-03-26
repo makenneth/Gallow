@@ -42,6 +42,7 @@
 }
 .menu-item {
   margin-left: 30px;
+  position: relative;
 
   &:first-child {
     margin-left: 0;
@@ -54,6 +55,10 @@
 
   a:hover .fa {
     color: #666;
+  }
+
+  &:hover .tooltip {
+    display: flex;
   }
 }
 
