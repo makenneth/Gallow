@@ -52,7 +52,6 @@ func main() {
   http.HandleFunc("/public/", func(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, r.URL.Path[1:])
   })
-
   http.HandleFunc("/api/user/games", api.GamesRouteHandler)
   http.HandleFunc("/api/user/new", api.SignUpHandler)
   http.HandleFunc("/api/user", api.UserHandler)
@@ -63,6 +62,7 @@ func main() {
   http.HandleFunc("/api/games/new", func(w http.ResponseWriter, r *http.Request){
     api.NewGameHandler(w, r);
   })
+  http.HandleFunc("/api/games/random_word", api.GetRandomWordHandler)
   http.HandleFunc("/api/users", api.UsersQueryHandler)
   http.HandleFunc("/api/me/friends", api.FriendsHandler)
   http.HandleFunc("/login", static.AuthPageHandler)
