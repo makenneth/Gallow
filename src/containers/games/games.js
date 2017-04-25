@@ -29,9 +29,9 @@ export default class Games extends Component {
 
   getStatusText = (game) => {
     if (game.info.finished) {
-      return `Result: ${game.winner === this.props.user.id ? 'Won' : 'Lost'}`
+      return `Result: ${game.info.winner === this.props.user.id ? 'Won' : 'Lost'}`
     }
-    return `Turn: ${game.turn === this.props.user.id ? 'Player' : 'Computer'}`
+    return `Turn: ${game.state.turn === this.props.user.id ? 'Player' : 'Computer'}`
   }
 
   render() {
@@ -83,8 +83,8 @@ export default class Games extends Component {
             <ul onClick={(ev) => this.handleClick(ev, '/games/practice')}>
               {
                 practice.slice(0, 5).map((game =>
-                  (<li key={game.id} data-id={game.id} className="draw">
-                    {game.nickname1}<span>vs. </span>Computer
+                  (<li key={game.info.id} data-id={game.info.id} className="draw">
+                    {game.info.nickname1}<span>vs. </span>Computer
                     <br />
                     { this.getStatusText(game) }
                   </li>)

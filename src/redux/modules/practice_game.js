@@ -8,6 +8,7 @@ export const GAME_ENDED = 'hangperson/game/GAME_ENDED';
 export function makeGuess(guess, autoGenerate = false) {
   return (dispatch, getState) => {
     const { game, gameInfo } = getState();
+    debugger;
     let madeGuess = autoGenerate ? GameSolver.generateGuess(game) : guess;
     let correct = true;
     let ended = false;

@@ -1,4 +1,5 @@
 export default function gameTemplate(id, word, user) {
+  console.log(user);
   return {
     info: {
       id,
@@ -16,7 +17,7 @@ export default function gameTemplate(id, word, user) {
       correctGuesses: [],
       guess: '',
       solving: false,
-      turn: 0,
+      turn: user.id,
       usedLetters: [],
       wrongGuesses1: 0,
       wrongGuesses2: 0,

@@ -1,3 +1,6 @@
+import { CORRECT_GUESS, INCORRECT_GUESS } from './practice_game';
+import { loadPracticeGames } from './games';
+
 const UPDATE_SUCCESS = 'hangperson/game/UPDATE_SUCESS';
 const LOAD_PRACTICE_GAME = 'hangperson/game/LOAD_PRACTICE_GAME';
 const GAME_CONNECTED = 'hangperson/game/GAME_CONNECTED';
@@ -7,7 +10,6 @@ const SOLVE_GAME = 'hangperson/game/SOLVE_GAME';
 const MAKE_MOVE = 'hangperson/game/MAKE_MOVE';
 const FETCH_SUCCESS = 'hangperson/game/FETCH_SUCCESS';
 const SOLVE_PRACTICE_GAME = 'hangperson/game/SOLVE_PRACTICE_GAME';
-import { CORRECT_GUESS, INCORRECT_GUESS } from './practice_game';
 
 export {
   GAME_CONNECTED,
@@ -127,6 +129,9 @@ export const connectUser = () => {
 export const loadGame = (id) => {
   return (dispatch, getState) => {
     if (/practice/.test(window.location.pathname)) {
+      if (!getState().games.practice.length) {
+        dispatch(loadPracticeGames());
+      }
       const { practice } = getState().games;
       const game = practice.find(game => game.info.id === +id);
       if (game) {

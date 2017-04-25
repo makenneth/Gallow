@@ -39,7 +39,8 @@ export default class Letters extends Component {
       if (move.length !== 1) {
         return;
       }
-      if (/practice/.test(window.location.pathname)) {
+      if (/practice/.test(location.pathname)) {
+        console.log('makeGuess', move);
         this.props.makeGuess(move);
       } else {
         this.props.makeMove(move);

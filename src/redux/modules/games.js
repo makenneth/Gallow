@@ -41,6 +41,7 @@ export default (state = initialState, action) => {
         action.payload.word,
         action.payload.user
       );
+      console.log(practiceGameTemplate)
       return {
         ...state,
         practice: [
@@ -145,7 +146,7 @@ export const savePracticeGame = () => {
   return (_, getState) => {
     const { games: { practice }, game, gameInfo } = getState();
 
-    const currentGameIdx = practice.findIndex(g => g.info.id === game.id);
+    const currentGameIdx = practice.findIndex(g => g.id === gameInfo.id);
     let games = [];
     if (currentGameIdx > -1) {
       games = [
