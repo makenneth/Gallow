@@ -1,19 +1,31 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { createGame } from 'redux/modules/games';
+import {
+  createGame,
+  createPracticeGame,
+  loadPracticeGames,
+} from 'redux/modules/games';
 import { fetchUsers, getUserSuggestions, clearUserQuery } from 'redux/modules/users_query';
 import './styles.scss';
 
 @connect(
-  ({ userQuery, auth: { user }, userSuggestions: { suggestions, isLoading } }) =>
+  ({ userQuery, auth: { user }, userSuggestions: { suggestions, isLoading }, games }) =>
   ({
+    practice: games.practice,
     userQuery,
     isLoading,
     user,
     suggestions: suggestions.filter(s => !user || s.username !== user.username),
   }),
-  { fetchUsers, createGame, getUserSuggestions, clearUserQuery }
+  {
+    fetchUsers,
+    createGame,
+    getUserSuggestions,
+    clearUserQuery,
+    createPracticeGame,
+    loadPracticeGames,
+  }
 )
 export default class NewGame extends Component {
   constructor(props) {
@@ -32,6 +44,7 @@ export default class NewGame extends Component {
 
   componentDidMount() {
     this.props.getUserSuggestions();
+    this.props.loadPracticeGames();
     document.addEventListener('click', this.handleClick);
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
@@ -41,6 +54,11 @@ export default class NewGame extends Component {
     if (this.props.userQuery !== nextProps.userQuery &&
       nextProps.userQuery.length > 0 && !this.state.dropdownOpen) {
       this.setState({ dropdownOpen: true });
+    }
+
+    const { practice } = nextProps;
+    if (practice.length > this.props.practice.length) {
+      browserHistory.push(`/games/practice$/${practice[practice.length - 1].id}`);
     }
   }
 
@@ -65,6 +83,15 @@ export default class NewGame extends Component {
         this.setState({ dropdownOpen: false });
       }
     }
+  }
+
+  createPracticeGame = () => {
+    this.props.createPracticeGame()
+      .then((res) => {
+        browserHistory.push(`/games/practice/${res.data.id}`);
+      }).catch((err) => {
+        console.warn(err);
+      });
   }
 
   startGame = () => {
@@ -208,6 +235,13 @@ export default class NewGame extends Component {
           <span className="chevron-right">></span>
           <span className="underscore">_</span>
           Start Game
+        </button>
+        <div>-- or --</div>
+        <button
+          className="practice"
+          onClick={this.createPracticeGame}
+        >
+          Practice
         </button>
       </div>
     </div>);
