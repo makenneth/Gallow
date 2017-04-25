@@ -236,7 +236,7 @@ export default class NewGame extends Component {
           <span className="underscore">_</span>
           Start Game
         </button>
-        <div>-- or --</div>
+        <div className="or">-- or --</div>
         <button
           className="practice"
           onClick={this.createPracticeGame}

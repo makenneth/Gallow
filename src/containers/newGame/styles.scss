@@ -79,6 +79,7 @@
     padding: 0 10px;
   }
 
+  button.practice,
   button.submit {
     box-sizing: border-box;
     display: flex;
@@ -126,6 +127,19 @@
       .underscore {
         transform: translate(-10px, -8px);
       }
+    }
+  }
+
+  .or {
+    padding: 15px 0;
+  }
+
+  button.practice {
+    margin-top: 0;
+    background-color: #e39f48;
+
+    &:enabled:hover {
+      background-color: rgba(#e39f48, 0.96);
     }
   }
 
@@ -303,7 +317,8 @@
       font-size: 50px;
     }
 
-    button.submit {
+    button.submit,
+    button.practice  {
       margin-top: 40px;
       padding: 15px 25px;
       font-size: 36px;
