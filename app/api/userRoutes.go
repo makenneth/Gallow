@@ -81,6 +81,7 @@ func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(data)
   } else {
     user := GetCurrentUser(w, cookie.Value)
+    log.Println(user)
     data, _ := json.Marshal(user)
     w.Write(data)
   }

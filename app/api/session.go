@@ -34,10 +34,11 @@ func LogInHandler(w http.ResponseWriter, r *http.Request) {
     go func() {
       decoder := json.NewDecoder(r.Body)
       err1 := decoder.Decode(&u)
-      err2 := u.CheckPassword()
+      err2, nickname := u.CheckPassword()
       if err1 != nil || err2 != nil {
         error <- &ResultError{404, "Invalid username or password"}
       } else {
+        u.Nickname = nickname
         error <- &ResultError{0, ""}
       }
     }()

@@ -64,6 +64,7 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
     SET session_token = $1
     WHERE session_token = $2
     returning id, username, nickname`, newToken, userToken).Scan(&id, &username, &nickname)
+
   if id == 0 || err != nil {
     return "", false
   }
@@ -76,20 +77,20 @@ func FindCurrentUser(w http.ResponseWriter, userToken string) (string, bool){
   return newToken, true
 }
 
-func (u *UserData) CheckPassword() error {
-  var passwordDigest, sessionToken string
-  err := database.DBConn.QueryRow(`SELECT password_digest, session_token
+func (u *UserData) CheckPassword() (error, string) {
+  var passwordDigest, sessionToken, nickname string
+  err := database.DBConn.QueryRow(`SELECT password_digest, session_token, nickname
     FROM users
-    WHERE username = $1`, u.Username).Scan(&passwordDigest, &sessionToken)
+    WHERE username = $1`, u.Username).Scan(&passwordDigest, &sessionToken, &nickname)
 
   if err != nil {
-    return err
+    return err, ""
   }
 
   password, digest := []byte(u.Password), []byte(passwordDigest)
   err = bcrypt.CompareHashAndPassword(digest, password)
 
-  return err
+  return err, nickname
 }
 
 func (u *UserData) ResetSessionToken() (int, string, error) {
