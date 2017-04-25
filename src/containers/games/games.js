@@ -12,6 +12,7 @@ import './styles.scss';
     let promise;
     if (!isGamesLoaded(store.getState())) {
       promise = store.dispatch(loadGames());
+      store.dispatch(loadPracticeGames());
     }
 
     return promise;
@@ -21,12 +22,19 @@ import './styles.scss';
   ({ games }) => ({ games })
   )
 export default class Games extends Component {
-  handleClick = (e) => {
-    browserHistory.push(`/games/${e.target.dataset.id}`);
+  handleClick = (e, prefix = '/games') => {
+    browserHistory.push(`${prefix}/${e.target.dataset.id}`);
+  }
+
+  getStatusText = (game) => {
+    if (game.info.finished) {
+      return `Result: ${game.winner === this.props.user.id ? 'Won' : 'Lost'}`
+    }
+    return `Turn: ${game.turn === this.props.user.id ? 'Player' : 'Computer'}`
   }
 
   render() {
-    const { unfinished, finished } = this.props.games;
+    const { unfinished, finished, practice } = this.props.games;
     return (
       <div className="games-container">
         <div>
@@ -61,6 +69,23 @@ export default class Games extends Component {
                     {game.nickname1}<span>vs.</span>{game.nickname2}
                     <br />
                     { `Result: ${game.winner === this.props.user.id ? 'Won' : 'Lost'}` }
+                  </li>)
+                ))
+              }
+            </ul>
+          </div>
+        }
+        {
+          practice.length > 0 &&
+          <div>
+            <h1>Practice Games</h1>
+            <ul onClick={(ev) => this.handleClick(ev, '/games/practice')}>
+              {
+                practice.slice(0, 5).map((game =>
+                  (<li key={game.id} data-id={game.id} className="draw">
+                    {game.nickname1}<span>vs. </span>Computer
+                    <br />
+                    { this.getStatusText(game) }
                   </li>)
                 ))
               }
