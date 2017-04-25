@@ -5,6 +5,7 @@ import {
   createGame,
   createPracticeGame,
   loadPracticeGames,
+  savePracticeGame,
 } from 'redux/modules/games';
 import { fetchUsers, getUserSuggestions, clearUserQuery } from 'redux/modules/users_query';
 import './styles.scss';
@@ -25,6 +26,7 @@ import './styles.scss';
     clearUserQuery,
     createPracticeGame,
     loadPracticeGames,
+    savePracticeGame,
   }
 )
 export default class NewGame extends Component {
@@ -60,6 +62,7 @@ export default class NewGame extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { practice } = this.props;
     if (practice.length > prevProps.practice.length) {
+      this.props.savePracticeGame();
       browserHistory.push(`/games/practice/${practice[practice.length - 1].info.id}`);
     }
   }

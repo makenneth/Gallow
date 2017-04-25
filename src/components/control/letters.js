@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { makeMove } from 'redux/modules/game';
+import { savePracticeGame } from 'redux/modules/games';
 import { makeGuess } from 'redux/modules/practice_game';
 import Letter from './letter';
 
-@connect(({ gameInfo }) => ({ gameInfo }), { makeMove, makeGuess })
+@connect(({ gameInfo, game }) => ({ gameInfo, currentTurn: game.turn }),
+  { makeMove, makeGuess, savePracticeGame })
 export default class Letters extends Component {
   constructor(props) {
     super(props);
@@ -15,8 +17,8 @@ export default class Letters extends Component {
                       'u', 'v', 'w', 'x', 'y', 'z'];
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.turn !== nextProps.turn && nextProps.turn === -1) {
+  componentDidMount() {
+    if (this.props.currentTurn === -1 && !this.props.gameInfo.finished) {
       this.props.makeGuess(null, true);
     }
   }
@@ -31,6 +33,16 @@ export default class Letters extends Component {
     return false;
   }
 
+  componentDidUpdate() {
+    if (/practice/.test(location.pathname)) {
+      this.props.savePracticeGame();
+    }
+
+    if (this.props.currentTurn === -1 && !this.props.gameInfo.finished) {
+      setTimeout(() => this.props.makeGuess(null, true), 2000);
+    }
+  }
+
   handleClick = (e) => {
     if (this.props.turn &&
           this.alphabets.indexOf(e.target.dataset.letter) > -1 &&
@@ -40,7 +52,6 @@ export default class Letters extends Component {
         return;
       }
       if (/practice/.test(location.pathname)) {
-        console.log('makeGuess', move);
         this.props.makeGuess(move);
       } else {
         this.props.makeMove(move);

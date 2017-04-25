@@ -17,6 +17,7 @@ export default (state = {
 };
 
 export const setError = (message) => {
+  console.warn(message);
   return {
     type: SET_ERROR,
     payload: message,

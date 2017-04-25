@@ -19,11 +19,11 @@ GameSolver.generateGuess = ({ usedLetters, correctGuesses }) => {
   // const answer = correctGuesses.filter(g => g).length < 3 ?
   //   null :
   //   GameSolver.knownAnswer(usedLetters);
-  GameSolver.guessByFrequency(usedLetters);
+  return GameSolver.guessByFrequency(usedLetters);
 }
 
 GameSolver.guessByFrequency = (usedLetters) => {
-  const unusedLetterIdx = letterFrequencies.findIndex(l => usedLetters.find(u => u === l));
+  const unusedLetterIdx = letterFrequencies.findIndex(l => !usedLetters.find(u => u === l));
   return letterFrequencies[unusedLetterIdx];
 }
 

@@ -1,5 +1,4 @@
 export default function gameTemplate(id, word, user) {
-  console.log(user);
   return {
     info: {
       id,
@@ -14,10 +13,10 @@ export default function gameTemplate(id, word, user) {
     },
     state: {
       word,
-      correctGuesses: [],
+      correctGuesses: Array.from(new Array(word.length), _ => ''),
       guess: '',
       solving: false,
-      turn: user.id,
+      turn: [-1, user.id][Math.round(Math.random())],
       usedLetters: [],
       wrongGuesses1: 0,
       wrongGuesses2: 0,

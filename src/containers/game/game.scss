@@ -7,6 +7,10 @@
   flex-direction: row;
   justify-content: space-between;
   height: 100%;
+
+  &.practice {
+    justify-content: center;
+  }
 }
 
 .game-screen {

@@ -1,5 +1,5 @@
 import GameSolver from 'helpers/game';
-
+import { savePracticeGame } from './games';
 export const CORRECT_GUESS = 'hangperson/game/CORRECT_GUESS';
 export const INCORRECT_GUESS = 'hangperson/game/INCORRECT_GUESS';
 export const GAME_ENDED = 'hangperson/game/GAME_ENDED';
@@ -8,38 +8,41 @@ export const GAME_ENDED = 'hangperson/game/GAME_ENDED';
 export function makeGuess(guess, autoGenerate = false) {
   return (dispatch, getState) => {
     const { game, gameInfo } = getState();
-    debugger;
     let madeGuess = autoGenerate ? GameSolver.generateGuess(game) : guess;
-    let correct = true;
+    let correct = false;
     let ended = false;
     const correctGuesses = game.correctGuesses.slice();
     for (const [i, ch] of game.word.split('').entries()) {
       if (ch === madeGuess) {
         correctGuesses[i] = madeGuess;
-      } else {
-        correct = false;
+        correct = true;
       }
     }
 
-    if (correctGuesses.every(a => Boolean(a))) {
-      dispatch(gameEnded(game.turn));
-    }
-
-    const nextTurn = game.turn === gameInfo.userId1 ? gameInfo.userId2 : gameInfo.userId1;
-    if (correct) {
-      dispatch(correctGuess(madeGuess, correctGuesses, nextTurn));
+    const winner = checkGameEnd(game, gameInfo, correctGuesses, correct);
+    if (winner.winner) {
+      dispatch(gameEnded(madeGuess, correctGuesses, ...winner));
     } else {
-      dispatch(incorrectGuess(madeGuess, nextTurn));
+      const nextTurn = game.turn === gameInfo.userId1 ? gameInfo.userId2 : gameInfo.userId1;
+      if (correct) {
+        dispatch(correctGuess(madeGuess, correctGuesses, nextTurn));
+      } else {
+        dispatch(incorrectGuess(madeGuess, nextTurn));
+      }
     }
-    dispatch(checkGameEnd());
   };
 }
 
-export function gameEnded(winner) {
-  /* winner can be null -> drawn */
+export function gameEnded(guess, correctGuesses, winner, wrongGuesses1, wrongGuesses2) {
   return {
     type: GAME_ENDED,
-    winner,
+    payload: {
+      winner,
+      guess,
+      correctGuesses,
+      wrongGuesses1,
+      wrongGuesses2,
+    }
   };
 }
 
@@ -64,18 +67,24 @@ export function incorrectGuess(guess, nextTurn) {
   };
 }
 
-function checkGameEnd() {
-  return (dispatch, getState) => {
-    const { game } = getState();
-    let winner;
-    if (game.wrongGuesses1 >= 6) {
-      winner = game.userId2;
-    } else if (game.wrongGuesses2 >= 6) {
-      winner = game.userId1;
-    }
-
-    if (winner) {
-      dispatch(gameEnded(winner));
-    }
+function checkGameEnd(game, gameInfo, correctGuesses, isCorrect) {
+  if (correctGuesses.every(a => Boolean(a))) {
+    return game.turn;
   }
+  let wrongGuesses1 = game.wrongGuesses1;
+  let wrongGuesses2 = game.wrongGuesses2;
+  let winner;
+  if (game.turn === gameInfo.userId1 && game.wrongGuesses1 >= 5 && !isCorrect) {
+    winner = gameInfo.userId2;
+    wrongGuesses1 = 6;
+  } else if (game.turn === gameInfo.userId2 && game.wrongGuesses2 >= 5 && !isCorrect) {
+    winner = gameInfo.userId1;
+    wrongGuesses2 = 6;
+  }
+
+  return {
+    winner,
+    wrongGuesses1,
+    wrongGuesses2,
+  };
 }

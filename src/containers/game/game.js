@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { Chat, GameScreen } from 'components';
 import { clearGame, loadGame  } from 'redux/modules/game';
-import { loadPracticeGame, savePracticeGame } from 'redux/modules/games';
+import { loadPracticeGame, savePracticeGame, clearPracticeGame } from 'redux/modules/games';
 import { setError, clearError } from 'redux/modules/error';
 
 import './game.scss';
@@ -16,12 +16,16 @@ import './chat.scss';
   clearError,
   savePracticeGame,
   loadPracticeGame,
-  })
+  clearPracticeGame
+})
 export default class Game extends Component {
   componentWillMount() {
     if (/^[0-9]+$/.test(this.props.params.id)) {
       this.props.loadGame(this.props.params.id);
     } else {
+      if (/practice/.test(this.props.location.pathname)) {
+        this.props.clearPracticeGame(this.props.params.id);
+      }
       browserHistory.push('/');
       this.props.setError('Something went wrong, please try again.');
       setTimeout(() => this.props.clearError(), 2500);
@@ -36,10 +40,11 @@ export default class Game extends Component {
   }
 
   render() {
+    const isPractice = /practice/.test(this.props.location.pathname);
     return (
-      <div className="game-container">
+      <div className={`game-container${isPractice ? ' practice' : ''}`}>
         <GameScreen ws={this.props.ws} user={this.props.user} />
-        <Chat />
+        {!isPractice && <Chat />}
       </div>
     );
   }

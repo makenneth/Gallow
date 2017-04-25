@@ -23,7 +23,6 @@ import './styles.scss';
   )
 export default class Games extends Component {
   handleClick = (e, prefix = '/games') => {
-    console.log(`${prefix}/${e.target.dataset.id}`);
     browserHistory.push(`${prefix}/${e.target.dataset.id}`);
   }
 

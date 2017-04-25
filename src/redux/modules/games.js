@@ -91,6 +91,7 @@ export const createPracticeGame = (user) => {
             maxId = 0;
           }
           dispatch(createPracticeGameSuccess(maxId + 1, res.data.word, user));
+          dispatch(savePracticeGame());
         },
         (err) => {
           console.warn(err);
@@ -102,8 +103,10 @@ export const createPracticeGame = (user) => {
 export const loadPracticeGames = () => {
   let practiceGames = [];
   const stored = localStorage.getItem('practiceGames');
+  debugger;
+  console.log(stored);
   if (stored) {
-    practiceGames = JSON.parse(stored);
+    practiceGames = JSON.parse(stored).filter(g => !g.info.finished);
   }
   return {
     type: LOAD_PRACTICE_GAMES,
@@ -145,8 +148,7 @@ export const isGamesLoaded = (state) => {
 export const savePracticeGame = () => {
   return (_, getState) => {
     const { games: { practice }, game, gameInfo } = getState();
-
-    const currentGameIdx = practice.findIndex(g => g.id === gameInfo.id);
+    const currentGameIdx = practice.findIndex(g => g.info.id === gameInfo.id);
     let games = [];
     if (currentGameIdx > -1) {
       games = [
@@ -157,7 +159,18 @@ export const savePracticeGame = () => {
     } else {
       games = [ ...practice, { state: game, info: gameInfo } ];
     }
+    localStorage.setItem('practiceGames', JSON.stringify(games));
+  };
+}
 
-    localStorage.setItem('practiceGames', JSON.stringify(games.filter(g => !g.info.ended)));
+export const clearPracticeGame = (id) => {
+  return (dispatch, getState) => {
+    const { games: { practice } } = getState();
+    if (practice.length) {
+      const games = practice.filter(g => eval(g.info.id) !== eval(id));
+      console.log(games);
+      localStorage.setItem('practiceGames', JSON.stringify(games));
+      dispatch(loadPracticeGames());
+    }
   };
 }

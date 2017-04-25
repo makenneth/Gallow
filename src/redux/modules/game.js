@@ -1,4 +1,4 @@
-import { CORRECT_GUESS, INCORRECT_GUESS } from './practice_game';
+import { CORRECT_GUESS, INCORRECT_GUESS, GAME_ENDED } from './practice_game';
 import { loadPracticeGames } from './games';
 
 const UPDATE_SUCCESS = 'hangperson/game/UPDATE_SUCESS';
@@ -36,11 +36,17 @@ export default (state = {}, action) => {
         ...state,
         solving: true,
       };
+    case GAME_ENDED:
+      return {
+        ...state,
+        ...action.payload,
+        usedLetters: [...state.usedLetters, action.payload.guess],
+      };
     case CORRECT_GUESS:
       return {
         ...state,
         guess: action.payload.guess,
-        turn: action.payload.newTurn,
+        turn: state.solving ? state.turn : action.payload.nextTurn,
         usedLetters: [...state.usedLetters, action.payload.guess],
         correctGuesses: action.payload.correctGuesses,
       };
@@ -49,7 +55,7 @@ export default (state = {}, action) => {
         guess: action.payload.guess,
         usedLetters: [...state.usedLetters, action.payload.guess],
         solving: false,
-        turn: action.payload.newTurn,
+        turn: action.payload.nextTurn,
       };
 
       if (state.turn === -1) {

@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 
 export default class Diagram extends Component {
   shouldComponentUpdate(nextProps) {
-    if (this.props !== nextProps) {
-      return true;
-    }
-
-    return false;
+    return this.props !== nextProps;
   }
 
   constructDiagram(count, name, isCurrentPlayer) {
@@ -27,7 +23,6 @@ export default class Diagram extends Component {
 
   render() {
     const { guessCount1, guessCount2, gameInfo, turn } = this.props;
-    console.log(gameInfo);
     return (<div className="diagrams-container">
       { this.constructDiagram(guessCount1, gameInfo.nickname1, gameInfo.userId1 === turn) }
       { this.constructDiagram(guessCount2, gameInfo.nickname2, gameInfo.userId2 === turn) }

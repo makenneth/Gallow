@@ -17,6 +17,15 @@ export default class GameScreen extends Component {
       this.props.solveGame();
     }
   }
+
+  getIndicatorText() {
+    if (this.props.gameInfo.finished) {
+
+    }
+
+    return
+  }
+
   toggleChat = (ev) => {
     ev.stopPropagation();
     this.props.toggleChat();
@@ -43,7 +52,15 @@ export default class GameScreen extends Component {
             onClick={this.handleClick}
             disabled={game.solving}
           >Solve it</button>
-          <div>{curPlayer}'s turn</div>
+          <div>
+            {
+              gameInfo.finished ?
+                `${gameInfo.winner === gameInfo.userId2 ?
+                    gameInfo.nickname2 : gameInfo.nickname1} won.`
+                :
+                `${curPlayer}'s turn`
+            }
+          </div>
           <button
             className="open-chat"
             onClick={this.toggleChat}

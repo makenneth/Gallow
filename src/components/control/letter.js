@@ -9,10 +9,21 @@ export default class Letter extends Component {
 
     return false;
   }
+
+  handleClick = (ev) => {
+    if (this.props.used) {
+      ev.stopPropagation();
+    }
+  }
+
   render() {
     const className = `letter-box${(this.props.used ? ' used' : '')}`;
     return (
-      <div data-letter={this.props.letter} className={className}>
+      <div
+        onClick={this.handleClick}
+        data-letter={this.props.letter}
+        className={className}
+      >
         <div data-letter={this.props.letter}>{ this.props.letter.toUpperCase() }</div>
       </div>
     );
