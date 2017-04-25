@@ -145,6 +145,28 @@ func PlayerSuggestionsHandler(w http.ResponseWriter, r *http.Request) {
   w.Write(data)
 }
 
+func GetRandomWordHandler(w http.ResponseWriter, r * http.Request) {
+  if (r.Method != "GET") {
+    requestError.SendErrorResponse(w, 404, "Unknown route")
+    return
+  }
+  var word string;
+  err := database.DBConn.QueryRow(`
+    SELECT word FROM words
+    OFFSET floor(random() * 187388)
+    LIMIT 1;
+    `).Scan(&word)
+  if err != nil {
+    requestError.SendErrorResponse(w, 500, "Failed to get random word")
+  }
+
+  dataToBeSent := make(map[string]string)
+  dataToBeSent["word"] = word
+  data, _ := json.Marshal(dataToBeSent)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(data)
+}
+
 
 func checkErr(err error) {
   if err != nil {
