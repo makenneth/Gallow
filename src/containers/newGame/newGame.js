@@ -55,10 +55,12 @@ export default class NewGame extends Component {
       nextProps.userQuery.length > 0 && !this.state.dropdownOpen) {
       this.setState({ dropdownOpen: true });
     }
+  }
 
-    const { practice } = nextProps;
-    if (practice.length > this.props.practice.length) {
-      browserHistory.push(`/games/practice$/${practice[practice.length - 1].id}`);
+  componentDidUpdate(prevProps, prevState) {
+    const { practice } = this.props;
+    if (practice.length > prevProps.practice.length) {
+      browserHistory.push(`/games/practice/${practice[practice.length - 1].info.id}`);
     }
   }
 
@@ -86,12 +88,7 @@ export default class NewGame extends Component {
   }
 
   createPracticeGame = () => {
-    this.props.createPracticeGame()
-      .then((res) => {
-        browserHistory.push(`/games/practice/${res.data.id}`);
-      }).catch((err) => {
-        console.warn(err);
-      });
+    this.props.createPracticeGame(this.props.user);
   }
 
   startGame = () => {

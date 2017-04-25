@@ -2,18 +2,24 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { Chat, GameScreen } from 'components';
-import { clearGame, loadGame, savePracticeGame } from 'redux/modules/game';
+import { clearGame, loadGame  } from 'redux/modules/game';
+import { loadPracticeGame, savePracticeGame } from 'redux/modules/games';
 import { setError, clearError } from 'redux/modules/error';
 
 import './game.scss';
 import './chat.scss';
 
-@connect(() => ({}), { clearGame, loadGame, setError, clearError, savePracticeGame })
+@connect(() => ({}), {
+  clearGame,
+  loadGame,
+  setError,
+  clearError,
+  savePracticeGame,
+  loadPracticeGame,
+  })
 export default class Game extends Component {
   componentWillMount() {
-    if (/practice/.test(this.props.location.pathname)) {
-      this.props.loadPracticeGame();
-    } else if (/^[0-9]+$/.test(this.props.params.id)) {
+    if (/^[0-9]+$/.test(this.props.params.id)) {
       this.props.loadGame(this.props.params.id);
     } else {
       browserHistory.push('/');

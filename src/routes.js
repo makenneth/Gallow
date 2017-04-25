@@ -25,6 +25,7 @@ export default (store) => {
       <IndexRoute component={Games} />
       <Route path="games/new" component={NewGame} />
       <Route path="games/:id" component={Game} />
+      <Route path="games/practice/:id" component={Game} />
     </Route>
   </Route>);
 };

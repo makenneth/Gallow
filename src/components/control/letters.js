@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { makeMove } from 'redux/modules/game';
-import { makeGuest } from 'redux/modules/practice_game';
+import { makeGuess } from 'redux/modules/practice_game';
 import Letter from './letter';
 
 @connect(({ gameInfo }) => ({ gameInfo }), { makeMove, makeGuess })

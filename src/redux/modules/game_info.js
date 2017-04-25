@@ -1,16 +1,6 @@
-import { FETCH_SUCCESS, CLEAR_GAME } from './game';
+import { FETCH_SUCCESS, CLEAR_GAME, LOAD_PRACTICE_GAME } from './game';
 import { CREATE_PRACTICE_GAME } from './games';
-
-/*
-  newGameInfo => ({
-    id,
-    userId,
-    username,
-    nickname,
-    finished,
-    winner,
-  })
-*/
+import { GAME_ENDED } from './practice_game';
 
 export default (state = {}, action) => {
   switch (action.type) {
@@ -22,8 +12,8 @@ export default (state = {}, action) => {
       delete newState.state;
       return newState;
     }
-    case GAME_WON: {
-      const winner = action.payload.turn === -1 ? state.nickname2 : state.nickname1;
+    case GAME_ENDED: {
+      const winner = action.payload.winner;
       return {
         ...state,
         finished: true,
@@ -31,7 +21,7 @@ export default (state = {}, action) => {
       };
     }
     case LOAD_PRACTICE_GAME:
-      return action.payload.info
+      return action.payload.info;
     case CLEAR_GAME:
       return {};
     default:

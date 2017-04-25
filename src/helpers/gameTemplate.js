@@ -1,14 +1,14 @@
-export default function gameTemplate(id, word) {
+export default function gameTemplate(id, word, user) {
   return {
     info: {
       id,
       finished: false,
       winner: null,
-      userId1: 0,
+      userId1: user.id,
       userId2: -1,
-      username1: null,
+      username1: user.username,
       username2: 'Computer',
-      nickname1: null,
+      nickname1: user.nickname,
       nickname2: 'Computer',
     },
     state: {

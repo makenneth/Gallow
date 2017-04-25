@@ -36,7 +36,11 @@ export default (state = initialState, action) => {
         unfinished: [...state.unfinished, action.payload],
       };
     case CREATE_PRACTICE_GAME: {
-      const practiceGameTemplate = gameTemplate(id, word);
+      const practiceGameTemplate = gameTemplate(
+        action.payload.id,
+        action.payload.word,
+        action.payload.user
+      );
       return {
         ...state,
         practice: [
@@ -62,29 +66,30 @@ export const loadGames = () => {
   };
 };
 
-const createPracticeGameSuccess = (id, word) => {
+const createPracticeGameSuccess = (id, word, user) => {
   return {
     type: CREATE_PRACTICE_GAME,
     payload: {
       id,
       word,
+      user,
     },
   };
 }
 
-export const createPracticeGame = () => {
+export const createPracticeGame = (user) => {
   return (dispatch, getState) => {
     return axios.get('/api/games/random_word')
       .then(
-        (word) => {
+        (res) => {
           const { practice } = getState().games;
           let maxId;
           if (practice.length > 0) {
-            maxId = Math.max.apply(null, practice.map(g => g.id));
+            maxId = Math.max.apply(null, practice.map(g => g.info.id));
           } else {
             maxId = 0;
           }
-          dispatch(createPracticeGameSuccess(maxId + 1, word));
+          dispatch(createPracticeGameSuccess(maxId + 1, res.data.word, user));
         },
         (err) => {
           console.warn(err);
@@ -92,16 +97,6 @@ export const createPracticeGame = () => {
       );
   };
 }
-
-export const loadPracticeGame = (id) => {
-  return (dispatch, getState) => {
-    const { practice } = getState().games;
-    return {
-      type: LOAD_PRACTICE_GAME,
-      payload: practice.find(g => g.id === id),
-    };
-  };
-};
 
 export const loadPracticeGames = () => {
   let practiceGames = [];
@@ -145,3 +140,23 @@ export const createdGame = (game) => {
 export const isGamesLoaded = (state) => {
   return state.games.loaded;
 };
+
+export const savePracticeGame = () => {
+  return (_, getState) => {
+    const { games: { practice }, game, gameInfo } = getState();
+
+    const currentGameIdx = practice.findIndex(g => g.info.id === game.id);
+    let games = [];
+    if (currentGameIdx > -1) {
+      games = [
+        ...practice.slice(0, currentGameIdx),
+        { state: game, info: gameInfo },
+        ...practice.slice(currentGameIdx + 1),
+      ];
+    } else {
+      games = [ ...practice, { state: game, info: gameInfo } ];
+    }
+
+    localStorage.setItem('practiceGames', JSON.stringify(games.filter(g => !g.info.ended)));
+  };
+}

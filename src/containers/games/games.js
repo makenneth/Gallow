@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { asyncConnect } from 'redux-async-connect';
 import moment from 'moment';
-import { loadGames, isGamesLoaded } from 'redux/modules/games';
+import { loadGames, isGamesLoaded, loadPracticeGames } from 'redux/modules/games';
 
 import './styles.scss';
 
@@ -23,6 +23,7 @@ import './styles.scss';
   )
 export default class Games extends Component {
   handleClick = (e, prefix = '/games') => {
+    console.log(`${prefix}/${e.target.dataset.id}`);
     browserHistory.push(`${prefix}/${e.target.dataset.id}`);
   }
 

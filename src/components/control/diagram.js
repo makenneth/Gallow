@@ -27,6 +27,7 @@ export default class Diagram extends Component {
 
   render() {
     const { guessCount1, guessCount2, gameInfo, turn } = this.props;
+    console.log(gameInfo);
     return (<div className="diagrams-container">
       { this.constructDiagram(guessCount1, gameInfo.nickname1, gameInfo.userId1 === turn) }
       { this.constructDiagram(guessCount2, gameInfo.nickname2, gameInfo.userId2 === turn) }
