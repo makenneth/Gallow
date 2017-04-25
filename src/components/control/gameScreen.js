@@ -19,7 +19,6 @@ export default class GameScreen extends Component {
   }
   toggleChat = (ev) => {
     ev.stopPropagation();
-    console.log('clicked');
     this.props.toggleChat();
   }
 

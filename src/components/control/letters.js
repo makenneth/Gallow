@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { makeMove } from 'redux/modules/game';
+import { makeGuest } from 'redux/modules/practice_game';
 import Letter from './letter';
 
-@connect(({ gameInfo }) => ({ gameInfo }), { makeMove })
+@connect(({ gameInfo }) => ({ gameInfo }), { makeMove, makeGuess })
 export default class Letters extends Component {
   constructor(props) {
     super(props);
@@ -12,6 +13,12 @@ export default class Letters extends Component {
                       'k', 'l', 'm', 'n', 'o',
                       'p', 'q', 'r', 's', 't',
                       'u', 'v', 'w', 'x', 'y', 'z'];
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.turn !== nextProps.turn && nextProps.turn === -1) {
+      this.props.makeGuess(null, true);
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -23,15 +30,20 @@ export default class Letters extends Component {
 
     return false;
   }
+
   handleClick = (e) => {
     if (this.props.turn &&
           this.alphabets.indexOf(e.target.dataset.letter) > -1 &&
           !this.props.gameInfo.finished) {
       const move = e.target.dataset.letter;
-      if (move.length > 1) {
+      if (move.length !== 1) {
         return;
       }
-      this.props.makeMove(move);
+      if (/practice/.test(window.location.pathname)) {
+        this.props.makeGuess(move);
+      } else {
+        this.props.makeMove(move);
+      }
     }
   }
   render() {
