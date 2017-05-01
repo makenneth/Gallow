@@ -2,6 +2,7 @@ export default function gameTemplate(id, word, user) {
   return {
     info: {
       id,
+      isPractice: true,
       finished: false,
       winner: null,
       userId1: user.id,

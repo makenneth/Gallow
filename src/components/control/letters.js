@@ -34,7 +34,8 @@ export default class Letters extends Component {
   }
 
   componentDidUpdate() {
-    if (/practice/.test(location.pathname)) {
+    if (this.props.gameInfo.isPractice) {
+      console.log('updated....');
       this.props.savePracticeGame();
     }
 
@@ -51,7 +52,7 @@ export default class Letters extends Component {
       if (move.length !== 1) {
         return;
       }
-      if (/practice/.test(location.pathname)) {
+      if (this.props.gameInfo.isPractice) {
         this.props.makeGuess(move);
       } else {
         this.props.makeMove(move);

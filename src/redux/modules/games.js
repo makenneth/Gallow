@@ -10,6 +10,7 @@ const CREATE_FAIL = 'hangperson/games/CREATE_FAIL';
 const OTHER_CREATED = 'hangperson/games/OTHER_CREATED';
 const CREATE_PRACTICE_GAME = 'hangperson/games/CREATE_PRACTICE_GAME';
 const LOAD_PRACTICE_GAMES = 'hangperson/games/LOAD_PRACTICE_GAMES';
+const UPDATE_PRACTICE_GAMES = 'hangperson/games/UPDATE_PRACTICE_GAMES';
 
 const initialState = {
   unfinished: [],
@@ -41,7 +42,6 @@ export default (state = initialState, action) => {
         action.payload.word,
         action.payload.user
       );
-      console.log(practiceGameTemplate)
       return {
         ...state,
         practice: [
@@ -51,6 +51,7 @@ export default (state = initialState, action) => {
       };
     }
     case LOAD_PRACTICE_GAMES:
+    case UPDATE_PRACTICE_GAMES:
       return {
         ...state,
         practice: action.payload,
@@ -91,7 +92,6 @@ export const createPracticeGame = (user) => {
             maxId = 0;
           }
           dispatch(createPracticeGameSuccess(maxId + 1, res.data.word, user));
-          dispatch(savePracticeGame());
         },
         (err) => {
           console.warn(err);
@@ -103,10 +103,10 @@ export const createPracticeGame = (user) => {
 export const loadPracticeGames = () => {
   let practiceGames = [];
   const stored = localStorage.getItem('practiceGames');
-  debugger;
-  console.log(stored);
   if (stored) {
-    practiceGames = JSON.parse(stored).filter(g => !g.info.finished);
+    practiceGames = JSON.parse(stored).filter(g => (
+      Object.keys(g.info).length > 0 && Object.keys(g.state).length > 0 && !g.info.finished
+    ));
   }
   return {
     type: LOAD_PRACTICE_GAMES,
@@ -146,7 +146,7 @@ export const isGamesLoaded = (state) => {
 };
 
 export const savePracticeGame = () => {
-  return (_, getState) => {
+  return (dispatch, getState) => {
     const { games: { practice }, game, gameInfo } = getState();
     const currentGameIdx = practice.findIndex(g => g.info.id === gameInfo.id);
     let games = [];
@@ -160,6 +160,14 @@ export const savePracticeGame = () => {
       games = [ ...practice, { state: game, info: gameInfo } ];
     }
     localStorage.setItem('practiceGames', JSON.stringify(games));
+    dispatch(updatePracticeGame(games));
+  };
+}
+
+export const updatePracticeGame = (games) => {
+  return {
+    type: UPDATE_PRACTICE_GAMES,
+    payload: games,
   };
 }
 
@@ -168,7 +176,6 @@ export const clearPracticeGame = (id) => {
     const { games: { practice } } = getState();
     if (practice.length) {
       const games = practice.filter(g => eval(g.info.id) !== eval(id));
-      console.log(games);
       localStorage.setItem('practiceGames', JSON.stringify(games));
       dispatch(loadPracticeGames());
     }

@@ -21,12 +21,12 @@ import './chat.scss';
 export default class Game extends Component {
   componentWillMount() {
     if (/^[0-9]+$/.test(this.props.params.id)) {
-      this.props.loadGame(this.props.params.id);
+      this.props.loadGame(this.props.params.id, this.redirectToMain);
     } else {
       if (/practice/.test(this.props.location.pathname)) {
         this.props.clearPracticeGame(this.props.params.id);
       }
-      browserHistory.push('/');
+      this.redirectToMain();
       this.props.setError('Something went wrong, please try again.');
       setTimeout(() => this.props.clearError(), 2500);
     }
@@ -39,13 +39,23 @@ export default class Game extends Component {
     this.props.clearGame();
   }
 
+  redirectToMain = () => {
+    browserHistory.push('/');
+  }
+
   render() {
-    const isPractice = /practice/.test(this.props.location.pathname);
-    return (
-      <div className={`game-container${isPractice ? ' practice' : ''}`}>
-        <GameScreen ws={this.props.ws} user={this.props.user} />
-        {!isPractice && <Chat />}
-      </div>
-    );
+    try {
+      const isPractice = /practice/.test(this.props.location.pathname);
+      return (
+        <div className={`game-container${isPractice ? ' practice' : ''}`}>
+          <GameScreen ws={this.props.ws} user={this.props.user} />
+          {!isPractice && <Chat />}
+        </div>
+      );
+    } catch (e) {
+      console.warn(e);
+      this.redirectToMain();
+      return null;
+    }
   }
 }

@@ -62,7 +62,6 @@ export default class NewGame extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { practice } = this.props;
     if (practice.length > prevProps.practice.length) {
-      this.props.savePracticeGame();
       browserHistory.push(`/games/practice/${practice[practice.length - 1].info.id}`);
     }
   }
@@ -241,7 +240,7 @@ export default class NewGame extends Component {
           className="practice"
           onClick={this.createPracticeGame}
         >
-          Practice
+          Practice With Computer
         </button>
       </div>
     </div>);

@@ -98,8 +98,8 @@ const connectGame = (id) => {
 };
 
 export const solveGame = () => {
-  return (dispatch) => {
-    if (!/practice/.test(this.props.location.pathname)) {
+  return (dispatch, getState) => {
+    if (!getState().gameInfo.isPractice) {
       dispatch(solveNormalGame());
     } else {
       dispatch(solvePracticeGame());
@@ -132,7 +132,7 @@ export const connectUser = () => {
   };
 };
 
-export const loadGame = (id) => {
+export const loadGame = (id, redirect) => {
   return (dispatch, getState) => {
     if (/practice/.test(window.location.pathname)) {
       if (!getState().games.practice.length) {
@@ -143,7 +143,7 @@ export const loadGame = (id) => {
       if (game) {
         dispatch(startPracticeGame(game));
       } else {
-        // alert error
+        redirect();
       }
     } else {
       dispatch(connectGame(id));
