@@ -50,7 +50,7 @@ export default class Games extends Component {
             }
             <ul onClick={this.handleClick}>
               {
-                unfinished.slice(0, 7).map((game =>
+                unfinished.reverse().slice(0, 7).map((game =>
                   (<li key={game.id} data-id={game.id} className="draw">
                     {game.nickname1}<span>vs.</span>{game.nickname2}
                     <br />

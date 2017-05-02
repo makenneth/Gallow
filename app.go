@@ -2,8 +2,8 @@ package main
 
 import (
   "fmt"
-	"log"
-	"net/http"
+  "log"
+  "net/http"
   "./app/static"
   "./app/api"
   "database/sql"
@@ -94,5 +94,3 @@ func checkErr(err error) {
     panic(err);
   }
 }
-
-

@@ -137,14 +137,14 @@ export default class NewGame extends Component {
   }
 
   handleChange = (e) => {
-    let timer;
     this.setState({
       name: e.target.value,
       selected: false,
     });
-
-    clearTimeout(timer);
-    timer = setTimeout(() => {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+    this.timer = setTimeout(() => {
       this.props.fetchUsers(this.state.name);
     }, 700);
   }

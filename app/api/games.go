@@ -47,11 +47,10 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
     word string
     user1 User
     gameState game.Game
-    updatedAt time.Time
     err error
   )
   done := make(chan bool)
-
+  updatedAt := time.Now().UTC()
   go func(){
     err = database.DBConn.QueryRow(`
       SELECT word FROM words
@@ -84,19 +83,21 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   gameState.Username1 = user1.Username
   gameState.UserId1 = user1.Id
   gameState.Nickname1 = user1.Nickname
-
+  log.Println(gameState)
   st := state.NewState(word, gameState.UserId1)
 
   stateJSON, _ := json.Marshal(st)
   gameState.State = *st
 
   err = database.DBConn.QueryRow(`INSERT INTO games
-    (user_id1, user_id2, game_state, selected_word)
-    VALUES ($1, $2, $3, $4)
-    returning id, updated_at`, gameState.UserId1, gameState.UserId2, stateJSON, word).Scan(&(gameState.Id), &updatedAt)
-
+    (user_id1, user_id2, game_state, selected_word, updated_at)
+    VALUES ($1, $2, $3, $4, $5)
+    returning id`, gameState.UserId1, gameState.UserId2, stateJSON, word, updatedAt).Scan(&(gameState.Id))
+  log.Println(updatedAt)
   checkErr(err)
-  data, _ := json.Marshal(&GameApi{gameState.Id, false, 0, gameState.Nickname1, gameState.Nickname2, updatedAt})
+  g := &GameApi{gameState.Id, false, 0, gameState.Nickname1, gameState.Nickname2, updatedAt}
+  log.Println(g)
+  data, _ := json.Marshal(g)
   go RPCToSocket("CREATED_GAME", data, gameState.Username2)
 
   w.Header().Set("Content-Type", "application/json")

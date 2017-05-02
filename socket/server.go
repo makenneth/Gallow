@@ -5,6 +5,7 @@ import (
   "log"
   "golang.org/x/net/websocket"
   "encoding/json"
+  "../app/api"
 )
 
 type Server struct {
@@ -39,7 +40,11 @@ func (this *Server) Send() chan<- *InterclientMessage {
 
 func (this *Server) RPCSendToClient(msgType string, data json.RawMessage, username string) {
   if cl, ok := this.clients[username]; ok {
-    cl.Write() <- &Message{msgType, data}
+    var unmarshalled *api.GameApi
+    _ = json.Unmarshal(data, &unmarshalled)
+    log.Println(unmarshalled)
+    dataToSend, _ := json.Marshal(unmarshalled)
+    cl.Write() <- &Message{msgType, dataToSend}
   }
 }
 

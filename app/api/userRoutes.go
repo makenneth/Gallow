@@ -48,7 +48,7 @@ func GamesRouteHandler(w http.ResponseWriter, r *http.Request) {
       INNER JOIN users AS u2
       ON u2.id = g.user_id2
       WHERE g.user_id1 = $1 OR g.user_id2 = $1
-      ORDER BY g.updated_at
+      ORDER BY g.updated_at DESC
       LIMIT 10
     `, playerId)
     defer rows.Close()

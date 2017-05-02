@@ -68,7 +68,7 @@ func DBInfo() string {
 }
 func handleRPC(conn net.Conn, server *socket.Server) {
   defer conn.Close()
-  var buf [512]byte
+  var buf [1024]byte
   for {
     n, err := conn.Read(buf[0:])
     if err != nil {
