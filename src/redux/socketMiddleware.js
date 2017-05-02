@@ -70,6 +70,12 @@ export const socketMiddleware = ({ getState }) => next => action => {
   return next(action);
 };
 
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(atob(str).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+}
+
 export default ({ getState, dispatch }) => {
   const url = `${process.env.WS_URL}/ws`;
   socket = new WebSocket(url);
@@ -90,9 +96,11 @@ export default ({ getState, dispatch }) => {
       case 'FETCHED_MESSAGES':
         dispatch(fetchedMessages(message.data));
         break;
-      case 'CREATED_GAME':
-        dispatch(createdGame(message.data));
+      case 'CREATED_GAME': {
+        const data = JSON.parse(b64DecodeUnicode(message.data))
+        dispatch(createdGame(data));
         break;
+      }
       default:
         break;
     }

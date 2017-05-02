@@ -12,7 +12,6 @@ import './styles.scss';
     let promise;
     if (!isGamesLoaded(store.getState())) {
       promise = store.dispatch(loadGames());
-      console.log('load practice games');
       store.dispatch(loadPracticeGames());
     }
 

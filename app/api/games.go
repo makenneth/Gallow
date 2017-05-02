@@ -96,8 +96,8 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
   log.Println(updatedAt)
   checkErr(err)
   g := &GameApi{gameState.Id, false, 0, gameState.Nickname1, gameState.Nickname2, updatedAt}
-  log.Println(g)
-  data, _ := json.Marshal(g)
+  data, err := json.Marshal(g)
+
   go RPCToSocket("CREATED_GAME", data, gameState.Username2)
 
   w.Header().Set("Content-Type", "application/json")

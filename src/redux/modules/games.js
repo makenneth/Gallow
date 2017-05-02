@@ -135,7 +135,6 @@ export const createGame = (opponent) => {
 };
 
 export const createdGame = (game) => {
-  debugger;
   return {
     type: OTHER_CREATED,
     payload: game,
