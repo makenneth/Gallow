@@ -1,4 +1,4 @@
-## Hangperson [Live Link](http://hangperson.com)
+## Hangperson (has been taken down permanently)
 Realtime online two-player Hangman with chat functionality.
 Built with a Golang backend and a React/Redux frontend.
 
